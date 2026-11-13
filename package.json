@@ -1,0 +1,29 @@
+{
+  "name": "stem-code-games",
+  "private": true,
+  "version": "0.1.0",
+  "description": "STEM Code V2 games: FastAPI API and Next.js web app",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev:api": "node scripts/py.mjs -m uvicorn app.main:app --reload --reload-dir api --host 127.0.0.1 --port 8000",
+    "dev:web": "npm --prefix web run dev",
+    "migrate": "node scripts/py.mjs -m app.cli migrate",
+    "migrate:down": "node scripts/py.mjs -m app.cli migrate --revision base",
+    "seed": "node scripts/py.mjs -m app.cli seed",
+    "job:list": "node scripts/py.mjs -m app.cli job list",
+    "job:run": "node scripts/py.mjs -m app.cli job run",
+    "test:api": "node scripts/py.mjs -m pytest api/tests",
+    "lint:api": "node scripts/py.mjs -m ruff check api",
+    "format:api": "node scripts/py.mjs -m ruff format api",
+    "typecheck:api": "node scripts/py.mjs -m mypy api/app",
+    "gen:api": "node scripts/gen-api.mjs",
+    "install:web": "npm --prefix web install",
+    "build:web": "npm --prefix web run build",
+    "typecheck:web": "npm --prefix web run typecheck",
+    "lint": "npm run lint:api",
+    "test": "npm run test:api",
+    "check": "npm run lint:api && npm run typecheck:api && npm run test:api"
+  }
+}

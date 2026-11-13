@@ -1,0 +1,146 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: api (lint, types, migrations, tests)
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: stem_games
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+      redis:
+        image: redis:7
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      APP_ENV: test
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/stem_games
+      REDIS_URL: redis://127.0.0.1:6379/0
+      PYTHONPATH: api
+
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: api/requirements-dev.txt
+
+      - name: Install
+        run: pip install -r api/requirements-dev.txt
+
+      - name: Lint
+        run: ruff check api
+
+      - name: Types
+        run: mypy api/app
+
+      - name: Migrations up and down
+        run: |
+          python -m app.cli migrate
+          python -m app.cli migrate --revision base
+          python -m app.cli migrate
+
+      - name: Redis contract tests must actually run
+        run: pytest api/tests -m redis -q --strict-markers
+        # Fails the build if a redis test is skipped: REDIS_URL is set here,
+        # so skipping means the coverage silently disappeared (section 3A).
+
+      - name: Tests
+        run: pytest api/tests -q --strict-markers
+
+  web:
+    name: web (typecheck, build, generated client is current)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install web dependencies
+        run: npm --prefix web install --no-audit --no-fund
+
+      - name: Typecheck
+        run: npm --prefix web run typecheck
+
+      - name: Build
+        run: npm --prefix web run build
+
+  client-freshness:
+    name: generated API client is not stale
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: stem_games
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      APP_ENV: test
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/stem_games
+      PYTHONPATH: api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - run: pip install -r api/requirements-dev.txt
+      - run: npm --prefix web install --no-audit --no-fund
+      - run: python -m app.cli migrate
+
+      - name: Start the API
+        run: |
+          python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 &
+          npx --yes wait-on http://127.0.0.1:8000/api/health --timeout 60000
+        env:
+          PYTHONPATH: api
+
+      - name: Regenerate the client
+        run: npm run gen:api
+        env:
+          PYTHONPATH: api
+
+      - name: Fail if the committed client is behind the schema
+        run: git diff --exit-code -- web/lib/api

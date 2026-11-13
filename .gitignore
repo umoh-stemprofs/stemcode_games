@@ -1,0 +1,27 @@
+# env / secrets
+.env
+.env.local
+*.pem
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# node
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# local dev database + logs
+.pgdata/
+*.log
+.pip-install.log
+
+# os
+Thumbs.db
+.DS_Store

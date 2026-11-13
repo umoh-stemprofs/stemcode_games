@@ -1,0 +1,39 @@
+[project]
+name = "stem-games-api"
+version = "0.1.0"
+requires-python = ">=3.12"
+description = "STEM Code V2 games API"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["app", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC", "S", "T20"]
+ignore = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S105", "S106"]
+# The operational CLI exists to print JSON for scripts; print is its output.
+"app/cli.py" = ["T201"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unused_ignores = true
+plugins = ["pydantic.mypy"]
+mypy_path = "."
+
+[[tool.mypy.overrides]]
+module = ["arq.*", "redis.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-q"
+markers = [
+  "redis: requires a real Redis (always run in CI, skipped locally without REDIS_URL)",
+  "db: requires a real Postgres",
+]
