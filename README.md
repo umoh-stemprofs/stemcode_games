@@ -3,7 +3,8 @@
 Games for schools: Word Scramble, Number Guess and Checkers, with points, leaderboards and a
 daily play-time limit. The plan lives in [GAMES_BUILD_PLAN.md](GAMES_BUILD_PLAN.md).
 
-This repository is at **Phase 0**: the skeleton. There are no games yet.
+This repository is at **Phase 1**: the skeleton plus identity (schools, users, classes, roles,
+login). There are no games yet.
 
 ---
 
@@ -87,7 +88,51 @@ browser only ever sees one origin (D-19).
 > **WebSockets in dev:** Next rewrites do not upgrade WebSockets, so `/ws/*` connects to
 > `127.0.0.1:8000` directly. The WS ticket is a normal REST call, so cookies still work.
 
-### 6. Prove the environment is healthy
+### 6. Seed and sign in
+
+```bash
+npm run seed
+```
+
+Creates two schools on purpose (the second one exists so isolation can be tested with real
+rows): Alpha Academy in `Africa/Lagos` and Beta College in `Europe/London`.
+
+| Who | Code |
+|---|---|
+| School admin | `A-9001` |
+| Coach 1 (owns Year 5A and 6A) | `A-9002` |
+| Coach 2 (owns Year 5B) | `A-9003` |
+| Second school admin | `A-9004` |
+| Word writer (a coach with no class) | `A-9005` |
+| Learners (30) | `A-1001` … `A-1030` |
+| Second-school admin | `B-9001` |
+| Second-school learners | `B-1001` … `B-1005` |
+
+Every seeded account signs in with the PIN **`2468`**. It is dev fixture data, not a secret: the
+CLI refuses to seed when `APP_ENV` is `staging` or `prod`. Codes are case-insensitive.
+
+```bash
+curl -c cookies.txt \
+  -H 'content-type: application/json' \
+  -d '{"code":"A-9002","pin":"2468"}' \
+  http://127.0.0.1:8000/api/auth/login
+curl -b cookies.txt http://127.0.0.1:8000/api/classes
+```
+
+Sessions live in httpOnly cookies (D-19); no token is ever returned in a JSON body.
+
+The web app has the sign-in screens too: open <http://localhost:3000>, which sends you to
+`/login`, and sign in with any seeded account. A learner sees **Home**, **Play** and **My
+class**; both staff roles see **Classes**, **Time limits** and **Words**, and a school admin also
+sees **Blocked words** (the safe-language list, D-39). Routes you cannot see answer with one
+plain sentence, never an error page.
+
+There are three roles (D-37): `learner`, `coach`, `school_admin`. A coach writes words and may
+make their own words live; a school admin may do the same and can close a whole set. Making a
+school, or its first admin, is a command on the server rather than a screen. A word is a draft
+until somebody presses **Make it live** on that word (D-38).
+
+### 7. Prove the environment is healthy
 
 ```bash
 curl http://localhost:3000/api/health     # {"status":"ok"}
@@ -121,7 +166,7 @@ you never run it locally.
 | `npm run dev:web` | Next.js dev server on `:3000` |
 | `npm run migrate` | Apply migrations (`head`) |
 | `npm run migrate:down` | Roll migrations back to `base` |
-| `npm run seed` | Baseline seed data |
+| `npm run seed` | Demo schools, staff, classes and 35 learners (dev only) |
 | `npm run job:list` | List background tasks |
 | `npm run job:run <name>` | Run one task synchronously |
 | `npm run test:api` | Python tests |
@@ -138,7 +183,8 @@ There is no `make`: it is missing on Windows, so every command is an npm script 
 ## Layout
 
 ```
-api/            FastAPI: app/core (config, db, cache, queue, errors), app/api (routers)
+api/            FastAPI: app/core (config, db, cache, queue, errors), app/api (routers),
+                app/identity (models, auth service, scope guards, seed)
 api/alembic/    migrations (hand-written, reviewed)
 api/tests/      unit + contract + architecture tests
 web/            Next.js App Router
@@ -154,3 +200,6 @@ scripts/        py.mjs (cross-platform python runner), gen-api.mjs
 - **Both cache implementations share one contract suite** (`test_cache_contract.py`).
 - **Redis tests must not silently skip in CI** (the workflow runs `-m redis` separately).
 - **The generated client must be current** (CI regenerates and diffs `web/lib/api`).
+- **Real names never reach a learner-facing schema** (`test_profile_privacy.py` scans the
+  schemas and the actual responses).
+- **Another school is a 404, not a 403** (`test_scope.py`), so ids cannot be probed.

@@ -11,6 +11,9 @@ __pycache__/
 .ruff_cache/
 .mypy_cache/
 
+#freebuff
+.freebuff/
+
 # node
 node_modules/
 .next/

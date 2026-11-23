@@ -16,11 +16,17 @@ import asyncio
 import json
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from alembic.config import Config
 
 API_DIR = Path(__file__).resolve().parents[1]
 
 
-def _alembic_config() -> object:
+def _alembic_config() -> Config:
+    # Imported here, not at module scope: every other CLI command must run
+    # without Alembic installed (D-34).
     from alembic.config import Config
 
     config = Config(str(API_DIR / "alembic.ini"))
@@ -48,10 +54,20 @@ def cmd_seed() -> int:
 async def _seed() -> None:
     from sqlalchemy import text
 
+    from app.core.config import get_settings
     from app.core.db import get_sessionmaker
+    from app.games.content_seed import seed_content
+    from app.identity.seed import seed_identity
+
+    settings = get_settings()
+    if settings.is_production:
+        print(json.dumps({"status": "refused", "reason": "seed is dev/test only"}))
+        raise SystemExit(1)
 
     maker = get_sessionmaker()
     async with maker() as session:
+        counts = await seed_identity(session)
+        content = await seed_content(session)
         await session.execute(
             text(
                 """
@@ -61,10 +77,10 @@ async def _seed() -> None:
                                                updated_at = now()
                 """
             ),
-            {"value": "phase-0"},
+            {"value": "phase-1"},
         )
         await session.commit()
-    print(json.dumps({"status": "ok", "seed": "phase-0"}))
+    print(json.dumps({"status": "ok", "seed": "phase-1", **counts, "content": content}))
 
 
 def cmd_job_list() -> int:

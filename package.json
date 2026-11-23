@@ -7,7 +7,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "dev:api": "node scripts/py.mjs -m uvicorn app.main:app --reload --reload-dir api --host 127.0.0.1 --port 8000",
+    "dev:api": "node scripts/py.mjs api/dev_reload.py",
     "dev:web": "npm --prefix web run dev",
     "migrate": "node scripts/py.mjs -m app.cli migrate",
     "migrate:down": "node scripts/py.mjs -m app.cli migrate --revision base",
@@ -22,6 +22,7 @@
     "install:web": "npm --prefix web install",
     "build:web": "npm --prefix web run build",
     "typecheck:web": "npm --prefix web run typecheck",
+    "test:parity": "npm --prefix web run test:parity",
     "lint": "npm run lint:api",
     "test": "npm run test:api",
     "check": "npm run lint:api && npm run typecheck:api && npm run test:api"

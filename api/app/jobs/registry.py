@@ -50,19 +50,60 @@ _STUB = {"status": "not_implemented_yet"}
 @task("roll_periods")
 async def roll_periods(payload: dict[str, Any]) -> dict[str, Any]:
     """Close ended leaderboard periods and open the next (P5-T06)."""
-    return {**_STUB, "owner": "P5-T06"}
+    from app.core.db import get_sessionmaker
+    from app.games.services.maintenance import roll_periods as roll
+
+    maker = get_sessionmaker()
+    async with maker() as session:
+        return await roll(session)
 
 
 @task("reconcile")
 async def reconcile(payload: dict[str, Any]) -> dict[str, Any]:
     """Recompute leaderboard totals from the XP ledger and report drift (P5-T07)."""
-    return {**_STUB, "owner": "P5-T07", "drift": 0}
+    from app.core.db import get_sessionmaker
+    from app.games.services.maintenance import reconcile as run_reconcile
+
+    maker = get_sessionmaker()
+    async with maker() as session:
+        report = await run_reconcile(session)
+    return report.as_dict()
+
+
+@task("sweep_sessions")
+async def sweep_sessions(payload: dict[str, Any]) -> dict[str, Any]:
+    """Abandon silent solo sessions (P4-T08). Time already spent stays spent."""
+    from app.core.db import get_sessionmaker
+    from app.games.services.play import abandon_stale
+
+    maker = get_sessionmaker()
+    async with maker() as session:
+        abandoned = await abandon_stale(session)
+    return {"status": "ok", "abandoned": abandoned}
 
 
 @task("sweep_invites")
 async def sweep_invites(payload: dict[str, Any]) -> dict[str, Any]:
     """Expire overdue invites and close challenges whose window ended (P7-T10)."""
-    return {**_STUB, "owner": "P7-T10"}
+    from app.core.db import get_sessionmaker
+    from app.games.services.challenge import sweep
+
+    maker = get_sessionmaker()
+    async with maker() as session:
+        result = await sweep(session)
+    return {"status": "ok", **result}
+
+
+@task("sweep_live")
+async def sweep_live(payload: dict[str, Any]) -> dict[str, Any]:
+    """Live matches: timeouts, forfeits, and invites nobody redeemed (P8-T11)."""
+    from app.core.db import get_sessionmaker
+    from app.games.services.live import sweep
+
+    maker = get_sessionmaker()
+    async with maker() as session:
+        result = await sweep(session)
+    return {"status": "ok", **result}
 
 
 @task("anomaly_scan")

@@ -15,7 +15,8 @@ that code review enforces.
 4. **Never serialise a `seed`, a secret number, an answer, or a token.** Especially not in logs
    or error details (D-25).
 5. **Plain language (Appendix D).** Every learner-facing screen must pass Appendix D: <=25 words,
-   <=8 per sentence, 56px targets, 20px text, read-aloud, one decision per screen. Every
+   <=8 per sentence, 56px targets, 20px text, one decision per screen. There is no read-aloud
+   feature; do not add one (D-36). Every
    learner-facing server `reason` maps to one fixed sentence — never show a raw code.
 6. **No `make`.** All commands are npm scripts; Python runs through `scripts/py.mjs`.
 

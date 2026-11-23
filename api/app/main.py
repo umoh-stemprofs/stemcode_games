@@ -6,6 +6,7 @@ the health probes. Feature routers arrive in later phases.
 
 from __future__ import annotations
 
+import asyncio
 import time
 import uuid
 from collections.abc import AsyncIterator
@@ -15,7 +16,19 @@ from typing import Any
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 
+from app.api.auth import router as auth_router
+from app.api.classes import router as classes_router
+from app.api.content import router as content_router
+from app.api.games import router as games_router
 from app.api.health import router as health_router
+from app.api.leaderboards import board_router, term_router, xp_router
+from app.api.live import presence_router as presence_router
+from app.api.live import router as live_router
+from app.api.profiles import router as profiles_router
+from app.api.realtime import router as realtime_router
+from app.api.realtime import socket_router
+from app.api.social import router as social_router
+from app.api.testing import router as testing_router
 from app.core.cache import build_cache
 from app.core.config import get_settings
 from app.core.db import dispose_engines
@@ -43,6 +56,15 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             extra={"route": "startup", "status": 0},
         )
 
+    # Local development has no worker and no Redis, so the sweeps that end a
+    # silent session would never run and a closed tab would hold a seat forever
+    # (D-34). The production worker remains the only runner outside `dev`.
+    sweeps: asyncio.Task[None] | None = None
+    if settings.app_env == "dev":
+        from app.jobs import scheduler
+
+        sweeps = scheduler.start()
+
     log.info(
         "app.started",
         extra={"route": "startup", "status": 0, "session_id": settings.app_env},
@@ -50,6 +72,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     try:
         yield
     finally:
+        from app.jobs import scheduler
+
+        await scheduler.stop(sweeps)
         await app.state.queue.aclose()
         await app.state.cache.aclose()
         await dispose_engines()
@@ -97,6 +122,25 @@ def create_app() -> FastAPI:
     # origin: the dev rewrite and the production proxy both forward /api/*
     # unchanged (D-19).
     app.include_router(health_router, prefix="/api")
+    app.include_router(auth_router, prefix="/api")
+    app.include_router(profiles_router, prefix="/api")
+    app.include_router(classes_router, prefix="/api")
+    app.include_router(games_router, prefix="/api")
+    app.include_router(social_router, prefix="/api")
+    app.include_router(live_router, prefix="/api")
+    app.include_router(presence_router, prefix="/api")
+    app.include_router(realtime_router, prefix="/api")
+    app.include_router(socket_router)
+    app.include_router(content_router, prefix="/api")
+    app.include_router(xp_router, prefix="/api")
+    app.include_router(board_router, prefix="/api")
+    app.include_router(term_router, prefix="/api")
+    app.include_router(testing_router, prefix="/api")
+
+    # The gateway is the one route outside /api: a browser cannot upgrade a
+    # connection through the dev rewrite, so /ws goes straight to this process
+    # in development and through the reverse proxy in production (P8-T01).
+    app.state.settings = settings
 
     @app.get("/", include_in_schema=False)
     async def root() -> JSONResponse:

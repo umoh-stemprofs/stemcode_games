@@ -42,6 +42,21 @@ class AppError(Exception):
         self.headers = headers or {}
 
 
+class UnauthorizedError(AppError):
+    status_code = 401
+    code = "unauthenticated"
+
+
+class ForbiddenError(AppError):
+    status_code = 403
+    code = "forbidden"
+
+
+class ConflictError(AppError):
+    status_code = 409
+    code = "conflict"
+
+
 class NotFoundError(AppError):
     status_code = 404
     code = "not_found"

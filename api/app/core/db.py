@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.pool import NullPool
 
 from app.core.config import Settings, get_settings
 
@@ -27,6 +28,7 @@ class Base(DeclarativeBase):
     (AGENTS.md): the models describe the schema, they do not own it.
     """
 
+
 _engines: dict[str, AsyncEngine] = {}
 _sessionmakers: dict[str, async_sessionmaker[AsyncSession]] = {}
 
@@ -35,10 +37,15 @@ def get_engine(settings: Settings | None = None) -> AsyncEngine:
     settings = settings or get_settings()
     engine = _engines.get(settings.database_url)
     if engine is None:
+        # Tests get a fresh connection per session: pytest gives each test its
+        # own event loop, and a pooled asyncpg connection would outlive the
+        # loop that created it.
+        extra = {"poolclass": NullPool} if settings.app_env == "test" else {}
         engine = create_async_engine(
             settings.database_url,
             echo=settings.database_echo,
             pool_pre_ping=True,
+            **extra,
         )
         _engines[settings.database_url] = engine
     return engine

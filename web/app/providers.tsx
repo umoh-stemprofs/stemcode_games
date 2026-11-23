@@ -3,6 +3,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 
+import { SessionProvider } from "@/lib/auth/session";
+
 export function Providers({ children }: { children: ReactNode }) {
   // One client per browser session, created lazily so it survives re-renders.
   const [client] = useState(
@@ -20,5 +22,9 @@ export function Providers({ children }: { children: ReactNode }) {
       }),
   );
 
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={client}>
+      <SessionProvider>{children}</SessionProvider>
+    </QueryClientProvider>
+  );
 }

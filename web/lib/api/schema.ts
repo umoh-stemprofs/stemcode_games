@@ -38,10 +38,2704 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Login */
+        post: operations["login_api_auth_login_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refresh */
+        post: operations["refresh_api_auth_refresh_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Logout */
+        post: operations["logout_api_auth_logout_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Me */
+        get: operations["me_api_auth_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/profiles/{user_id}/public": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Public Profile */
+        get: operations["public_profile_api_profiles__user_id__public_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/classes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Classes */
+        get: operations["list_classes_api_classes_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/classes/{class_id}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Members */
+        get: operations["list_members_api_classes__class_id__members_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/access": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Access
+         * @description The one call the hub needs: may I play, how long is left, when does it reset.
+         */
+        get: operations["get_access_api_games_access_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/sessions/{session_id}/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start Session */
+        post: operations["start_session_api_games_sessions__session_id__start_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/sessions/{session_id}/heartbeat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Heartbeat */
+        post: operations["heartbeat_api_games_sessions__session_id__heartbeat_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/sessions/{session_id}/pause": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pause Session */
+        post: operations["pause_session_api_games_sessions__session_id__pause_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/sessions/{session_id}/quit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Quit Session
+         * @description End a game for good. The learner keeps no result and loses no seat.
+         *
+         *     One call covers every game mode: a solo attempt, a challenge turn, and —
+         *     from Phase 8 — a live match, where ending the session is also what tells
+         *     the other end to close its socket.
+         */
+        post: operations["quit_session_api_games_sessions__session_id__quit_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/classes/{class_id}/access": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Class Access
+         * @description The coach's table: every learner, the time they have, any pause on them.
+         */
+        get: operations["class_access_api_games_classes__class_id__access_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/offline/packs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Offline Pack
+         * @description One level of words this learner may play with no connection (P9-T02).
+         *
+         *     The learner is the scope: the band comes from their birthday, so a client
+         *     cannot ask for a younger child's words. What comes back is content only.
+         */
+        get: operations["offline_pack_api_games_offline_packs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Catalog
+         * @description Games a learner may open. Disabled games are not listed at all.
+         */
+        get: operations["catalog_api_games_catalog_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/sessions/active": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Active Session
+         * @description The session a refreshed tab should return to, if there is one.
+         */
+        get: operations["active_session_api_games_sessions_active_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/{game_id}/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Session
+         * @description Open a session and start its clock. Refuses if one is already open.
+         *
+         *     Generic by design: Phase 6 and Phase 8 add games to the registry, not
+         *     endpoints to this file.
+         */
+        post: operations["create_session_api_games__game_id__sessions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/sessions/{session_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Session
+         * @description State for a refreshed tab, including the time left this instant.
+         */
+        get: operations["read_session_api_games_sessions__session_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/sessions/{session_id}/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit Action
+         * @description One move. A repeated ``client_move_id`` returns the same state.
+         */
+        post: operations["submit_action_api_games_sessions__session_id__actions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/limits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Limits */
+        get: operations["list_limits_api_games_limits_get"];
+        put?: never;
+        /** Set Limit */
+        post: operations["set_limit_api_games_limits_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/lockouts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Lockouts */
+        get: operations["list_lockouts_api_games_lockouts_get"];
+        put?: never;
+        /** Create Lockout */
+        post: operations["create_lockout_api_games_lockouts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/lockouts/{lockout_id}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoke Lockout */
+        post: operations["revoke_lockout_api_games_lockouts__lockout_id__revoke_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/friends": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Friends
+         * @description Classmates you can tap to invite (P7-T06: avatars first).
+         */
+        get: operations["friends_api_games_friends_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/challenges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Challenge
+         * @description Open a challenge and invite somebody: a roster tap, a code, a link.
+         */
+        post: operations["create_challenge_api_games_challenges_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/challenges/{parent_id}/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start Challenge
+         * @description Start your own attempt at a challenge: the normal play state follows.
+         */
+        post: operations["start_challenge_api_games_challenges__parent_id__start_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/challenges/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Challenges
+         * @description The challenges you still owe a turn in, so a closed tab loses nothing.
+         */
+        get: operations["my_challenges_api_games_challenges_mine_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/sessions/{session_id}/challenge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Challenge Result
+         * @description The one sentence the end screen shows: who you played, and who won.
+         *
+         *     ``null`` means this was a solo game, not a challenge, which is the common
+         *     case and costs one request when the game ends.
+         */
+        get: operations["challenge_result_api_games_sessions__session_id__challenge_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/invites/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept Invite
+         * @description Claim a seat by inbox row, typed code, or link token.
+         */
+        post: operations["accept_invite_api_games_invites_accept_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/invites/pending": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept From Cookie
+         * @description Consume the link token the join page left in an httpOnly cookie.
+         *
+         *     The cookie is cleared whatever happens: a token is good once, and leaving it
+         *     behind would make the next sign-in on a shared laptop join a stranger's game.
+         */
+        post: operations["accept_from_cookie_api_games_invites_pending_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/invites/{invitation_id}/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Decline Invite
+         * @description "No thanks" — a decline is silent, like a block (never a notification).
+         */
+        post: operations["decline_invite_api_games_invites__invitation_id__decline_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/inbox": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Inbox
+         * @description Pending invites and challenge news. No email, no SMS (P7-T07).
+         */
+        get: operations["inbox_api_games_inbox_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/inbox/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark Read */
+        post: operations["mark_read_api_games_inbox_read_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/blocks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add Block
+         * @description Block or mute. The other learner is never told (P7-T08).
+         */
+        post: operations["add_block_api_games_blocks_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/blocks/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove Block */
+        delete: operations["remove_block_api_games_blocks__user_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Reports
+         * @description The school admin's list. P10 deepens the workflow, not this endpoint.
+         */
+        get: operations["list_reports_api_games_reports_get"];
+        put?: never;
+        /**
+         * Report
+         * @description The minimum report: a reason, an optional note, and the admin's list.
+         */
+        post: operations["report_api_games_reports_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/live": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Match
+         * @description Open a match and invite somebody (P8-T09).
+         */
+        post: operations["create_match_api_games_live_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/live/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept Match
+         * @description Take the second seat, by inbox row, code, or link.
+         */
+        post: operations["accept_match_api_games_live_accept_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/live/{session_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Match
+         * @description A refreshed tab's snapshot, including clocks and whose turn it is.
+         */
+        get: operations["read_match_api_games_live__session_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/live/{session_id}/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Join Match
+         * @description Mark this player present without a socket (the REST fallback).
+         */
+        post: operations["join_match_api_games_live__session_id__join_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/live/{session_id}/moves": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit Move
+         * @description The same call the socket makes, for a tab whose socket is down.
+         */
+        post: operations["submit_move_api_games_live__session_id__moves_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/live/{session_id}/resign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Resign Match */
+        post: operations["resign_match_api_games_live__session_id__resign_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/live/{session_id}/draw/offer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Offer Draw */
+        post: operations["offer_draw_api_games_live__session_id__draw_offer_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/live/{session_id}/draw/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Accept Draw */
+        post: operations["accept_draw_api_games_live__session_id__draw_accept_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/live/{session_id}/draw/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decline Draw */
+        post: operations["decline_draw_api_games_live__session_id__draw_decline_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/live/{session_id}/rematch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Rematch
+         * @description A new match with the same pair, colours swapped (P8-T13).
+         */
+        post: operations["rematch_api_games_live__session_id__rematch_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/games/presence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Presence
+         * @description Classmates you may challenge, with a reason when you may not (P8-T04).
+         */
+        get: operations["presence_api_games_presence_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ws/ticket": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Ticket
+         * @description One socket, one match, thirty seconds (P8-T01).
+         */
+        post: operations["create_ticket_api_ws_ticket_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/content/age-bands": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Age Bands
+         * @description The groups a pack can be written for, youngest first.
+         */
+        get: operations["age_bands_api_content_age_bands_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/content/suggested-band": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Suggested Band
+         * @description The band most of this coach's learners are in, so the screen can pre-pick it.
+         *
+         *     Advisory only: the client still sends an explicit ``age_band`` when it makes
+         *     a list, and any other band remains one tap away.
+         */
+        get: operations["suggested_band_api_content_suggested_band_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/content/packs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Packs
+         * @description Every version of every pack, newest first.
+         */
+        get: operations["list_packs_api_content_packs_get"];
+        put?: never;
+        /**
+         * Create Pack
+         * @description A new draft version, optionally seeded with an existing pack's words.
+         */
+        post: operations["create_pack_api_content_packs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/content/packs/{pack_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Pack */
+        get: operations["read_pack_api_content_packs__pack_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/content/packs/{pack_id}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add Item */
+        post: operations["add_item_api_content_packs__pack_id__items_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/content/packs/{pack_id}/items/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Item */
+        delete: operations["delete_item_api_content_packs__pack_id__items__item_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Item */
+        patch: operations["update_item_api_content_packs__pack_id__items__item_id__patch"];
+        trace?: never;
+    };
+    "/api/content/packs/{pack_id}/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import Words
+         * @description ``answer, clue, level`` per line, with a line-by-line report.
+         */
+        post: operations["import_words_api_content_packs__pack_id__import_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/content/packs/{pack_id}/items/{item_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publish Item
+         * @description Make one word live. The only door to the games.
+         */
+        post: operations["publish_item_api_content_packs__pack_id__items__item_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/content/packs/{pack_id}/items/{item_id}/unpublish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Unpublish Item
+         * @description Take one live word out of the games. Nothing is deleted.
+         */
+        post: operations["unpublish_item_api_content_packs__pack_id__items__item_id__unpublish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/content/packs/{pack_id}/publish-ready": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publish Ready
+         * @description Make every ready draft word live at once, skipping any that still fail.
+         */
+        post: operations["publish_ready_api_content_packs__pack_id__publish_ready_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/content/packs/{pack_id}/retire": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retire Pack */
+        post: operations["retire_pack_api_content_packs__pack_id__retire_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/content/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Summary
+         * @description How many packs sit in each status, for the queue header.
+         */
+        get: operations["summary_api_content_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/content/blocked-words": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Blocked Words
+         * @description Every word that cannot be used, and where it came from.
+         */
+        get: operations["blocked_words_api_content_blocked_words_get"];
+        put?: never;
+        /**
+         * Add Blocked Word
+         * @description Add a word. It is refused from the next save onwards, with no deploy.
+         */
+        post: operations["add_blocked_word_api_content_blocked_words_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/content/blocked-words/{word}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove Blocked Word
+         * @description Undo a school's own addition. Built-in entries are refused.
+         */
+        delete: operations["remove_blocked_word_api_content_blocked_words__word__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/xp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Xp */
+        get: operations["my_xp_api_me_xp_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/engagement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Engagement
+         * @description Streak, today's quest, badges, bests and the level ring — one call.
+         *
+         *     Everything here is derived from results the server wrote; the browser has no
+         *     way to add a day to the streak or finish a quest itself.
+         */
+        get: operations["my_engagement_api_me_engagement_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/leaderboards/{period}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Board */
+        get: operations["read_board_api_leaderboards__period__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/leaderboards/{period}/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read My Row
+         * @description The caller's own row, even when they are outside the top ten.
+         */
+        get: operations["read_my_row_api_leaderboards__period__me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/leaderboards/{period}/students": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Students
+         * @description A coach's class with each learner's XP split by game (P5-T11).
+         */
+        get: operations["read_students_api_leaderboards__period__students_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/school/terms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Terms */
+        get: operations["list_terms_api_school_terms_get"];
+        put?: never;
+        /**
+         * Add Term
+         * @description Term dates are the school admin's to set; the termly board needs them.
+         */
+        post: operations["add_term_api_school_terms_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/testing/learning-xp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Seed Learning Xp */
+        post: operations["seed_learning_xp_api_testing_learning_xp_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: never;
+    schemas: {
+        /** AccessOut */
+        AccessOut: {
+            /** Allowed */
+            allowed: boolean;
+            /** Reason */
+            reason: string;
+            /** Limit Minutes */
+            limit_minutes: number;
+            /** Limit Source */
+            limit_source: string;
+            /** Used Seconds */
+            used_seconds: number;
+            /** Remaining Seconds */
+            remaining_seconds: number;
+            /** Locked Until */
+            locked_until?: string | null;
+            /** Lockout Reason */
+            lockout_reason?: string | null;
+            /**
+             * Local Date
+             * Format: date
+             */
+            local_date: string;
+            /**
+             * Resets At
+             * Format: date-time
+             */
+            resets_at: string;
+            /**
+             * Server Time
+             * Format: date-time
+             */
+            server_time: string;
+        };
+        /** ActionIn */
+        ActionIn: {
+            /** Client Move Id */
+            client_move_id: string;
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "round_seen" | "answer" | "hint" | "skip" | "guess";
+            /** Value */
+            value?: string | null;
+        };
+        /** ActiveSessionOut */
+        ActiveSessionOut: {
+            /** Session Id */
+            session_id?: string | null;
+            /** Game Id */
+            game_id?: string | null;
+        };
+        /**
+         * AdminReportOut
+         * @description The school admin's list also shows who is who, in plain names (P7-T09).
+         */
+        AdminReportOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Reported Id
+             * Format: uuid
+             */
+            reported_id: string;
+            /** Reason */
+            reason: string;
+            /** Note */
+            note?: string | null;
+            /** Status */
+            status: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Reported Name */
+            reported_name: string;
+            /** Reporter Name */
+            reporter_name: string;
+            /** Reason Sentence */
+            reason_sentence: string;
+        };
+        /** AgeBandOut */
+        AgeBandOut: {
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+        };
+        /**
+         * BadgeOut
+         * @description A badge is a gameplay fact; ``earned_on`` is null until it is theirs.
+         */
+        BadgeOut: {
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
+            /** Sentence */
+            sentence: string;
+            /** Hint */
+            hint: string;
+            /** Earned On */
+            earned_on?: string | null;
+        };
+        /** BestOut */
+        BestOut: {
+            /** Game Id */
+            game_id: string;
+            /** Name */
+            name: string;
+            /** Value */
+            value: string;
+            /** Played */
+            played: number;
+        };
+        /** BlockIn */
+        BlockIn: {
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /**
+             * Type
+             * @default block
+             * @enum {string}
+             */
+            type: "block" | "mute";
+        };
+        /** BlockedWordIn */
+        BlockedWordIn: {
+            /** Word */
+            word: string;
+        };
+        /** BlockedWordOut */
+        BlockedWordOut: {
+            /** Word */
+            word: string;
+            /** Built In */
+            built_in: boolean;
+            /** Added By */
+            added_by?: string | null;
+            /** Created At */
+            created_at?: string | null;
+        };
+        /**
+         * BoardChaseOut
+         * @description The learner one place above: the near-miss nudge.
+         */
+        BoardChaseOut: {
+            /** Preferred Name */
+            preferred_name: string;
+            /** Xp Gap */
+            xp_gap: number;
+        };
+        /**
+         * BoardEntryOut
+         * @description Masked identity only: preferred name and avatar (D-15).
+         */
+        BoardEntryOut: {
+            /** Rank */
+            rank: number;
+            /** Preferred Name */
+            preferred_name: string;
+            /** Avatar Key */
+            avatar_key: string;
+            /** Xp Total */
+            xp_total: number;
+            /** Sessions Count */
+            sessions_count: number;
+            /** Is Me */
+            is_me: boolean;
+        };
+        /** BoardOut */
+        BoardOut: {
+            /** Period */
+            period: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /** Ends At */
+            ends_at?: string | null;
+            /** Entries */
+            entries: components["schemas"]["BoardEntryOut"][];
+            me?: components["schemas"]["BoardEntryOut"] | null;
+            /** Me Eligible */
+            me_eligible: boolean;
+            /** Min Sessions */
+            min_sessions: number;
+            chase?: components["schemas"]["BoardChaseOut"] | null;
+            /** To Join */
+            to_join?: number | null;
+        };
+        /** ChallengeIn */
+        ChallengeIn: {
+            /** Game Id */
+            game_id: string;
+            /**
+             * Difficulty
+             * @default 1
+             */
+            difficulty: number;
+            /** Invitee Id */
+            invitee_id?: string | null;
+            /**
+             * With Code
+             * @default true
+             */
+            with_code: boolean;
+            /**
+             * With Link
+             * @default true
+             */
+            with_link: boolean;
+        };
+        /** ChallengeOut */
+        ChallengeOut: {
+            /**
+             * Parent Id
+             * Format: uuid
+             */
+            parent_id: string;
+            /**
+             * Invitation Id
+             * Format: uuid
+             */
+            invitation_id: string;
+            /** Game Id */
+            game_id: string;
+            /** Game Name */
+            game_name: string;
+            /** Code */
+            code?: string | null;
+            /** Formatted Code */
+            formatted_code?: string | null;
+            /** Join Path */
+            join_path?: string | null;
+            /** Expires Sentence */
+            expires_sentence: string;
+            /** Invitee Name */
+            invitee_name?: string | null;
+        };
+        /**
+         * ChallengeResultOut
+         * @description One player's own challenge, for their end screen (P7-T05).
+         *
+         *     No secret reaches this shape: no seed, no word, no other score until both
+         *     attempts are in (D-25).
+         */
+        ChallengeResultOut: {
+            /**
+             * Parent Id
+             * Format: uuid
+             */
+            parent_id: string;
+            /** Opponent Id */
+            opponent_id?: string | null;
+            /** Opponent Name */
+            opponent_name?: string | null;
+            /** Outcome */
+            outcome?: ("win" | "loss" | "draw") | null;
+            /** Settled */
+            settled: boolean;
+            /** Sentence */
+            sentence: string;
+        };
+        /** ChallengeStartOut */
+        ChallengeStartOut: {
+            /**
+             * Session Id
+             * Format: uuid
+             */
+            session_id: string;
+            /** Game Id */
+            game_id: string;
+            /** Status */
+            status: string;
+            round?: components["schemas"]["RoundOut"] | null;
+            /** Round Index */
+            round_index: number;
+            /** Rounds Total */
+            rounds_total: number;
+            /** Score */
+            score: number;
+            /** Scores */
+            scores: number[];
+            /** Finished */
+            finished: boolean;
+            xp?: components["schemas"]["XpAwardOut"] | null;
+            /** Best */
+            best?: string | null;
+            /**
+             * Best Is New
+             * @default false
+             */
+            best_is_new: boolean;
+            /** Message */
+            message?: string | null;
+            /**
+             * Parent Id
+             * Format: uuid
+             */
+            parent_id: string;
+        };
+        /** ClassAccessOut */
+        ClassAccessOut: {
+            /**
+             * Class Id
+             * Format: uuid
+             */
+            class_id: string;
+            /** Class Name */
+            class_name: string;
+            /** Members */
+            members: components["schemas"]["MemberAccessOut"][];
+        };
+        /** ClassMembersOut */
+        ClassMembersOut: {
+            class: components["schemas"]["ClassOut"];
+            /** Members */
+            members: components["schemas"]["PublicProfile"][];
+        };
+        /** ClassOut */
+        ClassOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Grade */
+            grade: number | null;
+        };
+        /** CoachBoardOut */
+        CoachBoardOut: {
+            /** Period */
+            period: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /** Ends At */
+            ends_at?: string | null;
+            /** Students */
+            students: components["schemas"]["StudentXpOut"][];
+        };
+        /** ContentItemIn */
+        ContentItemIn: {
+            /** Answer */
+            answer: string;
+            /** Clue */
+            clue?: string | null;
+            /**
+             * Difficulty
+             * @default 1
+             */
+            difficulty: number;
+            /** Alt Answers */
+            alt_answers?: string[];
+            /**
+             * Allow Problems
+             * @default false
+             */
+            allow_problems: boolean;
+        };
+        /** ContentItemOut */
+        ContentItemOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Answer */
+            answer: string;
+            /** Clue */
+            clue?: string | null;
+            /** Alt Answers */
+            alt_answers: string[];
+            /** Difficulty */
+            difficulty: number;
+            /** Problems */
+            problems: string[];
+            /** Scrambled */
+            scrambled: string;
+            /** Status */
+            status: string;
+            /** Published At */
+            published_at?: string | null;
+        };
+        /** CreateSessionIn */
+        CreateSessionIn: {
+            /**
+             * Difficulty
+             * @default 1
+             */
+            difficulty: number;
+        };
+        /** EngagementOut */
+        EngagementOut: {
+            streak: components["schemas"]["StreakOut"];
+            quest: components["schemas"]["QuestOut"];
+            /** Badges */
+            badges: components["schemas"]["BadgeOut"][];
+            /** Bests */
+            bests: components["schemas"]["BestOut"][];
+            level: components["schemas"]["LevelOut"];
+        };
+        /**
+         * FriendOut
+         * @description One avatar in the "play with a friend" sheet (P7-T06).
+         */
+        FriendOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Can Invite */
+            can_invite: boolean;
+            /** Sentence */
+            sentence: string;
+        };
+        /** GameSummaryOut */
+        GameSummaryOut: {
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Summary */
+            summary: string;
+            /** Is Live */
+            is_live: boolean;
+        };
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
+        /** HeartbeatIn */
+        HeartbeatIn: {
+            /**
+             * Visible
+             * @default true
+             */
+            visible: boolean;
+            /** Last Input Age S */
+            last_input_age_s?: number | null;
+        };
+        /** ImportIn */
+        ImportIn: {
+            /** Text */
+            text: string;
+        };
+        /** ImportReportOut */
+        ImportReportOut: {
+            /** Added */
+            added: number;
+            /** Rows */
+            rows: components["schemas"]["ImportRowOut"][];
+        };
+        /** ImportRowOut */
+        ImportRowOut: {
+            /** Line */
+            line: number;
+            /** Answer */
+            answer: string;
+            /** Ok */
+            ok: boolean;
+            /** Message */
+            message?: string | null;
+        };
+        /** InboxOut */
+        InboxOut: {
+            /** Invites */
+            invites: components["schemas"]["InviteOut"][];
+            /** Notifications */
+            notifications: components["schemas"]["NoteOut"][];
+            /** Unread */
+            unread: number;
+        };
+        /** InviteAcceptIn */
+        InviteAcceptIn: {
+            /** Invitation Id */
+            invitation_id?: string | null;
+            /** Code */
+            code?: string | null;
+            /** Token */
+            token?: string | null;
+        };
+        /**
+         * InviteAcceptedOut
+         * @description Where the accepted seat is. A challenge has a parent to start; a live
+         *     match is already the thing you join, so it has no parent (P8-T09).
+         */
+        InviteAcceptedOut: {
+            /** Parent Id */
+            parent_id?: string | null;
+            /**
+             * Session Id
+             * Format: uuid
+             */
+            session_id: string;
+            /** Game Id */
+            game_id: string;
+            /** Game Name */
+            game_name: string;
+            /**
+             * Live
+             * @default false
+             */
+            live: boolean;
+        };
+        /** InviteOut */
+        InviteOut: {
+            /**
+             * Invitation Id
+             * Format: uuid
+             */
+            invitation_id: string;
+            /** Game Id */
+            game_id: string;
+            /** Game Name */
+            game_name: string;
+            /** Inviter Name */
+            inviter_name: string;
+            /** Sentence */
+            sentence: string;
+            /**
+             * Live
+             * @default false
+             */
+            live: boolean;
+        };
+        /** LearningXpIn */
+        LearningXpIn: {
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** Amount */
+            amount: number;
+            /** Reason */
+            reason: string;
+        };
+        /**
+         * LevelOut
+         * @description Presentational only — never a grade, never an eligibility input.
+         */
+        LevelOut: {
+            /** Number */
+            number: number;
+            /** Xp Into */
+            xp_into: number;
+            /** Xp Span */
+            xp_span: number;
+            /** Xp To Next */
+            xp_to_next: number;
+            /** Profile Xp */
+            profile_xp: number;
+        };
+        /** LiveAcceptIn */
+        LiveAcceptIn: {
+            /** Invitation Id */
+            invitation_id?: string | null;
+            /** Code */
+            code?: string | null;
+            /** Token */
+            token?: string | null;
+        };
+        /** LiveCreateIn */
+        LiveCreateIn: {
+            /** Clock Ms */
+            clock_ms?: number | null;
+            /** Increment Ms */
+            increment_ms?: number | null;
+            /**
+             * With Code
+             * @default true
+             */
+            with_code: boolean;
+            /**
+             * With Link
+             * @default true
+             */
+            with_link: boolean;
+            /** Invitee Id */
+            invitee_id?: string | null;
+        };
+        /** LiveCreatedOut */
+        LiveCreatedOut: {
+            /**
+             * Session Id
+             * Format: uuid
+             */
+            session_id: string;
+            /** Game Name */
+            game_name: string;
+            /**
+             * Invitation Id
+             * Format: uuid
+             */
+            invitation_id: string;
+            /** Code */
+            code?: string | null;
+            /** Formatted Code */
+            formatted_code?: string | null;
+            /** Join Path */
+            join_path?: string | null;
+            /** Expires Sentence */
+            expires_sentence: string;
+        };
+        /** LiveMoveIn */
+        LiveMoveIn: {
+            /** Client Move Id */
+            client_move_id: string;
+            /** Expected Move Number */
+            expected_move_number: number;
+            /** Move */
+            move: string;
+        };
+        /**
+         * LiveStateOut
+         * @description One player's view of a match: no seed, no opponent legal moves (D-25).
+         */
+        LiveStateOut: {
+            /**
+             * Session Id
+             * Format: uuid
+             */
+            session_id: string;
+            /** Game Id */
+            game_id: string;
+            /** Status */
+            status: string;
+            /**
+             * Seat
+             * @enum {string}
+             */
+            seat: "white" | "black";
+            /**
+             * Side To Move
+             * @enum {string}
+             */
+            side_to_move: "white" | "black";
+            /** Your Turn */
+            your_turn: boolean;
+            /** Board */
+            board: number[];
+            /** Legal Moves */
+            legal_moves: {
+                [key: string]: unknown;
+            }[];
+            /** Move Number */
+            move_number: number;
+            /** Clock Ms */
+            clock_ms: {
+                [key: string]: number;
+            };
+            /** Increment Ms */
+            increment_ms: number;
+            /** Moves By */
+            moves_by: {
+                [key: string]: number;
+            };
+            /** Captures */
+            captures: {
+                [key: string]: number;
+            };
+            /** Opponent */
+            opponent: {
+                [key: string]: unknown;
+            };
+            /** You Connected */
+            you_connected: boolean;
+            /** Draw Offer From */
+            draw_offer_from?: string | null;
+            /** Draw Offered At */
+            draw_offered_at?: string | null;
+            /** Outcome */
+            outcome?: {
+                [key: string]: unknown;
+            } | null;
+            /** Moves Since Progress */
+            moves_since_progress: number;
+        };
+        /** LockoutIn */
+        LockoutIn: {
+            /**
+             * Scope Type
+             * @enum {string}
+             */
+            scope_type: "class" | "student";
+            /**
+             * Scope Id
+             * Format: uuid
+             */
+            scope_id: string;
+            /** Reason */
+            reason: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+        };
+        /** LockoutOut */
+        LockoutOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Scope Type */
+            scope_type: string;
+            /**
+             * Scope Id
+             * Format: uuid
+             */
+            scope_id: string;
+            /** Reason */
+            reason: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /** Revoked At */
+            revoked_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /**
+         * LoginIn
+         * @description A student code and a PIN (0003_login_codes).
+         *
+         *     Validation is deliberately loose about *format* and strict about length:
+         *     rejecting a well-formed-but-unknown code here would tell an attacker which
+         *     codes exist, and it would tell a child nothing useful.
+         */
+        LoginIn: {
+            /** Code */
+            code: string;
+            /** Pin */
+            pin: string;
+        };
+        /** MeOut */
+        MeOut: {
+            user: components["schemas"]["SelfProfile"];
+            school: components["schemas"]["SchoolOut"];
+            age_band: components["schemas"]["AgeBandOut"] | null;
+        };
+        /**
+         * MeXpOut
+         * @description Profile XP is presentation only: no grade or badge may read it (P5-T05).
+         */
+        MeXpOut: {
+            /** Learning Xp Total */
+            learning_xp_total: number;
+            /** Game Xp Total */
+            game_xp_total: number;
+            /** Profile Xp Total */
+            profile_xp_total: number;
+            /** Game Xp Today */
+            game_xp_today: number;
+            /** Daily Cap */
+            daily_cap: number;
+        };
+        /** MemberAccessOut */
+        MemberAccessOut: {
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** Preferred Name */
+            preferred_name: string;
+            /** Avatar Key */
+            avatar_key: string;
+            /** Limit Minutes */
+            limit_minutes: number;
+            /** Limit Source */
+            limit_source: string;
+            /** Used Seconds */
+            used_seconds: number;
+            /** Remaining Seconds */
+            remaining_seconds: number;
+            /** Locked Until */
+            locked_until?: string | null;
+            /** Lockout Reason */
+            lockout_reason?: string | null;
+        };
+        /**
+         * MyTurnOut
+         * @description A challenge where this learner still owes a turn (P7-T06).
+         */
+        MyTurnOut: {
+            /**
+             * Parent Id
+             * Format: uuid
+             */
+            parent_id: string;
+            /** Game Id */
+            game_id: string;
+            /** Game Name */
+            game_name: string;
+            /** Opponent Name */
+            opponent_name?: string | null;
+            /** Sentence */
+            sentence: string;
+        };
+        /** NoteOut */
+        NoteOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Body */
+            body: string;
+            /** Invitation Id */
+            invitation_id?: string | null;
+            /** Session Id */
+            session_id?: string | null;
+            /** Unread */
+            unread: boolean;
+        };
+        /**
+         * OfflineItemOut
+         * @description One downloadable puzzle.
+         *
+         *     This is the only response that carries an answer, and only because an
+         *     offline round has no server to check against. It carries no session and no
+         *     seed, so a downloaded word can never be scored or ranked (P9-T02).
+         */
+        OfflineItemOut: {
+            /** Id */
+            id: string;
+            /** Answer */
+            answer: string;
+            /** Alt Answers */
+            alt_answers?: string[];
+            /** Clue */
+            clue?: string | null;
+            /** Clue Image Key */
+            clue_image_key?: string | null;
+            /** Clue Audio Key */
+            clue_audio_key?: string | null;
+            /** Difficulty */
+            difficulty: number;
+        };
+        /** OfflinePackOut */
+        OfflinePackOut: {
+            /** Game Id */
+            game_id: string;
+            /** Locale */
+            locale: string;
+            /** Age Band */
+            age_band: string;
+            /** Difficulty */
+            difficulty: number;
+            /** Pack Version */
+            pack_version: string;
+            /** Item Count */
+            item_count: number;
+            /**
+             * Generated At
+             * Format: date-time
+             */
+            generated_at: string;
+            /** Items */
+            items: components["schemas"]["OfflineItemOut"][];
+        };
+        /** PackCreateIn */
+        PackCreateIn: {
+            /** Age Band */
+            age_band: string;
+            /** Copy From */
+            copy_from?: string | null;
+        };
+        /** PackDetailOut */
+        PackDetailOut: {
+            pack: components["schemas"]["PackSummaryOut"];
+            /** Items */
+            items: components["schemas"]["ContentItemOut"][];
+            /** Can Edit */
+            can_edit: boolean;
+            /** Can Review */
+            can_review: boolean;
+            /** Can Publish */
+            can_publish: boolean;
+        };
+        /** PackSummaryOut */
+        PackSummaryOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Game Id */
+            game_id: string;
+            /** Version */
+            version: number;
+            /** Locale */
+            locale: string;
+            /** Age Band */
+            age_band: string;
+            /** Status */
+            status: string;
+            /** Author Id */
+            author_id?: string | null;
+            /** Reviewer Id */
+            reviewer_id?: string | null;
+            /** Review Note */
+            review_note?: string | null;
+            /** Source */
+            source?: string | null;
+            /** Published At */
+            published_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Item Count */
+            item_count: number;
+            /** Live Count */
+            live_count: number;
+            /** Draft Count */
+            draft_count: number;
+            /** Per Level */
+            per_level: {
+                [key: string]: number;
+            };
+            /** Problems */
+            problems: number;
+        };
+        /** PlayOut */
+        PlayOut: {
+            /**
+             * Session Id
+             * Format: uuid
+             */
+            session_id: string;
+            /** Game Id */
+            game_id: string;
+            /** Status */
+            status: string;
+            round?: components["schemas"]["RoundOut"] | null;
+            /** Round Index */
+            round_index: number;
+            /** Rounds Total */
+            rounds_total: number;
+            /** Score */
+            score: number;
+            /** Scores */
+            scores: number[];
+            /** Finished */
+            finished: boolean;
+            xp?: components["schemas"]["XpAwardOut"] | null;
+            /** Best */
+            best?: string | null;
+            /**
+             * Best Is New
+             * @default false
+             */
+            best_is_new: boolean;
+            /** Message */
+            message?: string | null;
+        };
+        /** PlayStateOut */
+        PlayStateOut: {
+            /** Remaining Seconds */
+            remaining_seconds: number;
+            /** Used Seconds */
+            used_seconds: number;
+            /** Limit Minutes */
+            limit_minutes: number;
+            /** Paused */
+            paused: boolean;
+            /** Ended */
+            ended: boolean;
+            /** Ended Reason */
+            ended_reason?: string | null;
+        };
+        /** PolicyIn */
+        PolicyIn: {
+            /**
+             * Scope Type
+             * @enum {string}
+             */
+            scope_type: "platform" | "school" | "class" | "student";
+            /** Scope Id */
+            scope_id?: string | null;
+            /** Daily Limit Minutes */
+            daily_limit_minutes: number;
+            /** Reason */
+            reason: string;
+            /** Valid Until */
+            valid_until?: string | null;
+        };
+        /** PolicyOut */
+        PolicyOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Scope Type */
+            scope_type: string;
+            /** Scope Id */
+            scope_id?: string | null;
+            /** Daily Limit Minutes */
+            daily_limit_minutes: number;
+            /**
+             * Valid From
+             * Format: date-time
+             */
+            valid_from: string;
+            /** Valid Until */
+            valid_until?: string | null;
+            /** Reason */
+            reason: string;
+            /**
+             * Set By
+             * Format: uuid
+             */
+            set_by: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** PresenceRowOut */
+        PresenceRowOut: {
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** Name */
+            name: string;
+            /** Avatar Key */
+            avatar_key: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "available" | "in_match" | "busy";
+            /** Sentence */
+            sentence: string;
+        };
+        /**
+         * PublicProfile
+         * @description Everything another learner may ever see. Add fields with care.
+         */
+        PublicProfile: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Preferred Name */
+            preferred_name: string;
+            /** Avatar Key */
+            avatar_key: string;
+        };
+        /** PublishReadyOut */
+        PublishReadyOut: {
+            /** Published */
+            published: number;
+        };
+        /** QuestOut */
+        QuestOut: {
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
+            /** Target */
+            target: number;
+            /** Progress */
+            progress: number;
+            /** Completed */
+            completed: boolean;
+            /** Reward Xp */
+            reward_xp: number;
+        };
+        /** ReportIn */
+        ReportIn: {
+            /**
+             * Reported Id
+             * Format: uuid
+             */
+            reported_id: string;
+            /**
+             * Reason
+             * @enum {string}
+             */
+            reason: "bullying" | "cheating" | "inappropriate_name" | "other";
+            /** Note */
+            note?: string | null;
+            /** Session Id */
+            session_id?: string | null;
+        };
+        /** ReportOut */
+        ReportOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Reported Id
+             * Format: uuid
+             */
+            reported_id: string;
+            /** Reason */
+            reason: string;
+            /** Note */
+            note?: string | null;
+            /** Status */
+            status: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /**
+         * RoundOut
+         * @description One round, whichever game it belongs to.
+         *
+         *     The two games fill different halves of this model, and neither ever carries
+         *     an answer or a secret: Word Scramble sends letters and a clue (P4-T10),
+         *     Number Guess sends the window and how many tries are left (P6-T03).
+         */
+        RoundOut: {
+            /** Number */
+            number: number;
+            /** Time Left Ms */
+            time_left_ms: number;
+            /** Round Seconds */
+            round_seconds: number;
+            /**
+             * Letters
+             * @default
+             */
+            letters: string;
+            /** Clue */
+            clue?: string | null;
+            /** Clue Image Key */
+            clue_image_key?: string | null;
+            /** Clue Audio Key */
+            clue_audio_key?: string | null;
+            /** Revealed */
+            revealed?: string | null;
+            /**
+             * Tries Left
+             * @default 0
+             */
+            tries_left: number;
+            /** Low */
+            low?: number | null;
+            /** High */
+            high?: number | null;
+            /** Range Low */
+            range_low?: number | null;
+            /** Range High */
+            range_high?: number | null;
+            /** Difficulty */
+            difficulty?: number | null;
+            /** Tries Total */
+            tries_total?: number | null;
+            /** Feedback */
+            feedback?: string | null;
+            /** Message */
+            message?: string | null;
+            /** Guesses */
+            guesses?: number[];
+        };
+        /** SchoolOut */
+        SchoolOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Timezone */
+            timezone: string;
+            /** Leaderboards Enabled */
+            leaderboards_enabled: boolean;
+        };
+        /**
+         * SelfProfile
+         * @description The caller's own account, shown only to them.
+         */
+        SelfProfile: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Preferred Name */
+            preferred_name: string;
+            /** Real Name */
+            real_name: string;
+            /** Avatar Key */
+            avatar_key: string;
+            /** Role */
+            role: string;
+            /** Status */
+            status: string;
+            /**
+             * School Id
+             * Format: uuid
+             */
+            school_id: string;
+            /**
+             * Date Of Birth
+             * Format: date
+             */
+            date_of_birth: string;
+        };
+        /**
+         * StreakOut
+         * @description Consecutive school-local days with a finished game (P6 engagement).
+         */
+        StreakOut: {
+            /** Current */
+            current: number;
+            /** Longest */
+            longest: number;
+            /** Played Today */
+            played_today: boolean;
+            /** Last Played On */
+            last_played_on?: string | null;
+        };
+        /**
+         * StudentGameXpOut
+         * @description One game inside a learner's breakdown (P5-T11).
+         */
+        StudentGameXpOut: {
+            /** Game Id */
+            game_id: string;
+            /** Xp Total */
+            xp_total: number;
+            /** Sessions Count */
+            sessions_count: number;
+        };
+        /**
+         * StudentXpOut
+         * @description A coach's view of one learner: total plus where it came from.
+         *
+         *     Auditable by construction: the same numbers a school admin can reconcile
+         *     against the ledger. Identity stays masked (D-15).
+         */
+        StudentXpOut: {
+            /** Preferred Name */
+            preferred_name: string;
+            /** Avatar Key */
+            avatar_key: string;
+            /** Xp Total */
+            xp_total: number;
+            /** Sessions Count */
+            sessions_count: number;
+            /** Games */
+            games: components["schemas"]["StudentGameXpOut"][];
+        };
+        /** TermIn */
+        TermIn: {
+            /** Name */
+            name: string;
+            /**
+             * Starts On
+             * Format: date
+             */
+            starts_on: string;
+            /**
+             * Ends On
+             * Format: date
+             */
+            ends_on: string;
+        };
+        /** TermOut */
+        TermOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /**
+             * Starts On
+             * Format: date
+             */
+            starts_on: string;
+            /**
+             * Ends On
+             * Format: date
+             */
+            ends_on: string;
+        };
+        /** TicketIn */
+        TicketIn: {
+            /**
+             * Session Id
+             * Format: uuid
+             */
+            session_id: string;
+        };
+        /**
+         * TicketOut
+         * @description A single-use key for one socket. Never logged, never stored client-side.
+         */
+        TicketOut: {
+            /** Ticket */
+            ticket: string;
+            /** Expires In */
+            expires_in: number;
+        };
+        /** ValidationError */
+        ValidationError: {
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
+            /** Input */
+            input?: unknown;
+            /** Context */
+            ctx?: Record<string, never>;
+        };
+        /**
+         * XpAwardOut
+         * @description The post-game summary: what this game paid, and room left today.
+         *
+         *     Awarded, not requested: a capped award shows the number the learner
+         *     actually got (P5-T10).
+         */
+        XpAwardOut: {
+            /** Awarded */
+            awarded: number;
+            /** Today */
+            today: number;
+            /** Daily Cap */
+            daily_cap: number;
+        };
+    };
     responses: never;
     parameters: never;
     requestBodies: never;
@@ -88,6 +2782,2140 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    login_api_auth_login_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    refresh_api_auth_refresh_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeOut"];
+                };
+            };
+        };
+    };
+    logout_api_auth_logout_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    me_api_auth_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeOut"];
+                };
+            };
+        };
+    };
+    public_profile_api_profiles__user_id__public_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicProfile"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_classes_api_classes_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassOut"][];
+                };
+            };
+        };
+    };
+    list_members_api_classes__class_id__members_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                class_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassMembersOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_access_api_games_access_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccessOut"];
+                };
+            };
+        };
+    };
+    start_session_api_games_sessions__session_id__start_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccessOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    heartbeat_api_games_sessions__session_id__heartbeat_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HeartbeatIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlayStateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    pause_session_api_games_sessions__session_id__pause_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    quit_session_api_games_sessions__session_id__quit_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    class_access_api_games_classes__class_id__access_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                class_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassAccessOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    offline_pack_api_games_offline_packs_get: {
+        parameters: {
+            query: {
+                game: string;
+                difficulty?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OfflinePackOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    catalog_api_games_catalog_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GameSummaryOut"][];
+                };
+            };
+        };
+    };
+    active_session_api_games_sessions_active_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActiveSessionOut"];
+                };
+            };
+        };
+    };
+    create_session_api_games__game_id__sessions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                game_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSessionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlayOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_session_api_games_sessions__session_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlayOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_action_api_games_sessions__session_id__actions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ActionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlayOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_limits_api_games_limits_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PolicyOut"][];
+                };
+            };
+        };
+    };
+    set_limit_api_games_limits_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PolicyIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PolicyOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_lockouts_api_games_lockouts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LockoutOut"][];
+                };
+            };
+        };
+    };
+    create_lockout_api_games_lockouts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LockoutIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LockoutOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    revoke_lockout_api_games_lockouts__lockout_id__revoke_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lockout_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LockoutOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    friends_api_games_friends_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FriendOut"][];
+                };
+            };
+        };
+    };
+    create_challenge_api_games_challenges_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChallengeIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChallengeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    start_challenge_api_games_challenges__parent_id__start_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                parent_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChallengeStartOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_challenges_api_games_challenges_mine_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyTurnOut"][];
+                };
+            };
+        };
+    };
+    challenge_result_api_games_sessions__session_id__challenge_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChallengeResultOut"] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    accept_invite_api_games_invites_accept_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InviteAcceptIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InviteAcceptedOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    accept_from_cookie_api_games_invites_pending_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                invite_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InviteAcceptedOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    decline_invite_api_games_invites__invitation_id__decline_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invitation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    inbox_api_games_inbox_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InboxOut"];
+                };
+            };
+        };
+    };
+    mark_read_api_games_inbox_read_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    add_block_api_games_blocks_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlockIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_block_api_games_blocks__user_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_reports_api_games_reports_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminReportOut"][];
+                };
+            };
+        };
+    };
+    report_api_games_reports_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_match_api_games_live_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LiveCreateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveCreatedOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    accept_match_api_games_live_accept_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LiveAcceptIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveStateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_match_api_games_live__session_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveStateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    join_match_api_games_live__session_id__join_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveStateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_move_api_games_live__session_id__moves_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LiveMoveIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveStateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    resign_match_api_games_live__session_id__resign_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveStateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    offer_draw_api_games_live__session_id__draw_offer_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveStateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    accept_draw_api_games_live__session_id__draw_accept_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveStateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    decline_draw_api_games_live__session_id__draw_decline_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveStateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    rematch_api_games_live__session_id__rematch_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveCreatedOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    presence_api_games_presence_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresenceRowOut"][];
+                };
+            };
+        };
+    };
+    create_ticket_api_ws_ticket_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TicketIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TicketOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    age_bands_api_content_age_bands_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    }[];
+                };
+            };
+        };
+    };
+    suggested_band_api_content_suggested_band_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    list_packs_api_content_packs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PackSummaryOut"][];
+                };
+            };
+        };
+    };
+    create_pack_api_content_packs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PackCreateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PackDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_pack_api_content_packs__pack_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PackDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_item_api_content_packs__pack_id__items_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContentItemIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContentItemOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_item_api_content_packs__pack_id__items__item_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_item_api_content_packs__pack_id__items__item_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContentItemIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContentItemOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    import_words_api_content_packs__pack_id__import_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportReportOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_item_api_content_packs__pack_id__items__item_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContentItemOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unpublish_item_api_content_packs__pack_id__items__item_id__unpublish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContentItemOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_ready_api_content_packs__pack_id__publish_ready_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublishReadyOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    retire_pack_api_content_packs__pack_id__retire_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PackDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    summary_api_content_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: number;
+                    };
+                };
+            };
+        };
+    };
+    blocked_words_api_content_blocked_words_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockedWordOut"][];
+                };
+            };
+        };
+    };
+    add_blocked_word_api_content_blocked_words_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlockedWordIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockedWordOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_blocked_word_api_content_blocked_words__word__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                word: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_xp_api_me_xp_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeXpOut"];
+                };
+            };
+        };
+    };
+    my_engagement_api_me_engagement_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngagementOut"];
+                };
+            };
+        };
+    };
+    read_board_api_leaderboards__period__get: {
+        parameters: {
+            query?: {
+                game?: string | null;
+                class_id?: string | null;
+                age_band?: string | null;
+            };
+            header?: never;
+            path: {
+                period: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_my_row_api_leaderboards__period__me_get: {
+        parameters: {
+            query?: {
+                game?: string | null;
+                class_id?: string | null;
+                age_band?: string | null;
+            };
+            header?: never;
+            path: {
+                period: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_students_api_leaderboards__period__students_get: {
+        parameters: {
+            query?: {
+                class_id?: string | null;
+                age_band?: string | null;
+            };
+            header?: never;
+            path: {
+                period: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CoachBoardOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_terms_api_school_terms_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TermOut"][];
+                };
+            };
+        };
+    };
+    add_term_api_school_terms_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TermIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TermOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    seed_learning_xp_api_testing_learning_xp_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LearningXpIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

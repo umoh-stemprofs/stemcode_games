@@ -1,0 +1,411 @@
+<!DOCTYPE html><html class="h-full" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Alpha Academy - Student Welcome Dashboard</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,600;0,700;1,400&amp;family=JetBrains+Mono:wght@500;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary": "#006c47",
+            "on-surface": "#111c2d",
+            "primary-fixed-dim": "#b6c4ff",
+            "on-tertiary-fixed": "#2f1500",
+            "tertiary-fixed": "#ffdcc3",
+            "on-secondary-container": "#00714b",
+            "surface-container-lowest": "#ffffff",
+            "tertiary": "#804300",
+            "primary": "#0045cc",
+            "on-secondary-fixed-variant": "#005235",
+            "action-focus": "#FACC15",
+            "on-primary-container": "#ebecff",
+            "action-error": "#DC2626",
+            "surface-card": "#FFFFFF",
+            "inverse-primary": "#b6c4ff",
+            "error-container": "#ffdad6",
+            "background": "#f9f9ff",
+            "on-secondary": "#ffffff",
+            "on-surface-variant": "#434656",
+            "secondary-fixed": "#8df7c1",
+            "canvas-bg": "#F8FAFC",
+            "on-tertiary": "#ffffff",
+            "outline-variant": "#c3c5d9",
+            "tertiary-fixed-dim": "#ffb77e",
+            "surface": "#f9f9ff",
+            "error": "#ba1a1a",
+            "outline": "#737688",
+            "on-tertiary-container": "#ffe9db",
+            "on-error-container": "#93000a",
+            "on-primary-fixed-variant": "#003bb0",
+            "border-subtle": "#E2E8F0",
+            "surface-dim": "#cfdaf2",
+            "on-primary-fixed": "#00164f",
+            "on-tertiary-fixed-variant": "#6e3900",
+            "secondary-container": "#8af5be",
+            "surface-tint": "#004fe5",
+            "surface-container-low": "#f0f3ff",
+            "surface-variant": "#d8e3fb",
+            "tertiary-container": "#a45700",
+            "surface-bright": "#f9f9ff",
+            "inverse-surface": "#263143",
+            "primary-fixed": "#dce1ff",
+            "primary-container": "#0d5bff",
+            "on-secondary-fixed": "#002113",
+            "secondary-fixed-dim": "#71dba6",
+            "surface-container": "#e7eeff",
+            "surface-container-highest": "#d8e3fb",
+            "inverse-on-surface": "#ecf1ff",
+            "on-error": "#ffffff",
+            "border-strong": "#0F172A",
+            "on-background": "#111c2d",
+            "on-primary": "#ffffff",
+            "surface-container-high": "#dee8ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "2xl": "1rem",
+            "3xl": "1.5rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "body-lg": ["Atkinson Hyperlegible Next", "sans-serif"],
+            "headline-md": ["Plus Jakarta Sans", "sans-serif"],
+            "label-sm": ["Atkinson Hyperlegible Next", "sans-serif"],
+            "label-button": ["Plus Jakarta Sans", "sans-serif"],
+            "label-code": ["JetBrains Mono", "monospace"],
+            "body-xl": ["Atkinson Hyperlegible Next", "sans-serif"],
+            "headline-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "headline-xl": ["Plus Jakarta Sans", "sans-serif"],
+            "body-md": ["Atkinson Hyperlegible Next", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-headline-md min-h-screen flex flex-col antialiased selection:bg-primary-fixed selection:text-primary">
+<!-- Top Global Bar -->
+<header class="w-full bg-surface-container-lowest border-b border-border-subtle sticky top-0 z-30 px-6 lg:px-12 py-3.5">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<!-- School Identity -->
+<div class="flex items-center gap-6">
+<a class="flex items-center gap-3 group" href="#">
+<div class="size-9 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+<svg class="size-5" fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"></path>
+</svg>
+</div>
+<div><span class="text-on-surface text-base font-bold tracking-tight leading-none">STEM Games</span></div>
+</a>
+<!-- Global Navigation -->
+<nav class="hidden md:flex items-center gap-1 pl-4 border-l border-border-subtle font-label-button text-sm">
+<a class="px-3.5 py-1.5 rounded-lg font-bold text-primary bg-primary-fixed/40 transition-colors" href="#">Dashboard</a>
+<a class="px-3.5 py-1.5 rounded-lg font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors" href="#">Games Hub</a>
+<a class="px-3.5 py-1.5 rounded-lg font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors" href="#">Leaderboard</a>
+
+</nav>
+</div>
+<!-- Quick Action Controls & Profile -->
+<div class="flex items-center space-x-4 lg:space-x-5">
+  <!-- Daily Time Remaining Status Indicator -->
+  <div class="hidden sm:flex flex-col items-center justify-center text-center bg-slate-50 border border-slate-200/70 px-3.5 py-1.5 rounded-xl">
+    <div class="flex items-center gap-1.5 text-xs font-bold text-slate-700 tracking-tight mb-1">
+      <span class="material-symbols-outlined text-blue-600 text-[15px]">schedule</span>
+      <span>119 min left today</span>
+    </div>
+    <div class="w-36 h-2 bg-slate-200 rounded-full overflow-hidden">
+      <div class="bg-gradient-to-r from-blue-500 to-primary h-full rounded-full" style="width: 78%;"></div>
+    </div>
+  </div>
+  <!-- Daily XP Pill Counter -->
+  <div class="border border-amber-200/80 px-3.5 py-2 rounded-xl text-xs font-semibold text-amber-900 bg-amber-50/70 shadow-2xs flex items-center gap-1.5">
+    <span class="material-symbols-outlined text-amber-500 text-[18px]">bolt</span>
+    <span><span class="font-extrabold text-amber-950 text-sm">25</span> / 60 XP</span>
+  </div>
+  <!-- Student Profile Avatar & Name -->
+  <div class="flex items-center space-x-2.5 pl-1">
+    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 p-0.5 shadow-xs flex items-center justify-center flex-shrink-0" title="Amara">
+      <div class="w-full h-full rounded-full bg-orange-50 flex items-center justify-center">
+        <span class="text-base select-none">🦊</span>
+      </div>
+    </div>
+    <span class="font-bold text-sm text-slate-800 hidden md:inline-block">Amara</span>
+  </div>
+  <!-- Sign Out Action Button -->
+  <button class="border border-slate-200 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 hover:border-slate-300 transition-colors" type="button">
+    Sign out
+  </button>
+</div>
+</div>
+</header>
+<!-- Main Content Stage -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8 flex flex-col gap-8">
+<!-- Welcome Header & Live School Pulse -->
+<section class="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 border border-border-subtle shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex flex-col gap-2">
+<h2 class="text-3xl sm:text-4xl font-extrabold text-on-surface tracking-tight">
+          Welcome back, Amara! 👋
+        </h2>
+</div>
+<!-- Quick Status Badges Cluster -->
+<div class="flex flex-wrap items-center gap-3">
+<!-- Streak Capsule -->
+<div class="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-tertiary-fixed/40 border border-tertiary-fixed text-on-tertiary-fixed">
+<span class="text-xl">🔥</span>
+<div class="flex flex-col">
+<span class="text-[11px] uppercase tracking-wider font-bold text-on-tertiary-fixed-variant">Streak</span>
+<span class="font-extrabold text-sm leading-tight">3 Days Strong</span>
+</div>
+</div>
+<!-- Rank Capsule -->
+
+<!-- Change Avatar / Customize -->
+
+</div>
+</section>
+<!-- PRIMARY HERO FEATURE: Quick Launch Games -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2.5">
+
+<div>
+
+</div>
+</div>
+<a class="inline-flex items-center gap-1 text-primary hover:text-primary-container font-label-button text-sm font-bold group" href="#">
+<span>View All 8 Games</span>
+<span class="material-symbols-outlined text-base group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+</a>
+</div>
+<!-- 3-Card High-Energy Arcade Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- GAME CARD 1: CHECKERS -->
+<div class="group relative bg-surface-card rounded-3xl border-2 border-border-subtle hover:border-primary/50 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between p-5 gap-4 overflow-hidden hover:-translate-y-0.5">
+<div class="flex flex-col gap-4">
+<div class="w-full h-32 rounded-2xl bg-surface-container-low border border-primary/20 shadow-inner p-3 flex flex-col justify-between relative overflow-hidden">
+<div class="grid grid-cols-4 grid-rows-3 gap-1.5 w-full h-full">
+<div class="rounded bg-primary/10"></div>
+<div class="rounded bg-primary flex items-center justify-center">
+<div class="size-3 rounded-full border border-white/60 bg-primary-fixed"></div>
+</div>
+<div class="rounded bg-primary/10"></div>
+<div class="rounded bg-on-surface flex items-center justify-center">
+<div class="size-3 rounded-full border border-white/40 bg-on-surface-variant"></div>
+</div>
+<div class="rounded bg-on-surface flex items-center justify-center">
+<div class="size-3 rounded-full border border-white/40 bg-on-surface-variant"></div>
+</div>
+<div class="rounded bg-primary/10"></div>
+<div class="rounded bg-primary flex items-center justify-center ring-2 ring-action-focus shadow-sm animate-bounce">
+<div class="size-3 rounded-full border border-white bg-action-focus"></div>
+</div>
+<div class="rounded bg-primary/10"></div>
+<div class="rounded bg-primary/10"></div>
+<div class="rounded bg-on-surface"></div>
+<div class="rounded bg-primary/10"></div>
+<div class="rounded bg-primary flex items-center justify-center">
+<div class="size-3 rounded-full border border-white/60 bg-primary-fixed"></div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between gap-2">
+<h4 class="text-xl font-extrabold text-on-surface tracking-tight group-hover:text-primary transition-colors">Checkers</h4>
+<span class="text-xs font-bold text-primary bg-primary-fixed/40 px-2.5 py-0.5 rounded-lg">1v1 Match</span>
+</div>
+<div class="flex items-center gap-1.5 text-xs font-bold text-on-surface-variant mt-1">
+<span class="size-2 rounded-full bg-secondary"></span>
+
+</div>
+</div>
+</div>
+<button class="w-full py-3 px-4 rounded-2xl bg-primary hover:bg-primary-container text-on-primary font-label-button text-sm font-extrabold tracking-wide shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group-hover:scale-[1.01] active:scale-95 mt-2">
+<span>Play Checkers</span>
+<span class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</div>
+<!-- GAME CARD 2: NUMBER GUESS -->
+<div class="group relative bg-surface-card rounded-3xl border-2 border-border-subtle hover:border-secondary/50 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between p-5 gap-4 overflow-hidden hover:-translate-y-0.5">
+<div class="flex flex-col gap-4">
+<div class="w-full h-32 rounded-2xl bg-surface-container-low border border-secondary/20 shadow-inner p-3 flex flex-col justify-between items-center relative">
+<div class="w-full flex justify-between items-center text-[10px] font-label-code text-on-surface-variant font-bold">
+<span>RANGE: 1</span>
+<span>TARGET: 100</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="size-10 rounded-xl bg-secondary text-on-secondary flex items-center justify-center font-label-code font-extrabold text-lg shadow-sm ring-2 ring-secondary-fixed/50">
+          42
+        </div>
+</div>
+<div class="w-full flex items-center justify-center gap-1 text-[11px] font-bold text-secondary truncate">
+<span>Clue: Target is between 43 - 75</span>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between gap-2">
+<h4 class="text-xl font-extrabold text-on-surface tracking-tight group-hover:text-secondary transition-colors">Number Guess</h4>
+<span class="text-xs font-bold text-secondary bg-secondary-container/50 px-2.5 py-0.5 rounded-lg">Math Logic</span>
+</div>
+<div class="flex items-center gap-1.5 text-xs font-bold text-secondary mt-1">
+
+</div>
+</div>
+</div>
+<button class="w-full py-3 px-4 rounded-2xl bg-secondary hover:bg-on-secondary-container text-on-secondary font-label-button text-sm font-extrabold tracking-wide shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group-hover:scale-[1.01] active:scale-95 mt-2">
+<span>Play Number Guess</span>
+<span class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</div>
+<!-- GAME CARD 3: WORD SCRAMBLE -->
+<div class="group relative bg-surface-card rounded-3xl border-2 border-border-subtle hover:border-[#6366f1]/50 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between p-5 gap-4 overflow-hidden hover:-translate-y-0.5">
+<div class="flex flex-col gap-4">
+<div class="w-full h-32 rounded-2xl bg-surface-container-low border border-[#6366f1]/20 shadow-inner p-3 flex items-center justify-center gap-2">
+<div class="size-8 rounded-lg bg-white border border-[#6366f1] text-[#5856d6] font-extrabold text-sm flex items-center justify-center shadow-sm -rotate-6">
+        W
+      </div>
+<div class="size-8 rounded-lg bg-[#5856d6] text-white font-extrabold text-sm flex items-center justify-center shadow-sm rotate-3">
+        O
+      </div>
+<div class="size-8 rounded-lg bg-white border border-[#6366f1] text-[#5856d6] font-extrabold text-sm flex items-center justify-center shadow-sm -rotate-3">
+        R
+      </div>
+<div class="size-8 rounded-lg bg-[#6366f1] text-white font-extrabold text-sm flex items-center justify-center shadow-sm rotate-6">
+        D
+      </div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between gap-2">
+<h4 class="text-xl font-extrabold text-on-surface tracking-tight group-hover:text-[#5856d6] transition-colors">Word Scramble</h4>
+<span class="text-xs font-bold text-[#5856d6] bg-[#e0e7ff] px-2.5 py-0.5 rounded-lg">Vocabulary</span>
+</div>
+<div class="flex items-center gap-1.5 text-xs font-bold text-[#5856d6] mt-1">
+
+</div>
+</div>
+</div>
+<button class="w-full py-3 px-4 rounded-2xl bg-[#5856d6] hover:bg-[#4745b8] text-white font-label-button text-sm font-extrabold tracking-wide shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group-hover:scale-[1.01] active:scale-95 mt-2">
+<span>Play Scramble</span>
+<span class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- SECONDARY MINIMALIST SESSION & PROGRESS TRACKER -->
+<section class="bg-surface-container-lowest border border-border-subtle rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col lg:flex-row items-stretch gap-8">
+<div class="flex-1 flex flex-col justify-between gap-5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-2xl text-action-focus">emoji_events</span>
+<h3 class="text-xl font-extrabold text-on-surface tracking-tight">Classroom Leaderboard</h3>
+</div>
+<a class="text-xs font-bold text-primary hover:text-primary-container flex items-center gap-1 transition-colors" href="#">
+<span>Full Standings</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<div class="flex sm:flex-col items-center justify-between sm:justify-center bg-surface-container-low rounded-2xl p-4 border border-border-subtle shadow-sm hover:border-primary/30 transition-all">
+<div class="flex items-center sm:flex-col gap-3 sm:gap-1.5">
+<span class="text-3xl leading-none">🥇</span>
+<span class="text-sm font-extrabold text-on-surface">Leo M.</span>
+</div>
+<span class="text-sm font-extrabold text-primary font-label-code bg-surface-card px-3 py-1 rounded-xl border border-border-subtle sm:mt-2 shadow-inner">48 XP</span>
+</div>
+<div class="flex sm:flex-col items-center justify-between sm:justify-center bg-surface-container-low rounded-2xl p-4 border border-border-subtle shadow-sm hover:border-primary/30 transition-all">
+<div class="flex items-center sm:flex-col gap-3 sm:gap-1.5">
+<span class="text-3xl leading-none">🥈</span>
+<span class="text-sm font-extrabold text-on-surface">Maya P.</span>
+</div>
+<span class="text-sm font-extrabold text-primary font-label-code bg-surface-card px-3 py-1 rounded-xl border border-border-subtle sm:mt-2 shadow-inner">36 XP</span>
+</div>
+<div class="flex sm:flex-col items-center justify-between sm:justify-center bg-surface-container-low rounded-2xl p-4 border border-border-subtle shadow-sm hover:border-primary/30 transition-all">
+<div class="flex items-center sm:flex-col gap-3 sm:gap-1.5">
+<span class="text-3xl leading-none">🥉</span>
+<span class="text-sm font-extrabold text-on-surface">Liam S.</span>
+</div>
+<span class="text-sm font-extrabold text-primary font-label-code bg-surface-card px-3 py-1 rounded-xl border border-border-subtle sm:mt-2 shadow-inner">27 XP</span>
+</div>
+</div>
+<div class="flex items-center justify-between px-4 py-3 bg-surface-container-low rounded-2xl border border-border-subtle">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="size-6 rounded-full bg-primary text-on-primary flex items-center justify-center text-xs font-bold shrink-0">#4</span>
+<span class="font-extrabold text-sm text-on-surface truncate">Amara (You)</span>
+
+</div>
+<span class="text-sm font-extrabold text-secondary font-label-code shrink-0">25 XP</span>
+</div>
+</div>
+
+</section><!-- BEGIN: Join a Classmate Section -->
+<section aria-label="Join a Friend or Classmate" class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-3xl p-6 sm:p-9 text-white shadow-xl relative overflow-hidden">
+  <!-- Background accent glow -->
+  <div class="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-blue-500/15 blur-3xl pointer-events-none"></div>
+  <div class="absolute top-0 right-1/4 w-48 h-48 rounded-full bg-indigo-500/10 blur-2xl pointer-events-none"></div>
+  <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+    <!-- Left: Text & Mascot/Icon -->
+    <div class="flex items-center gap-5 sm:gap-6 text-center lg:text-left flex-col sm:flex-row">
+      <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-blue-300 shadow-inner flex-shrink-0 backdrop-blur-sm">
+        <span class="material-symbols-outlined text-3xl sm:text-4xl">group_add</span>
+      </div>
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold uppercase tracking-wider mb-1.5 border border-blue-400/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          Multiplayer Match
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+          Have a Game Code from a Friend?
+        </h2>
+        <p class="text-blue-100/80 font-body text-sm sm:text-base mt-1 max-w-lg">
+          Type the 6-digit room code below to instantly jump into their arena and start playing together!
+        </p>
+      </div>
+    </div>
+    <!-- Right: Oversized Game Code Input Form -->
+    <form class="w-full lg:w-auto flex-shrink-0" data-purpose="join-friend-form" onsubmit="event.preventDefault();">
+      <div class="flex flex-col sm:flex-row items-stretch gap-3">
+        <div class="relative">
+          <input aria-label="6-digit Game Room Code" class="w-full sm:w-72 h-14 bg-white/10 hover:bg-white/15 focus:bg-white text-white focus:text-slate-900 border-2 border-white/20 focus:border-white rounded-2xl px-5 font-mono text-xl sm:text-2xl tracking-[0.25em] text-center placeholder:text-blue-200/50 placeholder:font-mono placeholder:tracking-normal placeholder:text-base outline-none transition-all shadow-inner focus:shadow-xl" maxlength="6" placeholder="• • • • • •" type="text">
+        </div>
+        <button class="h-14 px-8 bg-gradient-to-r from-blue-500 to-primary hover:from-blue-600 hover:to-primary-hover active:scale-[0.98] text-white font-extrabold text-base rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30 transition-all cursor-pointer whitespace-nowrap" type="submit">
+          <span>Join Match</span>
+          <span class="text-lg">🚀</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+<!-- END: Join a Classmate Section -->
+<!-- Classroom Live Activity Stream -->
+</main>
+<!-- Clean Minimalist Footer -->
+
+
+
+
+</body></html>

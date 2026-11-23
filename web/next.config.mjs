@@ -17,6 +17,11 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
 
+  // The floating dev indicator only exists under `next dev`; this hides it so
+  // screenshots and demos show the product, not Next's overlay. It has no
+  // effect on a production build.
+  devIndicators: false,
+
   async rewrites() {
     // Production is fronted by the reverse proxy, which already routes /api.
     if (process.env.NODE_ENV === "production") return [];

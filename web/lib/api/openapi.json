@@ -48,6 +48,6505 @@
           }
         }
       }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Login",
+        "operationId": "login_api_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Refresh",
+        "operationId": "refresh_api_auth_refresh_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Logout",
+        "operationId": "logout_api_auth_logout_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Me",
+        "operationId": "me_api_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profiles/{user_id}/public": {
+      "get": {
+        "tags": [
+          "profiles"
+        ],
+        "summary": "Public Profile",
+        "operationId": "public_profile_api_profiles__user_id__public_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicProfile"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/classes": {
+      "get": {
+        "tags": [
+          "classes"
+        ],
+        "summary": "List Classes",
+        "operationId": "list_classes_api_classes_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ClassOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Classes Api Classes Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/classes/{class_id}/members": {
+      "get": {
+        "tags": [
+          "classes"
+        ],
+        "summary": "List Members",
+        "operationId": "list_members_api_classes__class_id__members_get",
+        "parameters": [
+          {
+            "name": "class_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Class Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassMembersOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/access": {
+      "get": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Get Access",
+        "description": "The one call the hub needs: may I play, how long is left, when does it reset.",
+        "operationId": "get_access_api_games_access_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/sessions/{session_id}/start": {
+      "post": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Start Session",
+        "operationId": "start_session_api_games_sessions__session_id__start_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/sessions/{session_id}/heartbeat": {
+      "post": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Heartbeat",
+        "operationId": "heartbeat_api_games_sessions__session_id__heartbeat_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HeartbeatIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayStateOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/sessions/{session_id}/pause": {
+      "post": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Pause Session",
+        "operationId": "pause_session_api_games_sessions__session_id__pause_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/sessions/{session_id}/quit": {
+      "post": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Quit Session",
+        "description": "End a game for good. The learner keeps no result and loses no seat.\n\nOne call covers every game mode: a solo attempt, a challenge turn, and —\nfrom Phase 8 — a live match, where ending the session is also what tells\nthe other end to close its socket.",
+        "operationId": "quit_session_api_games_sessions__session_id__quit_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/classes/{class_id}/access": {
+      "get": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Class Access",
+        "description": "The coach's table: every learner, the time they have, any pause on them.",
+        "operationId": "class_access_api_games_classes__class_id__access_get",
+        "parameters": [
+          {
+            "name": "class_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Class Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassAccessOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/offline/packs": {
+      "get": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Offline Pack",
+        "description": "One level of words this learner may play with no connection (P9-T02).\n\nThe learner is the scope: the band comes from their birthday, so a client\ncannot ask for a younger child's words. What comes back is content only.",
+        "operationId": "offline_pack_api_games_offline_packs_get",
+        "parameters": [
+          {
+            "name": "game",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40,
+              "title": "Game"
+            }
+          },
+          {
+            "name": "difficulty",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 3,
+              "minimum": 1,
+              "default": 1,
+              "title": "Difficulty"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfflinePackOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/catalog": {
+      "get": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Catalog",
+        "description": "Games a learner may open. Disabled games are not listed at all.",
+        "operationId": "catalog_api_games_catalog_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/GameSummaryOut"
+                  },
+                  "type": "array",
+                  "title": "Response Catalog Api Games Catalog Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/sessions/active": {
+      "get": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Active Session",
+        "description": "The session a refreshed tab should return to, if there is one.",
+        "operationId": "active_session_api_games_sessions_active_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveSessionOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/{game_id}/sessions": {
+      "post": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Create Session",
+        "description": "Open a session and start its clock. Refuses if one is already open.\n\nGeneric by design: Phase 6 and Phase 8 add games to the registry, not\nendpoints to this file.",
+        "operationId": "create_session_api_games__game_id__sessions_post",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Game Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/sessions/{session_id}": {
+      "get": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Read Session",
+        "description": "State for a refreshed tab, including the time left this instant.",
+        "operationId": "read_session_api_games_sessions__session_id__get",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/sessions/{session_id}/actions": {
+      "post": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Submit Action",
+        "description": "One move. A repeated ``client_move_id`` returns the same state.",
+        "operationId": "submit_action_api_games_sessions__session_id__actions_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActionIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/limits": {
+      "get": {
+        "tags": [
+          "games"
+        ],
+        "summary": "List Limits",
+        "operationId": "list_limits_api_games_limits_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PolicyOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Limits Api Games Limits Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Set Limit",
+        "operationId": "set_limit_api_games_limits_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/lockouts": {
+      "get": {
+        "tags": [
+          "games"
+        ],
+        "summary": "List Lockouts",
+        "operationId": "list_lockouts_api_games_lockouts_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LockoutOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Lockouts Api Games Lockouts Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Create Lockout",
+        "operationId": "create_lockout_api_games_lockouts_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LockoutIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LockoutOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/lockouts/{lockout_id}/revoke": {
+      "post": {
+        "tags": [
+          "games"
+        ],
+        "summary": "Revoke Lockout",
+        "operationId": "revoke_lockout_api_games_lockouts__lockout_id__revoke_post",
+        "parameters": [
+          {
+            "name": "lockout_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Lockout Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LockoutOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/friends": {
+      "get": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "Friends",
+        "description": "Classmates you can tap to invite (P7-T06: avatars first).",
+        "operationId": "friends_api_games_friends_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FriendOut"
+                  },
+                  "type": "array",
+                  "title": "Response Friends Api Games Friends Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/challenges": {
+      "post": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "Create Challenge",
+        "description": "Open a challenge and invite somebody: a roster tap, a code, a link.",
+        "operationId": "create_challenge_api_games_challenges_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChallengeIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChallengeOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/challenges/{parent_id}/start": {
+      "post": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "Start Challenge",
+        "description": "Start your own attempt at a challenge: the normal play state follows.",
+        "operationId": "start_challenge_api_games_challenges__parent_id__start_post",
+        "parameters": [
+          {
+            "name": "parent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Parent Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChallengeStartOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/challenges/mine": {
+      "get": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "My Challenges",
+        "description": "The challenges you still owe a turn in, so a closed tab loses nothing.",
+        "operationId": "my_challenges_api_games_challenges_mine_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MyTurnOut"
+                  },
+                  "type": "array",
+                  "title": "Response My Challenges Api Games Challenges Mine Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/sessions/{session_id}/challenge": {
+      "get": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "Challenge Result",
+        "description": "The one sentence the end screen shows: who you played, and who won.\n\n``null`` means this was a solo game, not a challenge, which is the common\ncase and costs one request when the game ends.",
+        "operationId": "challenge_result_api_games_sessions__session_id__challenge_get",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ChallengeResultOut"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Challenge Result Api Games Sessions  Session Id  Challenge Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/invites/accept": {
+      "post": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "Accept Invite",
+        "description": "Claim a seat by inbox row, typed code, or link token.",
+        "operationId": "accept_invite_api_games_invites_accept_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteAcceptIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteAcceptedOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/invites/pending": {
+      "post": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "Accept From Cookie",
+        "description": "Consume the link token the join page left in an httpOnly cookie.\n\nThe cookie is cleared whatever happens: a token is good once, and leaving it\nbehind would make the next sign-in on a shared laptop join a stranger's game.",
+        "operationId": "accept_from_cookie_api_games_invites_pending_post",
+        "parameters": [
+          {
+            "name": "invite_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Invite Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteAcceptedOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/invites/{invitation_id}/decline": {
+      "post": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "Decline Invite",
+        "description": "\"No thanks\" — a decline is silent, like a block (never a notification).",
+        "operationId": "decline_invite_api_games_invites__invitation_id__decline_post",
+        "parameters": [
+          {
+            "name": "invitation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Invitation Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/inbox": {
+      "get": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "Inbox",
+        "description": "Pending invites and challenge news. No email, no SMS (P7-T07).",
+        "operationId": "inbox_api_games_inbox_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/inbox/read": {
+      "post": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "Mark Read",
+        "operationId": "mark_read_api_games_inbox_read_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/api/games/blocks": {
+      "post": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "Add Block",
+        "description": "Block or mute. The other learner is never told (P7-T08).",
+        "operationId": "add_block_api_games_blocks_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlockIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/blocks/{user_id}": {
+      "delete": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "Remove Block",
+        "operationId": "remove_block_api_games_blocks__user_id__delete",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/reports": {
+      "get": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "List Reports",
+        "description": "The school admin's list. P10 deepens the workflow, not this endpoint.",
+        "operationId": "list_reports_api_games_reports_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AdminReportOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Reports Api Games Reports Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "games-social"
+        ],
+        "summary": "Report",
+        "description": "The minimum report: a reason, an optional note, and the admin's list.",
+        "operationId": "report_api_games_reports_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/live": {
+      "post": {
+        "tags": [
+          "games-live"
+        ],
+        "summary": "Create Match",
+        "description": "Open a match and invite somebody (P8-T09).",
+        "operationId": "create_match_api_games_live_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LiveCreateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveCreatedOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/live/accept": {
+      "post": {
+        "tags": [
+          "games-live"
+        ],
+        "summary": "Accept Match",
+        "description": "Take the second seat, by inbox row, code, or link.",
+        "operationId": "accept_match_api_games_live_accept_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LiveAcceptIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveStateOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/live/{session_id}": {
+      "get": {
+        "tags": [
+          "games-live"
+        ],
+        "summary": "Read Match",
+        "description": "A refreshed tab's snapshot, including clocks and whose turn it is.",
+        "operationId": "read_match_api_games_live__session_id__get",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveStateOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/live/{session_id}/join": {
+      "post": {
+        "tags": [
+          "games-live"
+        ],
+        "summary": "Join Match",
+        "description": "Mark this player present without a socket (the REST fallback).",
+        "operationId": "join_match_api_games_live__session_id__join_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveStateOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/live/{session_id}/moves": {
+      "post": {
+        "tags": [
+          "games-live"
+        ],
+        "summary": "Submit Move",
+        "description": "The same call the socket makes, for a tab whose socket is down.",
+        "operationId": "submit_move_api_games_live__session_id__moves_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LiveMoveIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveStateOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/live/{session_id}/resign": {
+      "post": {
+        "tags": [
+          "games-live"
+        ],
+        "summary": "Resign Match",
+        "operationId": "resign_match_api_games_live__session_id__resign_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveStateOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/live/{session_id}/draw/offer": {
+      "post": {
+        "tags": [
+          "games-live"
+        ],
+        "summary": "Offer Draw",
+        "operationId": "offer_draw_api_games_live__session_id__draw_offer_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveStateOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/live/{session_id}/draw/accept": {
+      "post": {
+        "tags": [
+          "games-live"
+        ],
+        "summary": "Accept Draw",
+        "operationId": "accept_draw_api_games_live__session_id__draw_accept_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveStateOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/live/{session_id}/draw/decline": {
+      "post": {
+        "tags": [
+          "games-live"
+        ],
+        "summary": "Decline Draw",
+        "operationId": "decline_draw_api_games_live__session_id__draw_decline_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveStateOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/live/{session_id}/rematch": {
+      "post": {
+        "tags": [
+          "games-live"
+        ],
+        "summary": "Rematch",
+        "description": "A new match with the same pair, colours swapped (P8-T13).",
+        "operationId": "rematch_api_games_live__session_id__rematch_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveCreatedOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/presence": {
+      "get": {
+        "tags": [
+          "games-live"
+        ],
+        "summary": "Presence",
+        "description": "Classmates you may challenge, with a reason when you may not (P8-T04).",
+        "operationId": "presence_api_games_presence_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PresenceRowOut"
+                  },
+                  "type": "array",
+                  "title": "Response Presence Api Games Presence Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ws/ticket": {
+      "post": {
+        "tags": [
+          "realtime"
+        ],
+        "summary": "Create Ticket",
+        "description": "One socket, one match, thirty seconds (P8-T01).",
+        "operationId": "create_ticket_api_ws_ticket_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/age-bands": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Age Bands",
+        "description": "The groups a pack can be written for, youngest first.",
+        "operationId": "age_bands_api_content_age_bands_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "type": "object"
+                  },
+                  "type": "array",
+                  "title": "Response Age Bands Api Content Age Bands Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/suggested-band": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Suggested Band",
+        "description": "The band most of this coach's learners are in, so the screen can pre-pick it.\n\nAdvisory only: the client still sends an explicit ``age_band`` when it makes\na list, and any other band remains one tap away.",
+        "operationId": "suggested_band_api_content_suggested_band_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Suggested Band Api Content Suggested Band Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/packs": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "List Packs",
+        "description": "Every version of every pack, newest first.",
+        "operationId": "list_packs_api_content_packs_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PackSummaryOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Packs Api Content Packs Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Create Pack",
+        "description": "A new draft version, optionally seeded with an existing pack's words.",
+        "operationId": "create_pack_api_content_packs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PackCreateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackDetailOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/packs/{pack_id}": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Read Pack",
+        "operationId": "read_pack_api_content_packs__pack_id__get",
+        "parameters": [
+          {
+            "name": "pack_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Pack Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackDetailOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/packs/{pack_id}/items": {
+      "post": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Add Item",
+        "operationId": "add_item_api_content_packs__pack_id__items_post",
+        "parameters": [
+          {
+            "name": "pack_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Pack Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentItemIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentItemOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/packs/{pack_id}/items/{item_id}": {
+      "patch": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Update Item",
+        "operationId": "update_item_api_content_packs__pack_id__items__item_id__patch",
+        "parameters": [
+          {
+            "name": "pack_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Pack Id"
+            }
+          },
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Item Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentItemIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentItemOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Delete Item",
+        "operationId": "delete_item_api_content_packs__pack_id__items__item_id__delete",
+        "parameters": [
+          {
+            "name": "pack_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Pack Id"
+            }
+          },
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Item Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/packs/{pack_id}/import": {
+      "post": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Import Words",
+        "description": "``answer, clue, level`` per line, with a line-by-line report.",
+        "operationId": "import_words_api_content_packs__pack_id__import_post",
+        "parameters": [
+          {
+            "name": "pack_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Pack Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportReportOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/packs/{pack_id}/items/{item_id}/publish": {
+      "post": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Publish Item",
+        "description": "Make one word live. The only door to the games.",
+        "operationId": "publish_item_api_content_packs__pack_id__items__item_id__publish_post",
+        "parameters": [
+          {
+            "name": "pack_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Pack Id"
+            }
+          },
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Item Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentItemOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/packs/{pack_id}/items/{item_id}/unpublish": {
+      "post": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Unpublish Item",
+        "description": "Take one live word out of the games. Nothing is deleted.",
+        "operationId": "unpublish_item_api_content_packs__pack_id__items__item_id__unpublish_post",
+        "parameters": [
+          {
+            "name": "pack_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Pack Id"
+            }
+          },
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Item Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentItemOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/packs/{pack_id}/publish-ready": {
+      "post": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Publish Ready",
+        "description": "Make every ready draft word live at once, skipping any that still fail.",
+        "operationId": "publish_ready_api_content_packs__pack_id__publish_ready_post",
+        "parameters": [
+          {
+            "name": "pack_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Pack Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishReadyOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/packs/{pack_id}/retire": {
+      "post": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Retire Pack",
+        "operationId": "retire_pack_api_content_packs__pack_id__retire_post",
+        "parameters": [
+          {
+            "name": "pack_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Pack Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackDetailOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/summary": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Summary",
+        "description": "How many packs sit in each status, for the queue header.",
+        "operationId": "summary_api_content_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "type": "object",
+                  "title": "Response Summary Api Content Summary Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/blocked-words": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Blocked Words",
+        "description": "Every word that cannot be used, and where it came from.",
+        "operationId": "blocked_words_api_content_blocked_words_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BlockedWordOut"
+                  },
+                  "type": "array",
+                  "title": "Response Blocked Words Api Content Blocked Words Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Add Blocked Word",
+        "description": "Add a word. It is refused from the next save onwards, with no deploy.",
+        "operationId": "add_blocked_word_api_content_blocked_words_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlockedWordIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlockedWordOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/blocked-words/{word}": {
+      "delete": {
+        "tags": [
+          "content"
+        ],
+        "summary": "Remove Blocked Word",
+        "description": "Undo a school's own addition. Built-in entries are refused.",
+        "operationId": "remove_blocked_word_api_content_blocked_words__word__delete",
+        "parameters": [
+          {
+            "name": "word",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Word"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/xp": {
+      "get": {
+        "tags": [
+          "xp"
+        ],
+        "summary": "My Xp",
+        "operationId": "my_xp_api_me_xp_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeXpOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/engagement": {
+      "get": {
+        "tags": [
+          "xp"
+        ],
+        "summary": "My Engagement",
+        "description": "Streak, today's quest, badges, bests and the level ring — one call.\n\nEverything here is derived from results the server wrote; the browser has no\nway to add a day to the streak or finish a quest itself.",
+        "operationId": "my_engagement_api_me_engagement_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EngagementOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leaderboards/{period}": {
+      "get": {
+        "tags": [
+          "leaderboards"
+        ],
+        "summary": "Read Board",
+        "operationId": "read_board_api_leaderboards__period__get",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Period"
+            }
+          },
+          {
+            "name": "game",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Game"
+            }
+          },
+          {
+            "name": "class_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Class Id"
+            }
+          },
+          {
+            "name": "age_band",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Age Band"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leaderboards/{period}/me": {
+      "get": {
+        "tags": [
+          "leaderboards"
+        ],
+        "summary": "Read My Row",
+        "description": "The caller's own row, even when they are outside the top ten.",
+        "operationId": "read_my_row_api_leaderboards__period__me_get",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Period"
+            }
+          },
+          {
+            "name": "game",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Game"
+            }
+          },
+          {
+            "name": "class_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Class Id"
+            }
+          },
+          {
+            "name": "age_band",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Age Band"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leaderboards/{period}/students": {
+      "get": {
+        "tags": [
+          "leaderboards"
+        ],
+        "summary": "Read Students",
+        "description": "A coach's class with each learner's XP split by game (P5-T11).",
+        "operationId": "read_students_api_leaderboards__period__students_get",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Period"
+            }
+          },
+          {
+            "name": "class_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Class Id"
+            }
+          },
+          {
+            "name": "age_band",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Age Band"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoachBoardOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/school/terms": {
+      "get": {
+        "tags": [
+          "school"
+        ],
+        "summary": "List Terms",
+        "operationId": "list_terms_api_school_terms_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TermOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Terms Api School Terms Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "school"
+        ],
+        "summary": "Add Term",
+        "description": "Term dates are the school admin's to set; the termly board needs them.",
+        "operationId": "add_term_api_school_terms_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TermIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TermOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/testing/learning-xp": {
+      "post": {
+        "tags": [
+          "testing"
+        ],
+        "summary": "Seed Learning Xp",
+        "operationId": "seed_learning_xp_api_testing_learning_xp_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LearningXpIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Seed Learning Xp Api Testing Learning Xp Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccessOut": {
+        "properties": {
+          "allowed": {
+            "type": "boolean",
+            "title": "Allowed"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "limit_minutes": {
+            "type": "integer",
+            "title": "Limit Minutes"
+          },
+          "limit_source": {
+            "type": "string",
+            "title": "Limit Source"
+          },
+          "used_seconds": {
+            "type": "integer",
+            "title": "Used Seconds"
+          },
+          "remaining_seconds": {
+            "type": "integer",
+            "title": "Remaining Seconds"
+          },
+          "locked_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locked Until"
+          },
+          "lockout_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lockout Reason"
+          },
+          "local_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Local Date"
+          },
+          "resets_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Resets At"
+          },
+          "server_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Server Time"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "allowed",
+          "reason",
+          "limit_minutes",
+          "limit_source",
+          "used_seconds",
+          "remaining_seconds",
+          "local_date",
+          "resets_at",
+          "server_time"
+        ],
+        "title": "AccessOut"
+      },
+      "ActionIn": {
+        "properties": {
+          "client_move_id": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Client Move Id"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "round_seen",
+              "answer",
+              "hint",
+              "skip",
+              "guess"
+            ],
+            "title": "Type"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "client_move_id",
+          "type"
+        ],
+        "title": "ActionIn"
+      },
+      "ActiveSessionOut": {
+        "properties": {
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Id"
+          },
+          "game_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Game Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ActiveSessionOut"
+      },
+      "AdminReportOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "reported_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Reported Id"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "reported_name": {
+            "type": "string",
+            "title": "Reported Name"
+          },
+          "reporter_name": {
+            "type": "string",
+            "title": "Reporter Name"
+          },
+          "reason_sentence": {
+            "type": "string",
+            "title": "Reason Sentence"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "reported_id",
+          "reason",
+          "status",
+          "created_at",
+          "reported_name",
+          "reporter_name",
+          "reason_sentence"
+        ],
+        "title": "AdminReportOut",
+        "description": "The school admin's list also shows who is who, in plain names (P7-T09)."
+      },
+      "AgeBandOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "label"
+        ],
+        "title": "AgeBandOut"
+      },
+      "BadgeOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "sentence": {
+            "type": "string",
+            "title": "Sentence"
+          },
+          "hint": {
+            "type": "string",
+            "title": "Hint"
+          },
+          "earned_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Earned On"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "sentence",
+          "hint"
+        ],
+        "title": "BadgeOut",
+        "description": "A badge is a gameplay fact; ``earned_on`` is null until it is theirs."
+      },
+      "BestOut": {
+        "properties": {
+          "game_id": {
+            "type": "string",
+            "title": "Game Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "played": {
+            "type": "integer",
+            "title": "Played"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "game_id",
+          "name",
+          "value",
+          "played"
+        ],
+        "title": "BestOut"
+      },
+      "BlockIn": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "block",
+              "mute"
+            ],
+            "title": "Type",
+            "default": "block"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "user_id"
+        ],
+        "title": "BlockIn"
+      },
+      "BlockedWordIn": {
+        "properties": {
+          "word": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Word"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "word"
+        ],
+        "title": "BlockedWordIn"
+      },
+      "BlockedWordOut": {
+        "properties": {
+          "word": {
+            "type": "string",
+            "title": "Word"
+          },
+          "built_in": {
+            "type": "boolean",
+            "title": "Built In"
+          },
+          "added_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Added By"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "word",
+          "built_in"
+        ],
+        "title": "BlockedWordOut"
+      },
+      "BoardChaseOut": {
+        "properties": {
+          "preferred_name": {
+            "type": "string",
+            "title": "Preferred Name"
+          },
+          "xp_gap": {
+            "type": "integer",
+            "title": "Xp Gap"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "preferred_name",
+          "xp_gap"
+        ],
+        "title": "BoardChaseOut",
+        "description": "The learner one place above: the near-miss nudge."
+      },
+      "BoardEntryOut": {
+        "properties": {
+          "rank": {
+            "type": "integer",
+            "title": "Rank"
+          },
+          "preferred_name": {
+            "type": "string",
+            "title": "Preferred Name"
+          },
+          "avatar_key": {
+            "type": "string",
+            "title": "Avatar Key"
+          },
+          "xp_total": {
+            "type": "integer",
+            "title": "Xp Total"
+          },
+          "sessions_count": {
+            "type": "integer",
+            "title": "Sessions Count"
+          },
+          "is_me": {
+            "type": "boolean",
+            "title": "Is Me"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "rank",
+          "preferred_name",
+          "avatar_key",
+          "xp_total",
+          "sessions_count",
+          "is_me"
+        ],
+        "title": "BoardEntryOut",
+        "description": "Masked identity only: preferred name and avatar (D-15)."
+      },
+      "BoardOut": {
+        "properties": {
+          "period": {
+            "type": "string",
+            "title": "Period"
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Starts At"
+          },
+          "ends_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ends At"
+          },
+          "entries": {
+            "items": {
+              "$ref": "#/components/schemas/BoardEntryOut"
+            },
+            "type": "array",
+            "title": "Entries"
+          },
+          "me": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BoardEntryOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "me_eligible": {
+            "type": "boolean",
+            "title": "Me Eligible"
+          },
+          "min_sessions": {
+            "type": "integer",
+            "title": "Min Sessions"
+          },
+          "chase": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BoardChaseOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "to_join": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "To Join"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "period",
+          "starts_at",
+          "entries",
+          "me_eligible",
+          "min_sessions"
+        ],
+        "title": "BoardOut"
+      },
+      "ChallengeIn": {
+        "properties": {
+          "game_id": {
+            "type": "string",
+            "title": "Game Id"
+          },
+          "difficulty": {
+            "type": "integer",
+            "maximum": 3,
+            "minimum": 1,
+            "title": "Difficulty",
+            "default": 1
+          },
+          "invitee_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Invitee Id"
+          },
+          "with_code": {
+            "type": "boolean",
+            "title": "With Code",
+            "default": true
+          },
+          "with_link": {
+            "type": "boolean",
+            "title": "With Link",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "game_id"
+        ],
+        "title": "ChallengeIn"
+      },
+      "ChallengeOut": {
+        "properties": {
+          "parent_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Parent Id"
+          },
+          "invitation_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Invitation Id"
+          },
+          "game_id": {
+            "type": "string",
+            "title": "Game Id"
+          },
+          "game_name": {
+            "type": "string",
+            "title": "Game Name"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "formatted_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Formatted Code"
+          },
+          "join_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Join Path"
+          },
+          "expires_sentence": {
+            "type": "string",
+            "title": "Expires Sentence"
+          },
+          "invitee_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Invitee Name"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "parent_id",
+          "invitation_id",
+          "game_id",
+          "game_name",
+          "expires_sentence"
+        ],
+        "title": "ChallengeOut"
+      },
+      "ChallengeResultOut": {
+        "properties": {
+          "parent_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Parent Id"
+          },
+          "opponent_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Opponent Id"
+          },
+          "opponent_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Opponent Name"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "win",
+                  "loss",
+                  "draw"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome"
+          },
+          "settled": {
+            "type": "boolean",
+            "title": "Settled"
+          },
+          "sentence": {
+            "type": "string",
+            "title": "Sentence"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "parent_id",
+          "settled",
+          "sentence"
+        ],
+        "title": "ChallengeResultOut",
+        "description": "One player's own challenge, for their end screen (P7-T05).\n\nNo secret reaches this shape: no seed, no word, no other score until both\nattempts are in (D-25)."
+      },
+      "ChallengeStartOut": {
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Session Id"
+          },
+          "game_id": {
+            "type": "string",
+            "title": "Game Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "round": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoundOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "round_index": {
+            "type": "integer",
+            "title": "Round Index"
+          },
+          "rounds_total": {
+            "type": "integer",
+            "title": "Rounds Total"
+          },
+          "score": {
+            "type": "integer",
+            "title": "Score"
+          },
+          "scores": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Scores"
+          },
+          "finished": {
+            "type": "boolean",
+            "title": "Finished"
+          },
+          "xp": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XpAwardOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "best": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best"
+          },
+          "best_is_new": {
+            "type": "boolean",
+            "title": "Best Is New",
+            "default": false
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "parent_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Parent Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "session_id",
+          "game_id",
+          "status",
+          "round_index",
+          "rounds_total",
+          "score",
+          "scores",
+          "finished",
+          "parent_id"
+        ],
+        "title": "ChallengeStartOut"
+      },
+      "ClassAccessOut": {
+        "properties": {
+          "class_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Class Id"
+          },
+          "class_name": {
+            "type": "string",
+            "title": "Class Name"
+          },
+          "members": {
+            "items": {
+              "$ref": "#/components/schemas/MemberAccessOut"
+            },
+            "type": "array",
+            "title": "Members"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "class_id",
+          "class_name",
+          "members"
+        ],
+        "title": "ClassAccessOut"
+      },
+      "ClassMembersOut": {
+        "properties": {
+          "class": {
+            "$ref": "#/components/schemas/ClassOut"
+          },
+          "members": {
+            "items": {
+              "$ref": "#/components/schemas/PublicProfile"
+            },
+            "type": "array",
+            "title": "Members"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "class",
+          "members"
+        ],
+        "title": "ClassMembersOut"
+      },
+      "ClassOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "grade": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grade"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "grade"
+        ],
+        "title": "ClassOut"
+      },
+      "CoachBoardOut": {
+        "properties": {
+          "period": {
+            "type": "string",
+            "title": "Period"
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Starts At"
+          },
+          "ends_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ends At"
+          },
+          "students": {
+            "items": {
+              "$ref": "#/components/schemas/StudentXpOut"
+            },
+            "type": "array",
+            "title": "Students"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "period",
+          "starts_at",
+          "students"
+        ],
+        "title": "CoachBoardOut"
+      },
+      "ContentItemIn": {
+        "properties": {
+          "answer": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Answer"
+          },
+          "clue": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clue"
+          },
+          "difficulty": {
+            "type": "integer",
+            "maximum": 3,
+            "minimum": 1,
+            "title": "Difficulty",
+            "default": 1
+          },
+          "alt_answers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Alt Answers"
+          },
+          "allow_problems": {
+            "type": "boolean",
+            "title": "Allow Problems",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "answer"
+        ],
+        "title": "ContentItemIn"
+      },
+      "ContentItemOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "answer": {
+            "type": "string",
+            "title": "Answer"
+          },
+          "clue": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clue"
+          },
+          "alt_answers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Alt Answers"
+          },
+          "difficulty": {
+            "type": "integer",
+            "title": "Difficulty"
+          },
+          "problems": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Problems"
+          },
+          "scrambled": {
+            "type": "string",
+            "title": "Scrambled"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "answer",
+          "alt_answers",
+          "difficulty",
+          "problems",
+          "scrambled",
+          "status"
+        ],
+        "title": "ContentItemOut"
+      },
+      "CreateSessionIn": {
+        "properties": {
+          "difficulty": {
+            "type": "integer",
+            "maximum": 3,
+            "minimum": 1,
+            "title": "Difficulty",
+            "default": 1
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "CreateSessionIn"
+      },
+      "EngagementOut": {
+        "properties": {
+          "streak": {
+            "$ref": "#/components/schemas/StreakOut"
+          },
+          "quest": {
+            "$ref": "#/components/schemas/QuestOut"
+          },
+          "badges": {
+            "items": {
+              "$ref": "#/components/schemas/BadgeOut"
+            },
+            "type": "array",
+            "title": "Badges"
+          },
+          "bests": {
+            "items": {
+              "$ref": "#/components/schemas/BestOut"
+            },
+            "type": "array",
+            "title": "Bests"
+          },
+          "level": {
+            "$ref": "#/components/schemas/LevelOut"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "streak",
+          "quest",
+          "badges",
+          "bests",
+          "level"
+        ],
+        "title": "EngagementOut"
+      },
+      "FriendOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "can_invite": {
+            "type": "boolean",
+            "title": "Can Invite"
+          },
+          "sentence": {
+            "type": "string",
+            "title": "Sentence"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "can_invite",
+          "sentence"
+        ],
+        "title": "FriendOut",
+        "description": "One avatar in the \"play with a friend\" sheet (P7-T06)."
+      },
+      "GameSummaryOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "is_live": {
+            "type": "boolean",
+            "title": "Is Live"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "summary",
+          "is_live"
+        ],
+        "title": "GameSummaryOut"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HeartbeatIn": {
+        "properties": {
+          "visible": {
+            "type": "boolean",
+            "title": "Visible",
+            "default": true
+          },
+          "last_input_age_s": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 86400,
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Input Age S"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "HeartbeatIn"
+      },
+      "ImportIn": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 200000,
+            "minLength": 1,
+            "title": "Text"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "ImportIn"
+      },
+      "ImportReportOut": {
+        "properties": {
+          "added": {
+            "type": "integer",
+            "title": "Added"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/ImportRowOut"
+            },
+            "type": "array",
+            "title": "Rows"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "added",
+          "rows"
+        ],
+        "title": "ImportReportOut"
+      },
+      "ImportRowOut": {
+        "properties": {
+          "line": {
+            "type": "integer",
+            "title": "Line"
+          },
+          "answer": {
+            "type": "string",
+            "title": "Answer"
+          },
+          "ok": {
+            "type": "boolean",
+            "title": "Ok"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "line",
+          "answer",
+          "ok"
+        ],
+        "title": "ImportRowOut"
+      },
+      "InboxOut": {
+        "properties": {
+          "invites": {
+            "items": {
+              "$ref": "#/components/schemas/InviteOut"
+            },
+            "type": "array",
+            "title": "Invites"
+          },
+          "notifications": {
+            "items": {
+              "$ref": "#/components/schemas/NoteOut"
+            },
+            "type": "array",
+            "title": "Notifications"
+          },
+          "unread": {
+            "type": "integer",
+            "title": "Unread"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "invites",
+          "notifications",
+          "unread"
+        ],
+        "title": "InboxOut"
+      },
+      "InviteAcceptIn": {
+        "properties": {
+          "invitation_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Invitation Id"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "token": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Token"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "InviteAcceptIn"
+      },
+      "InviteAcceptedOut": {
+        "properties": {
+          "parent_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Id"
+          },
+          "session_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Session Id"
+          },
+          "game_id": {
+            "type": "string",
+            "title": "Game Id"
+          },
+          "game_name": {
+            "type": "string",
+            "title": "Game Name"
+          },
+          "live": {
+            "type": "boolean",
+            "title": "Live",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "session_id",
+          "game_id",
+          "game_name"
+        ],
+        "title": "InviteAcceptedOut",
+        "description": "Where the accepted seat is. A challenge has a parent to start; a live\nmatch is already the thing you join, so it has no parent (P8-T09)."
+      },
+      "InviteOut": {
+        "properties": {
+          "invitation_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Invitation Id"
+          },
+          "game_id": {
+            "type": "string",
+            "title": "Game Id"
+          },
+          "game_name": {
+            "type": "string",
+            "title": "Game Name"
+          },
+          "inviter_name": {
+            "type": "string",
+            "title": "Inviter Name"
+          },
+          "sentence": {
+            "type": "string",
+            "title": "Sentence"
+          },
+          "live": {
+            "type": "boolean",
+            "title": "Live",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "invitation_id",
+          "game_id",
+          "game_name",
+          "inviter_name",
+          "sentence"
+        ],
+        "title": "InviteOut"
+      },
+      "LearningXpIn": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "amount": {
+            "type": "integer",
+            "maximum": 1000,
+            "minimum": -1000,
+            "title": "Amount"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "user_id",
+          "amount",
+          "reason"
+        ],
+        "title": "LearningXpIn"
+      },
+      "LevelOut": {
+        "properties": {
+          "number": {
+            "type": "integer",
+            "title": "Number"
+          },
+          "xp_into": {
+            "type": "integer",
+            "title": "Xp Into"
+          },
+          "xp_span": {
+            "type": "integer",
+            "title": "Xp Span"
+          },
+          "xp_to_next": {
+            "type": "integer",
+            "title": "Xp To Next"
+          },
+          "profile_xp": {
+            "type": "integer",
+            "title": "Profile Xp"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "number",
+          "xp_into",
+          "xp_span",
+          "xp_to_next",
+          "profile_xp"
+        ],
+        "title": "LevelOut",
+        "description": "Presentational only — never a grade, never an eligibility input."
+      },
+      "LiveAcceptIn": {
+        "properties": {
+          "invitation_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Invitation Id"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Token"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "LiveAcceptIn"
+      },
+      "LiveCreateIn": {
+        "properties": {
+          "clock_ms": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1800000,
+                "minimum": 60000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clock Ms"
+          },
+          "increment_ms": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 30000,
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Increment Ms"
+          },
+          "with_code": {
+            "type": "boolean",
+            "title": "With Code",
+            "default": true
+          },
+          "with_link": {
+            "type": "boolean",
+            "title": "With Link",
+            "default": true
+          },
+          "invitee_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Invitee Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "LiveCreateIn"
+      },
+      "LiveCreatedOut": {
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Session Id"
+          },
+          "game_name": {
+            "type": "string",
+            "title": "Game Name"
+          },
+          "invitation_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Invitation Id"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "formatted_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Formatted Code"
+          },
+          "join_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Join Path"
+          },
+          "expires_sentence": {
+            "type": "string",
+            "title": "Expires Sentence"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "session_id",
+          "game_name",
+          "invitation_id",
+          "expires_sentence"
+        ],
+        "title": "LiveCreatedOut"
+      },
+      "LiveMoveIn": {
+        "properties": {
+          "client_move_id": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 8,
+            "title": "Client Move Id"
+          },
+          "expected_move_number": {
+            "type": "integer",
+            "minimum": 1,
+            "title": "Expected Move Number"
+          },
+          "move": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 3,
+            "title": "Move"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "client_move_id",
+          "expected_move_number",
+          "move"
+        ],
+        "title": "LiveMoveIn"
+      },
+      "LiveStateOut": {
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Session Id"
+          },
+          "game_id": {
+            "type": "string",
+            "title": "Game Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "seat": {
+            "type": "string",
+            "enum": [
+              "white",
+              "black"
+            ],
+            "title": "Seat"
+          },
+          "side_to_move": {
+            "type": "string",
+            "enum": [
+              "white",
+              "black"
+            ],
+            "title": "Side To Move"
+          },
+          "your_turn": {
+            "type": "boolean",
+            "title": "Your Turn"
+          },
+          "board": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Board"
+          },
+          "legal_moves": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Legal Moves"
+          },
+          "move_number": {
+            "type": "integer",
+            "title": "Move Number"
+          },
+          "clock_ms": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Clock Ms"
+          },
+          "increment_ms": {
+            "type": "integer",
+            "title": "Increment Ms"
+          },
+          "moves_by": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Moves By"
+          },
+          "captures": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Captures"
+          },
+          "opponent": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Opponent"
+          },
+          "you_connected": {
+            "type": "boolean",
+            "title": "You Connected"
+          },
+          "draw_offer_from": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Draw Offer From"
+          },
+          "draw_offered_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Draw Offered At"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome"
+          },
+          "moves_since_progress": {
+            "type": "integer",
+            "title": "Moves Since Progress"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "session_id",
+          "game_id",
+          "status",
+          "seat",
+          "side_to_move",
+          "your_turn",
+          "board",
+          "legal_moves",
+          "move_number",
+          "clock_ms",
+          "increment_ms",
+          "moves_by",
+          "captures",
+          "opponent",
+          "you_connected",
+          "moves_since_progress"
+        ],
+        "title": "LiveStateOut",
+        "description": "One player's view of a match: no seed, no opponent legal moves (D-25)."
+      },
+      "LockoutIn": {
+        "properties": {
+          "scope_type": {
+            "type": "string",
+            "enum": [
+              "class",
+              "student"
+            ],
+            "title": "Scope Type"
+          },
+          "scope_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Scope Id"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Reason"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "scope_type",
+          "scope_id",
+          "reason",
+          "expires_at"
+        ],
+        "title": "LockoutIn"
+      },
+      "LockoutOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "scope_type": {
+            "type": "string",
+            "title": "Scope Type"
+          },
+          "scope_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Scope Id"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Starts At"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "scope_type",
+          "scope_id",
+          "reason",
+          "starts_at",
+          "expires_at",
+          "created_at"
+        ],
+        "title": "LockoutOut"
+      },
+      "LoginIn": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 2,
+            "title": "Code"
+          },
+          "pin": {
+            "type": "string",
+            "maxLength": 8,
+            "minLength": 4,
+            "title": "Pin"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "pin"
+        ],
+        "title": "LoginIn",
+        "description": "A student code and a PIN (0003_login_codes).\n\nValidation is deliberately loose about *format* and strict about length:\nrejecting a well-formed-but-unknown code here would tell an attacker which\ncodes exist, and it would tell a child nothing useful."
+      },
+      "MeOut": {
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/SelfProfile"
+          },
+          "school": {
+            "$ref": "#/components/schemas/SchoolOut"
+          },
+          "age_band": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AgeBandOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "user",
+          "school",
+          "age_band"
+        ],
+        "title": "MeOut"
+      },
+      "MeXpOut": {
+        "properties": {
+          "learning_xp_total": {
+            "type": "integer",
+            "title": "Learning Xp Total"
+          },
+          "game_xp_total": {
+            "type": "integer",
+            "title": "Game Xp Total"
+          },
+          "profile_xp_total": {
+            "type": "integer",
+            "title": "Profile Xp Total"
+          },
+          "game_xp_today": {
+            "type": "integer",
+            "title": "Game Xp Today"
+          },
+          "daily_cap": {
+            "type": "integer",
+            "title": "Daily Cap"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "learning_xp_total",
+          "game_xp_total",
+          "profile_xp_total",
+          "game_xp_today",
+          "daily_cap"
+        ],
+        "title": "MeXpOut",
+        "description": "Profile XP is presentation only: no grade or badge may read it (P5-T05)."
+      },
+      "MemberAccessOut": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "preferred_name": {
+            "type": "string",
+            "title": "Preferred Name"
+          },
+          "avatar_key": {
+            "type": "string",
+            "title": "Avatar Key"
+          },
+          "limit_minutes": {
+            "type": "integer",
+            "title": "Limit Minutes"
+          },
+          "limit_source": {
+            "type": "string",
+            "title": "Limit Source"
+          },
+          "used_seconds": {
+            "type": "integer",
+            "title": "Used Seconds"
+          },
+          "remaining_seconds": {
+            "type": "integer",
+            "title": "Remaining Seconds"
+          },
+          "locked_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locked Until"
+          },
+          "lockout_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lockout Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "user_id",
+          "preferred_name",
+          "avatar_key",
+          "limit_minutes",
+          "limit_source",
+          "used_seconds",
+          "remaining_seconds"
+        ],
+        "title": "MemberAccessOut"
+      },
+      "MyTurnOut": {
+        "properties": {
+          "parent_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Parent Id"
+          },
+          "game_id": {
+            "type": "string",
+            "title": "Game Id"
+          },
+          "game_name": {
+            "type": "string",
+            "title": "Game Name"
+          },
+          "opponent_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Opponent Name"
+          },
+          "sentence": {
+            "type": "string",
+            "title": "Sentence"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "parent_id",
+          "game_id",
+          "game_name",
+          "sentence"
+        ],
+        "title": "MyTurnOut",
+        "description": "A challenge where this learner still owes a turn (P7-T06)."
+      },
+      "NoteOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "body": {
+            "type": "string",
+            "title": "Body"
+          },
+          "invitation_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Invitation Id"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Id"
+          },
+          "unread": {
+            "type": "boolean",
+            "title": "Unread"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "body",
+          "unread"
+        ],
+        "title": "NoteOut"
+      },
+      "OfflineItemOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "answer": {
+            "type": "string",
+            "title": "Answer"
+          },
+          "alt_answers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Alt Answers"
+          },
+          "clue": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clue"
+          },
+          "clue_image_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clue Image Key"
+          },
+          "clue_audio_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clue Audio Key"
+          },
+          "difficulty": {
+            "type": "integer",
+            "title": "Difficulty"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "answer",
+          "difficulty"
+        ],
+        "title": "OfflineItemOut",
+        "description": "One downloadable puzzle.\n\nThis is the only response that carries an answer, and only because an\noffline round has no server to check against. It carries no session and no\nseed, so a downloaded word can never be scored or ranked (P9-T02)."
+      },
+      "OfflinePackOut": {
+        "properties": {
+          "game_id": {
+            "type": "string",
+            "title": "Game Id"
+          },
+          "locale": {
+            "type": "string",
+            "title": "Locale"
+          },
+          "age_band": {
+            "type": "string",
+            "title": "Age Band"
+          },
+          "difficulty": {
+            "type": "integer",
+            "title": "Difficulty"
+          },
+          "pack_version": {
+            "type": "string",
+            "title": "Pack Version"
+          },
+          "item_count": {
+            "type": "integer",
+            "title": "Item Count"
+          },
+          "generated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Generated At"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OfflineItemOut"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "game_id",
+          "locale",
+          "age_band",
+          "difficulty",
+          "pack_version",
+          "item_count",
+          "generated_at",
+          "items"
+        ],
+        "title": "OfflinePackOut"
+      },
+      "PackCreateIn": {
+        "properties": {
+          "age_band": {
+            "type": "string",
+            "title": "Age Band"
+          },
+          "copy_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Copy From"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "age_band"
+        ],
+        "title": "PackCreateIn"
+      },
+      "PackDetailOut": {
+        "properties": {
+          "pack": {
+            "$ref": "#/components/schemas/PackSummaryOut"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ContentItemOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "can_edit": {
+            "type": "boolean",
+            "title": "Can Edit"
+          },
+          "can_review": {
+            "type": "boolean",
+            "title": "Can Review"
+          },
+          "can_publish": {
+            "type": "boolean",
+            "title": "Can Publish"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "pack",
+          "items",
+          "can_edit",
+          "can_review",
+          "can_publish"
+        ],
+        "title": "PackDetailOut"
+      },
+      "PackSummaryOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "game_id": {
+            "type": "string",
+            "title": "Game Id"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "locale": {
+            "type": "string",
+            "title": "Locale"
+          },
+          "age_band": {
+            "type": "string",
+            "title": "Age Band"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "author_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Id"
+          },
+          "reviewer_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewer Id"
+          },
+          "review_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Review Note"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "item_count": {
+            "type": "integer",
+            "title": "Item Count"
+          },
+          "live_count": {
+            "type": "integer",
+            "title": "Live Count"
+          },
+          "draft_count": {
+            "type": "integer",
+            "title": "Draft Count"
+          },
+          "per_level": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Per Level"
+          },
+          "problems": {
+            "type": "integer",
+            "title": "Problems"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "game_id",
+          "version",
+          "locale",
+          "age_band",
+          "status",
+          "created_at",
+          "item_count",
+          "live_count",
+          "draft_count",
+          "per_level",
+          "problems"
+        ],
+        "title": "PackSummaryOut"
+      },
+      "PlayOut": {
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Session Id"
+          },
+          "game_id": {
+            "type": "string",
+            "title": "Game Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "round": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoundOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "round_index": {
+            "type": "integer",
+            "title": "Round Index"
+          },
+          "rounds_total": {
+            "type": "integer",
+            "title": "Rounds Total"
+          },
+          "score": {
+            "type": "integer",
+            "title": "Score"
+          },
+          "scores": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Scores"
+          },
+          "finished": {
+            "type": "boolean",
+            "title": "Finished"
+          },
+          "xp": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XpAwardOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "best": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best"
+          },
+          "best_is_new": {
+            "type": "boolean",
+            "title": "Best Is New",
+            "default": false
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "session_id",
+          "game_id",
+          "status",
+          "round_index",
+          "rounds_total",
+          "score",
+          "scores",
+          "finished"
+        ],
+        "title": "PlayOut"
+      },
+      "PlayStateOut": {
+        "properties": {
+          "remaining_seconds": {
+            "type": "integer",
+            "title": "Remaining Seconds"
+          },
+          "used_seconds": {
+            "type": "integer",
+            "title": "Used Seconds"
+          },
+          "limit_minutes": {
+            "type": "integer",
+            "title": "Limit Minutes"
+          },
+          "paused": {
+            "type": "boolean",
+            "title": "Paused"
+          },
+          "ended": {
+            "type": "boolean",
+            "title": "Ended"
+          },
+          "ended_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "remaining_seconds",
+          "used_seconds",
+          "limit_minutes",
+          "paused",
+          "ended"
+        ],
+        "title": "PlayStateOut"
+      },
+      "PolicyIn": {
+        "properties": {
+          "scope_type": {
+            "type": "string",
+            "enum": [
+              "platform",
+              "school",
+              "class",
+              "student"
+            ],
+            "title": "Scope Type"
+          },
+          "scope_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scope Id"
+          },
+          "daily_limit_minutes": {
+            "type": "integer",
+            "maximum": 1440,
+            "minimum": 0,
+            "title": "Daily Limit Minutes"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Reason"
+          },
+          "valid_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid Until"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "scope_type",
+          "daily_limit_minutes",
+          "reason"
+        ],
+        "title": "PolicyIn"
+      },
+      "PolicyOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "scope_type": {
+            "type": "string",
+            "title": "Scope Type"
+          },
+          "scope_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scope Id"
+          },
+          "daily_limit_minutes": {
+            "type": "integer",
+            "title": "Daily Limit Minutes"
+          },
+          "valid_from": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Valid From"
+          },
+          "valid_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid Until"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "set_by": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Set By"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "scope_type",
+          "daily_limit_minutes",
+          "valid_from",
+          "reason",
+          "set_by",
+          "created_at"
+        ],
+        "title": "PolicyOut"
+      },
+      "PresenceRowOut": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "avatar_key": {
+            "type": "string",
+            "title": "Avatar Key"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "in_match",
+              "busy"
+            ],
+            "title": "Status"
+          },
+          "sentence": {
+            "type": "string",
+            "title": "Sentence"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "user_id",
+          "name",
+          "avatar_key",
+          "status",
+          "sentence"
+        ],
+        "title": "PresenceRowOut"
+      },
+      "PublicProfile": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "preferred_name": {
+            "type": "string",
+            "title": "Preferred Name"
+          },
+          "avatar_key": {
+            "type": "string",
+            "title": "Avatar Key"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "preferred_name",
+          "avatar_key"
+        ],
+        "title": "PublicProfile",
+        "description": "Everything another learner may ever see. Add fields with care."
+      },
+      "PublishReadyOut": {
+        "properties": {
+          "published": {
+            "type": "integer",
+            "title": "Published"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "published"
+        ],
+        "title": "PublishReadyOut"
+      },
+      "QuestOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "target": {
+            "type": "integer",
+            "title": "Target"
+          },
+          "progress": {
+            "type": "integer",
+            "title": "Progress"
+          },
+          "completed": {
+            "type": "boolean",
+            "title": "Completed"
+          },
+          "reward_xp": {
+            "type": "integer",
+            "title": "Reward Xp"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "target",
+          "progress",
+          "completed",
+          "reward_xp"
+        ],
+        "title": "QuestOut"
+      },
+      "ReportIn": {
+        "properties": {
+          "reported_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Reported Id"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "bullying",
+              "cheating",
+              "inappropriate_name",
+              "other"
+            ],
+            "title": "Reason"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "reported_id",
+          "reason"
+        ],
+        "title": "ReportIn"
+      },
+      "ReportOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "reported_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Reported Id"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "reported_id",
+          "reason",
+          "status",
+          "created_at"
+        ],
+        "title": "ReportOut"
+      },
+      "RoundOut": {
+        "properties": {
+          "number": {
+            "type": "integer",
+            "title": "Number"
+          },
+          "time_left_ms": {
+            "type": "integer",
+            "title": "Time Left Ms"
+          },
+          "round_seconds": {
+            "type": "integer",
+            "title": "Round Seconds"
+          },
+          "letters": {
+            "type": "string",
+            "title": "Letters",
+            "default": ""
+          },
+          "clue": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clue"
+          },
+          "clue_image_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clue Image Key"
+          },
+          "clue_audio_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clue Audio Key"
+          },
+          "revealed": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revealed"
+          },
+          "tries_left": {
+            "type": "integer",
+            "title": "Tries Left",
+            "default": 0
+          },
+          "low": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Low"
+          },
+          "high": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "High"
+          },
+          "range_low": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Range Low"
+          },
+          "range_high": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Range High"
+          },
+          "difficulty": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Difficulty"
+          },
+          "tries_total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tries Total"
+          },
+          "feedback": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feedback"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "guesses": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Guesses"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "number",
+          "time_left_ms",
+          "round_seconds"
+        ],
+        "title": "RoundOut",
+        "description": "One round, whichever game it belongs to.\n\nThe two games fill different halves of this model, and neither ever carries\nan answer or a secret: Word Scramble sends letters and a clue (P4-T10),\nNumber Guess sends the window and how many tries are left (P6-T03)."
+      },
+      "SchoolOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "timezone": {
+            "type": "string",
+            "title": "Timezone"
+          },
+          "leaderboards_enabled": {
+            "type": "boolean",
+            "title": "Leaderboards Enabled"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "timezone",
+          "leaderboards_enabled"
+        ],
+        "title": "SchoolOut"
+      },
+      "SelfProfile": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "preferred_name": {
+            "type": "string",
+            "title": "Preferred Name"
+          },
+          "real_name": {
+            "type": "string",
+            "title": "Real Name"
+          },
+          "avatar_key": {
+            "type": "string",
+            "title": "Avatar Key"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "school_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "School Id"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date",
+            "title": "Date Of Birth"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "preferred_name",
+          "real_name",
+          "avatar_key",
+          "role",
+          "status",
+          "school_id",
+          "date_of_birth"
+        ],
+        "title": "SelfProfile",
+        "description": "The caller's own account, shown only to them."
+      },
+      "StreakOut": {
+        "properties": {
+          "current": {
+            "type": "integer",
+            "title": "Current"
+          },
+          "longest": {
+            "type": "integer",
+            "title": "Longest"
+          },
+          "played_today": {
+            "type": "boolean",
+            "title": "Played Today"
+          },
+          "last_played_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Played On"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "current",
+          "longest",
+          "played_today"
+        ],
+        "title": "StreakOut",
+        "description": "Consecutive school-local days with a finished game (P6 engagement)."
+      },
+      "StudentGameXpOut": {
+        "properties": {
+          "game_id": {
+            "type": "string",
+            "title": "Game Id"
+          },
+          "xp_total": {
+            "type": "integer",
+            "title": "Xp Total"
+          },
+          "sessions_count": {
+            "type": "integer",
+            "title": "Sessions Count"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "game_id",
+          "xp_total",
+          "sessions_count"
+        ],
+        "title": "StudentGameXpOut",
+        "description": "One game inside a learner's breakdown (P5-T11)."
+      },
+      "StudentXpOut": {
+        "properties": {
+          "preferred_name": {
+            "type": "string",
+            "title": "Preferred Name"
+          },
+          "avatar_key": {
+            "type": "string",
+            "title": "Avatar Key"
+          },
+          "xp_total": {
+            "type": "integer",
+            "title": "Xp Total"
+          },
+          "sessions_count": {
+            "type": "integer",
+            "title": "Sessions Count"
+          },
+          "games": {
+            "items": {
+              "$ref": "#/components/schemas/StudentGameXpOut"
+            },
+            "type": "array",
+            "title": "Games"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "preferred_name",
+          "avatar_key",
+          "xp_total",
+          "sessions_count",
+          "games"
+        ],
+        "title": "StudentXpOut",
+        "description": "A coach's view of one learner: total plus where it came from.\n\nAuditable by construction: the same numbers a school admin can reconcile\nagainst the ledger. Identity stays masked (D-15)."
+      },
+      "TermIn": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "starts_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Starts On"
+          },
+          "ends_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Ends On"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "starts_on",
+          "ends_on"
+        ],
+        "title": "TermIn"
+      },
+      "TermOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "starts_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Starts On"
+          },
+          "ends_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Ends On"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "starts_on",
+          "ends_on"
+        ],
+        "title": "TermOut"
+      },
+      "TicketIn": {
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Session Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "session_id"
+        ],
+        "title": "TicketIn"
+      },
+      "TicketOut": {
+        "properties": {
+          "ticket": {
+            "type": "string",
+            "title": "Ticket"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "ticket",
+          "expires_in"
+        ],
+        "title": "TicketOut",
+        "description": "A single-use key for one socket. Never logged, never stored client-side."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "XpAwardOut": {
+        "properties": {
+          "awarded": {
+            "type": "integer",
+            "title": "Awarded"
+          },
+          "today": {
+            "type": "integer",
+            "title": "Today"
+          },
+          "daily_cap": {
+            "type": "integer",
+            "title": "Daily Cap"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "awarded",
+          "today",
+          "daily_cap"
+        ],
+        "title": "XpAwardOut",
+        "description": "The post-game summary: what this game paid, and room left today.\n\nAwarded, not requested: a capped award shows the number the learner\nactually got (P5-T10)."
+      }
     }
   }
 }

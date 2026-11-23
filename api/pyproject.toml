@@ -14,9 +14,16 @@ select = ["E", "F", "I", "UP", "B", "ASYNC", "S", "T20"]
 ignore = ["S101"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S105", "S106"]
+# Tests reproduce a seed on purpose; the parity vectors are not secrets.
+"tests/*" = ["S105", "S106", "S311"]
 # The operational CLI exists to print JSON for scripts; print is its output.
 "app/cli.py" = ["T201"]
+# The dev runner's whole job is to print what it is doing and to start the
+# interpreter it was handed; both are deliberate there.
+"dev_reload.py" = ["T201", "S603"]
+# A verification script's output is what a person reads after running it, and
+# its fixed seeds are what makes the rule vectors reproducible.
+"tools/*" = ["T201", "E501", "S311"]
 
 [tool.mypy]
 python_version = "3.12"

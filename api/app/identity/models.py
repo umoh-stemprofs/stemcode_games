@@ -12,9 +12,10 @@ that migration; they never create anything themselves.
 from __future__ import annotations
 
 import datetime as dt
-import enum
 import uuid
+from enum import StrEnum
 
+from app.core.db import Base
 from sqlalchemy import (
     Boolean,
     Date,
@@ -30,22 +31,28 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.db import Base
 
+class Role(StrEnum):
+    """The three doors (D-37, 0008_three_roles).
 
-class Role(str, enum.Enum):
-    """Roles from P1-T01. Values match the Postgres enum ``identity_role``."""
+    Values match the Postgres enum ``identity_role``. There are exactly three:
+
+    * ``learner`` plays games;
+    * ``coach`` runs a class and writes words;
+    * ``school_admin`` runs a school and is the only one who can publish.
+
+    A coach publishes their own words too (D-38): the draft step, not a second
+    person, is what stands between a typed word and a child seeing it.
+    There is no platform role: making a school is a command on the server
+    (``python -m app.cli``), not a screen.
+    """
 
     learner = "learner"
     coach = "coach"
     school_admin = "school_admin"
-    platform_admin = "platform_admin"
-    content_contributor = "content_contributor"
-    content_reviewer = "content_reviewer"
-    moderator = "moderator"
 
 
-class UserStatus(str, enum.Enum):
+class UserStatus(StrEnum):
     active = "active"
     suspended = "suspended"
     disabled = "disabled"
@@ -90,10 +97,10 @@ class User(Base):
     avatar_key: Mapped[str] = mapped_column(Text, nullable=False)
     date_of_birth: Mapped[dt.date] = mapped_column(Date, nullable=False)
 
-    # Login identity. A user has an email, a username, or both.
-    email: Mapped[str | None] = mapped_column(Text, nullable=True)
-    username: Mapped[str | None] = mapped_column(Text, nullable=True)
-    password_hash: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Login identity: a short code plus a PIN. One form for every role, so
+    # there is one set of rules to get right (0003_login_codes).
+    student_code: Mapped[str] = mapped_column(Text, nullable=False)
+    pin_hash: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     failed_login_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     locked_until: Mapped[dt.datetime | None] = mapped_column(DateTime(timezone=True))
@@ -109,13 +116,8 @@ class User(Base):
 
     __table_args__ = (
         Index("ix_users_school_id", "school_id"),
-        Index("ux_users_email_lower", func.lower(email), unique=True, postgresql_where=email.isnot(None)),
-        Index(
-            "ux_users_username_lower",
-            func.lower(username),
-            unique=True,
-            postgresql_where=username.isnot(None),
-        ),
+        # Stored uppercase, so a plain unique index is enough.
+        Index("ux_users_student_code", "student_code", unique=True),
     )
 
 
