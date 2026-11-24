@@ -10,9 +10,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-# Level 1 is 0-99 Profile XP, level 2 starts at 100, and so on. One number, in
-# one place, so the ring and the header can never disagree.
-LEVEL_SPAN = 100
+# A level costs a little more than the one before: 50 XP to leave level 1,
+# then 75, 100, 125 ... One number, in one place, so the ring and the header can
+# never disagree.
+#
+# The first step is short on purpose: the very first game should move the ring,
+# or the bar looks broken. After that the growth is gentle enough that a learner
+# who plays most days still sees a new level every week or so, and the gap stays
+# readable — level 10 arrives at 1,350 XP, level 20 at 5,225.
+FIRST_SPAN = 50
+SPAN_STEP = 25
 
 
 @dataclass(frozen=True, slots=True)
@@ -42,11 +49,24 @@ class Level:
         return max(0, self.xp_span - self.xp_into)
 
 
+def span_for(number: int) -> int:
+    """The XP a level costs, by its number: 50, 75, 100, 125 ...
+
+    ``number`` is 1-based, and the span belongs to the level being *left*.
+    """
+    return FIRST_SPAN + SPAN_STEP * (max(1, int(number)) - 1)
+
+
 def level_for(profile_xp: int) -> Level:
     """Where a total lands on the ring. Never used for eligibility."""
     total = max(0, int(profile_xp))
-    return Level(
-        number=total // LEVEL_SPAN + 1,
-        xp_into=total % LEVEL_SPAN,
-        xp_span=LEVEL_SPAN,
-    )
+    number = 1
+    span = span_for(number)
+    # Each step is spent before the next one starts: 50 takes you to level 2,
+    # the next 75 to level 3. The sum is quadratic, so this loop runs a few
+    # hundred times at most for a real learner.
+    while total >= span:
+        total -= span
+        number += 1
+        span = span_for(number)
+    return Level(number=number, xp_into=total, xp_span=span)

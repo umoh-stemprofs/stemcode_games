@@ -48,7 +48,7 @@ from app.games.schemas import (
     ReportOut,
 )
 from app.games.services import access, challenge, live, play
-from app.identity.deps import ActorDep, SessionDep, require_roles
+from app.identity.deps import ActorDep, CacheDep, SessionDep, require_roles
 from app.identity.models import Role, User
 from app.identity.service import Actor
 
@@ -123,21 +123,34 @@ def _clock(at: dt.datetime, timezone: str) -> str:
 
 # --------------------------------------------------------------------- roster
 @router.get("/friends")
-async def friends(session: SessionDep, actor: ActorDep) -> list[FriendOut]:
-    """Classmates you can tap to invite (P7-T06: avatars first)."""
+async def friends(
+    session: SessionDep, actor: ActorDep, cache: CacheDep
+) -> list[FriendOut]:
+    """Classmates you can tap to invite (P7-T06: avatars first).
+
+    A learner whose browser is open is marked ``online`` and listed first: the
+    useful names are the ones that can answer a challenge now.
+    """
     user = await _acting_user(session, actor)
     rows = await repo.classmates(session, user_id=user.id, school_id=user.school_id)
     hidden = await repo.blocked_user_ids(session, user_id=user.id)
-    return [
-        FriendOut(
-            id=row.id,
-            name=_display_name(row),
-            can_invite=True,
-            sentence="Tap to send an invite.",
+    out: list[FriendOut] = []
+    for row in rows:
+        if row.id in hidden:
+            continue
+        online = await cache.get(live.online_key(row.id)) is not None
+        out.append(
+            FriendOut(
+                id=row.id,
+                name=_display_name(row),
+                avatar_key=row.avatar_key or "",
+                online=online,
+                can_invite=True,
+                sentence="Tap to send an invite.",
+            )
         )
-        for row in rows
-        if row.id not in hidden
-    ]
+    out.sort(key=lambda friend: (not friend.online, friend.name))
+    return out
 
 
 # ------------------------------------------------------------------ challenges

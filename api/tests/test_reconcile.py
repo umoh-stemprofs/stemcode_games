@@ -16,7 +16,6 @@ from __future__ import annotations
 import datetime as dt
 import uuid
 
-import pytest
 from app.games.models import FairplayFlag, GameXpEntry, LeaderboardPeriod
 from app.games.services import maintenance
 from sqlalchemy import func, select
@@ -214,15 +213,18 @@ async def test_a_coach_gets_a_404_for_a_class_they_do_not_run(
     assert response.status_code == 404
 
 
-@pytest.mark.parametrize("period", ["all_time"])
-async def test_the_coach_view_hides_all_time_from_a_coach(
-    client, db_session: AsyncSession, period: str
+async def test_a_coach_reads_the_all_time_view_for_their_own_class(
+    client, db_session: AsyncSession
 ) -> None:
+    """All-time replaced the termly tab, so a coach reads it for their class."""
     world = await build_world(db_session)
     await login(client, world.coach_a)
 
-    response = await client.get(f"/api/leaderboards/{period}/students?class_id={world.class_a.id}")
-    assert response.status_code == 404
+    response = await client.get(
+        f"/api/leaderboards/all_time/students?class_id={world.class_a.id}"
+    )
+    assert response.status_code == 200, response.text
+    assert response.json()["period"] == "all_time"
 
 
 async def test_the_breakdown_reads_per_game_rows_only(db_session: AsyncSession) -> None:

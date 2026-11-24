@@ -163,7 +163,8 @@ async def test_a_first_game_awards_and_records_both_numbers(db_session: AsyncSes
     )
     assert award.awarded == 15
     assert award.today == 15
-    assert award.daily_cap == 60
+    # No daily cap by default: 0 in the payload means "nothing to stop at".
+    assert award.daily_cap == 0
     assert award.eligible is True
 
     ledger = (
@@ -205,7 +206,19 @@ async def test_a_retry_does_not_pay_twice(db_session: AsyncSession) -> None:
     assert total == 15
 
 
-async def test_the_daily_cap_stops_at_sixty(db_session: AsyncSession) -> None:
+def test_there_is_no_daily_cap_by_default() -> None:
+    assert xp_rules.DEFAULT_DAILY_CAP == 0
+    assert xp_rules.capped_award(40, 5000, xp_rules.DEFAULT_DAILY_CAP) == 40
+
+
+def test_a_configured_cap_still_clips() -> None:
+    """The setting survived the default: a school that wants a cap still gets one."""
+    assert xp_rules.capped_award(40, 20, 60) == 40
+    assert xp_rules.capped_award(40, 55, 60) == 5
+    assert xp_rules.capped_award(40, 90, 60) == 0
+
+
+async def test_six_games_in_one_day_are_paid_in_full(db_session: AsyncSession) -> None:
     world = await build_world(db_session)
     totals: list[int] = []
     for _ in range(6):
@@ -220,7 +233,8 @@ async def test_the_daily_cap_stops_at_sixty(db_session: AsyncSession) -> None:
         )
         totals.append(award.awarded)
 
-    assert totals == [15, 15, 15, 15, 0, 0]
+    assert totals == [15, 15, 15, 15, 15, 15]
+    assert award.today == 90
 
 
 async def test_a_below_minimum_session_writes_an_auditable_zero(
@@ -270,7 +284,7 @@ async def test_the_summary_splits_learning_from_game(db_session: AsyncSession) -
     assert summary["game_xp_total"] == 15
     assert summary["game_xp_today"] == 15
     assert summary["profile_xp_total"] == summary["learning_xp_total"] + 15
-    assert summary["daily_cap"] == 60
+    assert summary["daily_cap"] == 0
 
 
 @pytest.mark.parametrize(

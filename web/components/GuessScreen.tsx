@@ -23,7 +23,7 @@
  * the reason a child who wants 12 does not get 2512.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Icon } from "@/components/icons";
 import { RoundClock } from "@/components/RoundClock";
@@ -58,18 +58,24 @@ export function GuessScreen({
   // and always a sensible one after a "go up" or "go down".
   const low = round?.low ?? 1;
   const high = round?.high ?? 100;
-  const number = round?.number;
+  const roundNo = round?.number ?? 0;
   const mid = Math.round((low + high) / 2);
 
   const [draft, setDraft] = useState(String(mid));
   // True when the box holds a number the screen chose, so the next digit starts
   // a new one instead of extending it.
   const [fresh, setFresh] = useState(true);
+  // The box is filled once per number, not once per reply. After a guess it is
+  // cleared on purpose (see `submit`), and re-filling it here would put the
+  // next midpoint back under the learner's finger before they had read a word.
+  const filledFor = useRef<number | null>(null);
 
   useEffect(() => {
+    if (filledFor.current === roundNo) return;
+    filledFor.current = roundNo;
     setDraft(String(mid));
     setFresh(true);
-  }, [number, mid]);
+  }, [roundNo, mid]);
 
   if (!round) return null;
 
@@ -124,8 +130,14 @@ export function GuessScreen({
   }
 
   function submit() {
-    if (!ready) return;
-    onGuess(typed);
+    if (!ready || pending) return;
+    const value = typed;
+    // Empty the box first. A second tap then finds nothing to send, so
+    // "submit, submit, submit" over one open number is gone while the first
+    // guess is still in the air — and the next guess has to be chosen.
+    setDraft("");
+    setFresh(true);
+    onGuess(value);
   }
 
   return (
@@ -219,6 +231,7 @@ export function GuessScreen({
           inputMode="numeric"
           aria-label="Your number"
           value={draft}
+          placeholder="0"
           min={rangeLow}
           max={rangeHigh}
           onChange={(event) => {

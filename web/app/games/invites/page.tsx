@@ -20,8 +20,8 @@ import { Icon } from "@/components/icons";
 import { Alert, Button, ButtonLink, Card, EmptyState, Loading, PageHeader } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api/client";
 import { sentenceFor } from "@/lib/auth/messages";
-import type { Inbox, InviteAccepted } from "@/lib/games/social";
-import { seatPath } from "@/lib/games/social";
+import { acceptInvite } from "@/lib/games/inviteAccept";
+import type { Inbox } from "@/lib/games/social";
 
 export default function InvitesPage() {
   return (
@@ -50,17 +50,9 @@ function InvitesBody() {
       setBusy(true);
       setError(null);
       try {
-        const accepted = await apiFetch<InviteAccepted>("/api/games/invites/accept", {
-          method: "POST",
-          body: JSON.stringify({ invitation_id: invitationId }),
-        });
-        // A live match is already the thing you join; a challenge needs its own
-        // attempt started first. Sending a live seat to the challenge route was
-        // a 404 that left the learner stuck on this screen.
-        if (!accepted.live) {
-          await apiFetch(`/api/games/challenges/${accepted.parent_id}/start`, { method: "POST" });
-        }
-        router.push(seatPath(accepted));
+        // Shared with the popup, so both say yes in the same order: accept,
+        // start the challenge when it is not a live match, then open it.
+        router.push(await acceptInvite(invitationId));
       } catch (caught) {
         setError(
           caught instanceof ApiError

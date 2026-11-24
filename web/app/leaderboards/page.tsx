@@ -3,25 +3,22 @@
 /**
  * The boards (P5-T10, P5-T11).
  *
- * One screen, one decision: which board to look at. Tabs the school cannot have
- * are **hidden, not disabled** — a school with no term dates has no "This term"
- * tab until an admin adds them, and a learner never sees "All time" at all
- * (D-35). Identity is masked everywhere: avatar and preferred name only.
+ * One screen, one decision: which board to look at. The three tabs are today,
+ * this week and all time; the all-time board never resets, so it is the one to
+ * climb. Identity is masked everywhere: avatar and preferred name only.
  *
  * The top three get the podium because a rank you can see is the reason to play
  * one more game; everyone below gets a plain row so the list still reads quickly.
  */
 
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
-import { Icon } from "@/components/icons";
 import {
   Alert,
   Button,
   Card,
-  Chip,
   EmptyState,
   Loading,
   PageHeader,
@@ -32,7 +29,7 @@ import { avatarEmoji } from "@/lib/avatars";
 import { sentenceFor } from "@/lib/auth/messages";
 import { useSession } from "@/lib/auth/session";
 import type { ClassSummary } from "@/lib/auth/types";
-import type { Board, BoardPeriod, SchoolTerm } from "@/lib/games/board-types";
+import type { Board, BoardPeriod } from "@/lib/games/board-types";
 import { PERIOD_WORDS } from "@/lib/games/board-types";
 
 type GameSummary = {
@@ -42,7 +39,7 @@ type GameSummary = {
   is_live: boolean;
 };
 
-const LEARNER_PERIODS: BoardPeriod[] = ["daily", "weekly", "termly"];
+const LEARNER_PERIODS: BoardPeriod[] = ["daily", "weekly", "all_time"];
 const MEDALS = ["🥇", "🥈", "🥉"];
 
 export default function LeaderboardsPage() {
@@ -61,10 +58,7 @@ function BoardBody() {
   // Keeps the "ends in" line current while the page stays open.
   useMinuteTick();
 
-  const periods = useMemo<BoardPeriod[]>(
-    () => (isAdmin ? [...LEARNER_PERIODS, "all_time"] : LEARNER_PERIODS),
-    [isAdmin],
-  );
+  const periods = LEARNER_PERIODS;
 
   const [period, setPeriod] = useState<BoardPeriod>("daily");
   const [game, setGame] = useState("");
@@ -95,9 +89,6 @@ function BoardBody() {
     retry: false,
   });
 
-  const hidden = board.error instanceof ApiError && board.error.status === 404;
-  const noCalendar = hidden && period === "termly";
-
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
@@ -127,25 +118,22 @@ function BoardBody() {
       />
 
       <div className="flex flex-wrap items-center gap-2">
-        {periods
-          // Do not offer a tab that answers 404 for this school.
-          .filter((item) => !(item === "termly" && noCalendar))
-          .map((item) => (
-            <button
-              key={item}
-              type="button"
-              aria-pressed={period === item}
-              onClick={() => setPeriod(item)}
-              className={cx(
-                "min-h-[44px] rounded-xl border px-4 font-headline text-label font-bold transition-colors",
-                period === item
-                  ? "border-brand-soft bg-brand-soft text-brand-deep"
-                  : "border-line bg-surface text-ink-muted hover:bg-surface-muted hover:text-ink",
-              )}
-            >
-              {PERIOD_WORDS[item]}
-            </button>
-          ))}
+        {periods.map((item) => (
+          <button
+            key={item}
+            type="button"
+            aria-pressed={period === item}
+            onClick={() => setPeriod(item)}
+            className={cx(
+              "min-h-[44px] rounded-xl border px-4 font-headline text-label font-bold transition-colors",
+              period === item
+                ? "border-brand-soft bg-brand-soft text-brand-deep"
+                : "border-line bg-surface text-ink-muted hover:bg-surface-muted hover:text-ink",
+            )}
+          >
+            {PERIOD_WORDS[item]}
+          </button>
+        ))}
       </div>
 
       {/* The near miss, said once and plainly: who is next, and by how much. */}
@@ -203,18 +191,12 @@ function BoardBody() {
 
       {board.isError ? (
         <Alert>
-          {noCalendar
-            ? "This school has no term dates yet."
-            : sentenceFor(
-                board.error instanceof ApiError ? board.error.code : undefined,
-                board.error instanceof ApiError
-                  ? board.error.status
-                  : undefined,
-              )}
+          {sentenceFor(
+            board.error instanceof ApiError ? board.error.code : undefined,
+            board.error instanceof ApiError ? board.error.status : undefined,
+          )}
         </Alert>
       ) : null}
-
-      {noCalendar && isAdmin ? <TermForm /> : null}
 
       {board.data ? (
         <BoardTable board={board.data} isLearner={role === "learner"} />
@@ -237,7 +219,7 @@ function resetSentence(endsAt: string | null): string {
   const minutes = Math.round(leftMs / 60000);
   if (minutes < 60) return `Ends in ${minutes} min.`;
   const hours = Math.floor(minutes / 60);
-  // A term board is weeks away; "483 h 50 min" is arithmetic where a child
+  // A weekly board is days away; "483 h 50 min" is arithmetic where a child
   // needs a date-like answer.
   if (hours >= 48) {
     const days = Math.round(hours / 24);
@@ -390,113 +372,5 @@ function BoardTable({
         </Card>
       ) : null}
     </div>
-  );
-}
-
-function TermForm() {
-  const [name, setName] = useState("");
-  const [starts, setStarts] = useState("");
-  const [ends, setEnds] = useState("");
-  const [saved, setSaved] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const terms = useQuery({
-    queryKey: ["terms"],
-    queryFn: () => apiFetch<SchoolTerm[]>("/api/school/terms"),
-  });
-
-  async function submit(event: React.FormEvent) {
-    event.preventDefault();
-    setError(null);
-    try {
-      await apiFetch<SchoolTerm>("/api/school/terms", {
-        method: "POST",
-        body: JSON.stringify({ name, starts_on: starts, ends_on: ends }),
-      });
-      setSaved(true);
-      setName("");
-      setStarts("");
-      setEnds("");
-      await terms.refetch();
-    } catch (caught) {
-      setError(
-        caught instanceof ApiError ? caught.message : "That did not save.",
-      );
-    }
-  }
-
-  return (
-    <Card className="flex flex-col gap-4 p-6">
-      <div className="flex flex-col gap-1">
-        <h2 className="flex items-center gap-2 font-headline text-large font-extrabold text-ink">
-          <Icon name="calendar" size={22} className="text-brand" />
-          Add your term dates
-        </h2>
-        <p className="text-body-min text-ink-muted">
-          The term board needs a start and an end.
-        </p>
-      </div>
-
-      <form
-        onSubmit={(event) => void submit(event)}
-        className="flex flex-col gap-4"
-      >
-        <label className="flex flex-col gap-1.5 text-label font-bold text-ink-muted">
-          Name
-          <input
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            required
-            className="min-h-target rounded-xl border border-line bg-surface px-3 text-body text-ink"
-          />
-        </label>
-
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <label className="flex flex-1 flex-col gap-1.5 text-label font-bold text-ink-muted">
-            First day
-            <input
-              type="date"
-              value={starts}
-              onChange={(event) => setStarts(event.target.value)}
-              required
-              className="min-h-target rounded-xl border border-line bg-surface px-3 text-body text-ink"
-            />
-          </label>
-          <label className="flex flex-1 flex-col gap-1.5 text-label font-bold text-ink-muted">
-            Last day
-            <input
-              type="date"
-              value={ends}
-              onChange={(event) => setEnds(event.target.value)}
-              required
-              className="min-h-target rounded-xl border border-line bg-surface px-3 text-body text-ink"
-            />
-          </label>
-        </div>
-
-        <Button type="submit" arrow className="w-full sm:w-fit">
-          Save the term
-        </Button>
-
-        {saved ? (
-          <p role="status" className="text-body-min font-semibold text-ok">
-            Term saved.
-          </p>
-        ) : null}
-        {error ? <Alert>{error}</Alert> : null}
-      </form>
-
-      {terms.data && terms.data.length > 0 ? (
-        <ul className="flex flex-wrap gap-2">
-          {terms.data.map((term) => (
-            <li key={term.id}>
-              <Chip>
-                {term.name}: {term.starts_on} to {term.ends_on}
-              </Chip>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-    </Card>
   );
 }

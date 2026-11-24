@@ -9,6 +9,9 @@
 export type Friend = {
   id: string;
   name: string;
+  avatar_key: string;
+  /** Their browser is open right now, so an invite has someone to land on. */
+  online: boolean;
   can_invite: boolean;
   sentence: string;
 };

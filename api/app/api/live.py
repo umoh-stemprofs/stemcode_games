@@ -201,3 +201,14 @@ async def presence(session: SessionDep, actor: ActorDep, cache: CacheDep) -> lis
     user = await _acting_user(session, actor)
     rows = await live.presence(session, user=user, cache=cache)
     return [PresenceRowOut(**row) for row in rows]
+
+
+@presence_router.post("/presence", status_code=204)
+async def say_hello(session: SessionDep, actor: ActorDep, cache: CacheDep) -> None:
+    """Say that this learner's browser is open, so the roster can show a dot.
+
+    No body and no state kept on the server: one short-lived cache key per
+    learner, which expires on its own when the tab closes.
+    """
+    user = await _acting_user(session, actor)
+    await live.mark_online(cache, user_id=user.id)

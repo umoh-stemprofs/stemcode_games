@@ -22,8 +22,12 @@ from dataclasses import dataclass
 PARTICIPATION = 5
 MAX_PERFORMANCE_BONUS = 10
 CHALLENGE_WIN_BONUS = 5
-DEFAULT_DAILY_CAP = 60
-DEFAULT_MIN_SESSIONS = 3
+# There is no daily cap by default: every game pays what it earned. The setting
+# still exists, so a school that wants one can set a number; 0 means "no cap".
+DEFAULT_DAILY_CAP = 0
+# One finished game is enough to appear on a board. A minimum above 1 made a
+# learner who had just played see an empty board and be told to play again.
+DEFAULT_MIN_SESSIONS = 1
 
 # The score that earns the full performance bonus, per game. Word Scramble's
 # ten rounds cap at 150 (10 points + 5 time bonus each); Number Guess's five
@@ -116,6 +120,14 @@ def request_xp(
 
 
 def capped_award(requested: int, already_today: int, daily_cap: int) -> int:
-    """Never negative, never over the cap (D-13)."""
+    """Never negative, never over the cap (D-13).
+
+    A cap of 0 (or less) is no cap: XP is paid in full, which is the default.
+    The cap survives as an opt-in setting rather than a constant, so the rule is
+    still applied in one place when a school turns it on.
+    """
+    wanted = max(0, requested)
+    if daily_cap <= 0:
+        return wanted
     room = max(0, daily_cap - max(0, already_today))
-    return max(0, min(requested, room))
+    return max(0, min(wanted, room))

@@ -17,6 +17,12 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
 
+  // `next build` and `next dev` must never write into the same directory. When
+  // they shared `.next`, a build replaced the dev server's chunks underneath it
+  // and every page died with "Cannot find module './NNN.js'". `next start` also
+  // runs with NODE_ENV=production, so it reads the directory the build wrote.
+  distDir: process.env.NODE_ENV === "production" ? ".next-build" : ".next",
+
   // The floating dev indicator only exists under `next dev`; this hides it so
   // screenshots and demos show the product, not Next's overlay. It has no
   // effect on a production build.

@@ -426,7 +426,8 @@ async def test_being_away_past_the_window_forfeits_the_match(
     by_user = {result.user_id: result for result in results}
     assert by_user[other.id].outcome == "win"
     assert by_user[on_turn.id].outcome == "loss"
-    # Nobody made eight moves, so this is a real result and not a rewarded one.
+    # Nobody made the four moves a side the activity minimum needs, so this is a
+    # real result and not a rewarded one.
     assert all(result.leaderboard_eligible is False for result in results)
     assert await _xp_rows(db_session, other.id) == 0
 
@@ -452,6 +453,42 @@ async def test_running_out_of_time_ends_the_match_on_read(client, db_session: As
 
 
 # ------------------------------------------------------- resign, draw, rematch
+async def test_four_moves_a_side_earns_xp(client, db_session: AsyncSession) -> None:
+    """D-29: four moves each is real play, and a short real game must pay."""
+    world = await build_world(db_session)
+    row = await _started(db_session, world)
+
+    # Four each, strictly alternating. The server picks colours, so each turn
+    # asks whose it is instead of assuming.
+    for turn in range(8):
+        fresh = await repo.get_session(db_session, row.id)
+        assert fresh is not None
+        on_turn = _on_turn(fresh.config, world)
+        _, move_key = await _seat_and_move(db_session, fresh, on_turn)
+        await live.submit(
+            db_session,
+            user=on_turn,
+            session_id=row.id,
+            client_move_id=uuid.uuid4().hex * 2,
+            expected_move_number=turn + 1,
+            move_key=move_key,
+            now=NOW + dt.timedelta(seconds=5 + turn),
+        )
+
+    played = await repo.get_session(db_session, row.id)
+    assert played is not None
+    assert min(int(count) for count in played.config["moves_by"].values()) == 4
+
+    await live.resign(
+        db_session, user=world.learner_a, session_id=row.id, now=NOW + dt.timedelta(seconds=30)
+    )
+
+    results = await _results(db_session, row.id)
+    assert all(result.leaderboard_eligible for result in results)
+    winner = next(result for result in results if result.outcome == "win")
+    assert await _xp_rows(db_session, winner.user_id) == 1
+
+
 async def test_resigning_gives_both_players_a_result_and_no_xp(
     client, db_session: AsyncSession
 ) -> None:

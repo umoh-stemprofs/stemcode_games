@@ -74,6 +74,17 @@ const config: Config = {
         success: "0 2px 0 0 #005235",
         violet: "0 2px 0 0 #4745b8",
       },
+      // A waiting invitation bobs so it is noticed on a busy page. Slow enough
+      // to read past; globals.css stops it for prefers-reduced-motion.
+      keyframes: {
+        bob: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+      },
+      animation: {
+        bob: "bob 1.8s ease-in-out infinite",
+      },
     },
   },
   plugins: [],

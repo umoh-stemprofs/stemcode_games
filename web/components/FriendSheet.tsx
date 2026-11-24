@@ -175,13 +175,24 @@ export function FriendSheet({ gameId, gameName, onStarted }: Props) {
               aria-label={`Invite ${friend.name}`}
               className="flex min-h-target min-w-target flex-col items-center justify-center gap-1 rounded-2xl border-2 border-line bg-surface px-4 py-2 text-label font-bold text-ink transition-colors hover:border-brand hover:bg-brand-soft disabled:opacity-50"
             >
-              <span
-                aria-hidden="true"
-                className="grid size-9 place-items-center rounded-full bg-surface-muted text-[19px] font-extrabold text-brand-deep"
-              >
-                {friend.name.charAt(0).toUpperCase()}
+              <span className="relative">
+                <span
+                  aria-hidden="true"
+                  className="grid size-9 place-items-center rounded-full bg-surface-muted text-[19px] font-extrabold text-brand-deep"
+                >
+                  {friend.name.charAt(0).toUpperCase()}
+                </span>
+                {friend.online ? (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full bg-ok ring-2 ring-surface"
+                  />
+                ) : null}
               </span>
               {friend.name}
+              <span className={friend.online ? "text-micro font-bold text-ok" : "text-micro text-ink-muted"}>
+                {friend.online ? "Online" : "Away"}
+              </span>
             </button>
           </li>
         ))}

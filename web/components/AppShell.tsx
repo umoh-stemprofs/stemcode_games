@@ -22,7 +22,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
 
 import { Icon } from "@/components/icons";
+import { InviteAlert } from "@/components/InviteAlert";
 import { OfflineSync } from "@/components/OfflineSync";
+import { PresenceHeartbeat } from "@/components/PresenceHeartbeat";
 import { QuitGuardProvider, useQuitGuard } from "@/components/QuitGuard";
 import { TimeMeter } from "@/components/TimeMeter";
 import { XpChip } from "@/components/XpChip";
@@ -83,6 +85,12 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* P9-T02: the offline games keep themselves ready. No button, no
           prompt — every learner gets their words saved on first load. */}
       <OfflineSync />
+      {/* "I am here", so a classmate's roster can show a dot beside this
+          learner's name. It expires by itself; no logout to remember. */}
+      <PresenceHeartbeat />
+      {/* A friend's invitation finds the learner wherever they are, then gets
+          out of the way: ten seconds on screen, then a corner button. */}
+      <InviteAlert />
       <div className="flex min-h-screen flex-col">
         <header className="sticky top-0 z-30 border-b border-line bg-surface">
           <div className="mx-auto flex w-full max-w-7xl items-center gap-2 px-4 py-3 md:px-6 lg:px-8">

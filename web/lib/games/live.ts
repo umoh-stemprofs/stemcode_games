@@ -56,6 +56,8 @@ export type PresenceRow = {
   name: string;
   avatar_key: string;
   status: "available" | "in_match" | "busy";
+  /** Their browser is open right now. Not a promise that they are free. */
+  online: boolean;
   sentence: string;
 };
 

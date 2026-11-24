@@ -54,8 +54,12 @@ DEFAULT_FORFEIT_SINGLE_MS = 3 * 60 * 1000
 DEFAULT_FORFEIT_TOTAL_MS = 10 * 60 * 1000
 DEFAULT_DRAW_OFFERS = 3
 DRAW_OFFER_SECONDS = 30
-# D-29: eight moves a side is "real play" and what XP is gated on.
-ACTIVITY_MINIMUM_MOVES = 8
+# D-29: four moves a side is "real play" and what XP is gated on. Eight
+# meant a short but genuine game paid nothing, and losing players stopped early.
+ACTIVITY_MINIMUM_MOVES = 4
+# A heartbeat every 45 seconds, three chances to miss one before the dot goes
+# away: long enough to survive a slow page, short enough to mean "now".
+ONLINE_TTL_SECONDS = 135
 
 BAD_INVITE = "That code did not work."
 
@@ -916,6 +920,9 @@ async def presence(
         if mate.id == user.id or mate.id in hidden:
             continue
         name = _display(mate)
+        # A heartbeat, not a socket: a learner with the app open is "online"
+        # even while reading the dashboard, and the key expires by itself.
+        online = await cache.get(online_key(mate.id)) is not None
         raw = await cache.get(f"presence:{mate.id}")
         status = "available"
         if raw:
@@ -932,6 +939,7 @@ async def presence(
                     "name": name,
                     "avatar_key": mate.avatar_key,
                     "status": "busy",
+                    "online": online,
                     "sentence": f"{name} cannot play right now.",
                 }
             )
@@ -942,6 +950,7 @@ async def presence(
                     "name": name,
                     "avatar_key": mate.avatar_key,
                     "status": "in_match",
+                    "online": online,
                     "sentence": f"{name} is in a match.",
                 }
             )
@@ -952,7 +961,26 @@ async def presence(
                     "name": name,
                     "avatar_key": mate.avatar_key,
                     "status": "available",
+                    "online": online,
                     "sentence": f"Tap {name} to play.",
                 }
             )
+
+    # Online and free first: the answer to "who can play now" should be the
+    # first thing in the list, not a search through greyed-out names.
+    out.sort(key=lambda row: (not row["online"], row["status"] != "available", row["name"]))
     return out
+
+
+def online_key(user_id: uuid.UUID | str) -> str:
+    return f"presence:online:{user_id}"
+
+
+async def mark_online(cache: Any, *, user_id: uuid.UUID, now: dt.datetime | None = None) -> None:
+    """Say this learner's browser is open, for a short while.
+
+    The TTL is the whole mechanism: a closed tab stops refreshing and drops off
+    the roster on its own, so there is no logout to forget and no stale dot.
+    """
+    del now  # the cache owns the expiry; the caller only proves it is here
+    await cache.set(online_key(user_id), "1", ttl_s=ONLINE_TTL_SECONDS)

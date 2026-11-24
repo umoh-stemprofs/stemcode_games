@@ -17,8 +17,10 @@ from datetime import tzinfo
 
 PERIOD_TYPES: tuple[str, ...] = ("daily", "weekly", "monthly", "termly", "all_time")
 # What the first release shows. ``monthly`` is the same generator behind a
-# flag, so it is not a second code path (D-35).
-SHIPPED_PERIODS: tuple[str, ...] = ("daily", "weekly", "termly", "all_time")
+# flag, so it is not a second code path (D-35). ``termly`` is still a valid
+# period type — a school that already has term dates can read it — but it is no
+# longer offered: the learners' third tab is the all-time board.
+SHIPPED_PERIODS: tuple[str, ...] = ("daily", "weekly", "all_time")
 
 
 @dataclass(frozen=True, slots=True)

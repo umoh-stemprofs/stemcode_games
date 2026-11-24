@@ -157,16 +157,27 @@ function Piece({ piece, ringed }: { piece: number; ringed: boolean }) {
   if (piece === 0) return <span aria-hidden="true" />;
   const isWhite = piece === WHITE_MAN || piece === WHITE_KING;
   const isKing = piece === WHITE_KING || piece === BLACK_KING;
+  // A king is read at a glance, from either side of the board: a thick gold rim
+  // and a full-size star, instead of a small star lost inside a plain disc. The
+  // colour still says whose piece it is, so the shape does not have to.
   return (
     <span
       aria-hidden="true"
-      className={`flex h-[70%] w-[70%] items-center justify-center rounded-full border-2 text-body-min ${
+      className={`flex h-[78%] w-[78%] items-center justify-center rounded-full ${
+        isKing
+          ? "border-[3px] border-[color:var(--color-sun)]"
+          : isWhite
+            ? "border-2 border-[color:var(--color-ink)]"
+            : "border-2 border-[color:var(--color-surface)]"
+      } ${
         isWhite
-          ? "border-[color:var(--color-ink)] bg-[color:var(--color-surface)] text-[color:var(--color-ink)]"
-          : "border-[color:var(--color-surface)] bg-[color:var(--color-ink)] text-[color:var(--color-surface)]"
+          ? "bg-[color:var(--color-surface)] text-[color:var(--color-ink)]"
+          : "bg-[color:var(--color-ink)] text-[color:var(--color-surface)]"
       } ${ringed ? "ring-[3px] ring-focus" : ""}`}
     >
-      {isKing ? "★" : ""}
+      {isKing ? (
+        <span className="text-[clamp(18px,3.6vw,26px)] leading-none text-sun">★</span>
+      ) : null}
     </span>
   );
 }

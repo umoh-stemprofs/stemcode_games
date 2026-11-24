@@ -461,6 +461,9 @@ export interface paths {
         /**
          * Friends
          * @description Classmates you can tap to invite (P7-T06: avatars first).
+         *
+         *     A learner whose browser is open is marked ``online`` and listed first: the
+         *     useful names are the ones that can answer a challenge now.
          */
         get: operations["friends_api_games_friends_get"];
         put?: never;
@@ -916,7 +919,14 @@ export interface paths {
          */
         get: operations["presence_api_games_presence_get"];
         put?: never;
-        post?: never;
+        /**
+         * Say Hello
+         * @description Say that this learner's browser is open, so the roster can show a dot.
+         *
+         *     No body and no state kept on the server: one short-lived cache key per
+         *     learner, which expires on its own when the tab closes.
+         */
+        post: operations["say_hello_api_games_presence_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1790,6 +1800,16 @@ export interface components {
             id: string;
             /** Name */
             name: string;
+            /**
+             * Avatar Key
+             * @default
+             */
+            avatar_key: string;
+            /**
+             * Online
+             * @default false
+             */
+            online: boolean;
             /** Can Invite */
             can_invite: boolean;
             /** Sentence */
@@ -2433,6 +2453,11 @@ export interface components {
              * @enum {string}
              */
             status: "available" | "in_match" | "busy";
+            /**
+             * Online
+             * @default false
+             */
+            online: boolean;
             /** Sentence */
             sentence: string;
         };
@@ -4158,6 +4183,24 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["PresenceRowOut"][];
                 };
+            };
+        };
+    };
+    say_hello_api_games_presence_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

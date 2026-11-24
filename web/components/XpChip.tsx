@@ -3,9 +3,9 @@
 /**
  * The Game XP chip (P5-T10).
  *
- * One sentence, five words: "48 of 60 XP today". A learner never has to learn
- * what XP is to read it, and it never claims a rank or a grade — Profile XP is
- * motivational only (P5-T05).
+ * One number, no sentence: "48 XP" today, or "48 / 60" when a school has set a
+ * daily cap. A learner never has to learn what XP is to read it, and it never
+ * claims a rank or a grade — Profile XP is motivational only (P5-T05).
  */
 
 import { useEffect, useState } from "react";
@@ -50,7 +50,10 @@ export function XpChip() {
       <Icon name="bolt" size={17} className="text-sun" />
       <span className="tabular text-[15px] font-bold leading-none">
         {xp.game_xp_today}
-        <span className="font-semibold text-ink-muted"> / {xp.daily_cap}</span>
+        {/* No cap means no denominator to read: "29 XP", not "29 / 0 XP". */}
+        {xp.daily_cap > 0 ? (
+          <span className="font-semibold text-ink-muted"> / {xp.daily_cap}</span>
+        ) : null}
       </span>
       <span className="hidden text-label font-bold sm:inline">XP</span>
     </span>

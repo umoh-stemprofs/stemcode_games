@@ -457,6 +457,9 @@ class FriendOut(_Strict):
 
     id: uuid.UUID
     name: str
+    avatar_key: str = ""
+    # True when that learner's browser is open right now.
+    online: bool = False
     # True when a tap will work. The sentence says why when it will not.
     can_invite: bool
     sentence: str
@@ -657,4 +660,7 @@ class PresenceRowOut(_Strict):
     name: str
     avatar_key: str
     status: Literal["available", "in_match", "busy"]
+    # True when that learner's browser is open right now, so the roster can put
+    # them first and show a dot. Never a claim that they are free to play.
+    online: bool = False
     sentence: str

@@ -243,10 +243,9 @@ async def board(
     if period_type not in period_rules.PERIOD_TYPES:
         raise NotFoundError("That board was not found.")
 
-    # D-35: all-time is the school admin's view. A learner or coach gets the
-    # same 404 as a board that does not exist, so it is not advertised.
-    if period_type == "all_time" and not actor.is_admin:
-        raise NotFoundError("That board was not found.")
+    # All-time is the school's own board, shown with masked identity to every
+    # role in that school, so it needs no extra gate (D-35). ``monthly`` stays
+    # behind its flag.
     if period_type == "monthly" and not await _monthly_enabled(session):
         raise NotFoundError("That board was not found.")
 
@@ -382,8 +381,6 @@ async def coach_breakdown(
     a second source of truth (D-33).
     """
     if period_type not in period_rules.PERIOD_TYPES:
-        raise NotFoundError("That board was not found.")
-    if period_type == "all_time" and not actor.is_admin:
         raise NotFoundError("That board was not found.")
     if period_type == "monthly" and not await _monthly_enabled(session):
         raise NotFoundError("That board was not found.")

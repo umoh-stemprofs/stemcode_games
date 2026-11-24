@@ -34,7 +34,7 @@ import { PERIOD_WORDS } from "@/lib/games/board-types";
 import type { GameSummary } from "@/lib/games/types";
 
 const STAFF: Role[] = ["coach", "school_admin"];
-const PERIODS: BoardPeriod[] = ["daily", "weekly", "termly"];
+const PERIODS: BoardPeriod[] = ["daily", "weekly", "all_time"];
 
 export default function CoachXpPage() {
   return (
@@ -48,12 +48,7 @@ function CoachXpBody() {
   const session = useSession();
   const role = session.status === "authenticated" ? session.me.user.role : null;
   const allowed = role !== null && STAFF.includes(role);
-  const isAdmin = role === "school_admin";
 
-  const periods = useMemo<BoardPeriod[]>(
-    () => (isAdmin ? [...PERIODS, "all_time"] : PERIODS),
-    [isAdmin],
-  );
   const [period, setPeriod] = useState<BoardPeriod>("weekly");
   const [classId, setClassId] = useState("");
 
@@ -90,9 +85,6 @@ function CoachXpBody() {
     return <NoAccess />;
   }
 
-  const noCalendar =
-    board.error instanceof ApiError && board.error.status === 404 && period === "termly";
-
   return (
     <div className="flex flex-col gap-6">
       <PageHeader icon="chart" title="XP" subtitle="Pick a class to see its XP." />
@@ -123,24 +115,22 @@ function CoachXpBody() {
           </label>
 
           <nav aria-label="Which board" className="flex flex-wrap gap-2">
-            {periods
-              .filter((item) => !(item === "termly" && noCalendar))
-              .map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  aria-pressed={period === item}
-                  onClick={() => setPeriod(item)}
-                  className={cx(
-                    "min-h-[44px] rounded-xl border px-4 font-headline text-label font-bold transition-colors",
-                    period === item
-                      ? "border-brand-soft bg-brand-soft text-brand-deep"
-                      : "border-line bg-surface text-ink-muted hover:bg-surface-muted hover:text-ink",
-                  )}
-                >
-                  {PERIOD_WORDS[item]}
-                </button>
-              ))}
+            {PERIODS.map((item) => (
+              <button
+                key={item}
+                type="button"
+                aria-pressed={period === item}
+                onClick={() => setPeriod(item)}
+                className={cx(
+                  "min-h-[44px] rounded-xl border px-4 font-headline text-label font-bold transition-colors",
+                  period === item
+                    ? "border-brand-soft bg-brand-soft text-brand-deep"
+                    : "border-line bg-surface text-ink-muted hover:bg-surface-muted hover:text-ink",
+                )}
+              >
+                {PERIOD_WORDS[item]}
+              </button>
+            ))}
           </nav>
         </div>
       ) : null}
@@ -149,12 +139,10 @@ function CoachXpBody() {
 
       {board.isError ? (
         <Alert>
-          {noCalendar
-            ? "This school has no term dates yet."
-            : sentenceFor(
-                board.error instanceof ApiError ? board.error.code : undefined,
-                board.error instanceof ApiError ? board.error.status : undefined,
-              )}
+          {sentenceFor(
+            board.error instanceof ApiError ? board.error.code : undefined,
+            board.error instanceof ApiError ? board.error.status : undefined,
+          )}
         </Alert>
       ) : null}
 

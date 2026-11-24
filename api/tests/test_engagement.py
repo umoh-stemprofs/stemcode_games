@@ -179,10 +179,15 @@ async def test_badges_come_from_play_not_from_xp(db_session: AsyncSession) -> No
 
 async def test_the_level_is_only_a_restatement_of_profile_xp(db_session: AsyncSession) -> None:
     world = await build_world(db_session)
-    assert rules.level_for(0).number == 1
-    assert rules.level_for(99).xp_to_next == 1
-    assert rules.level_for(100).number == 2
-    assert rules.level_for(250).xp_into == 50
+    # Each level costs more than the last: 50, 75, 100 ...
+    assert rules.level_for(0) == rules.Level(number=1, xp_into=0, xp_span=50)
+    assert rules.level_for(49).xp_to_next == 1
+    assert rules.level_for(50).number == 2
+    assert rules.level_for(50).xp_span == 75
+    assert rules.level_for(124).number == 2
+    assert rules.level_for(125).number == 3
+    assert rules.level_for(125).xp_span == 100
+    assert rules.level_for(225).number == 4
 
     view = await engagement.overview(
         db_session, actor=_actor(world.learner_a, world.school_a), now=DAY_ONE

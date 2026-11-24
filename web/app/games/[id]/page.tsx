@@ -206,9 +206,14 @@ function GameBody() {
     [gameId, begin],
   );
 
+  // A guard, not a state flag: two taps in the same frame both see `pending`
+  // as false, and Number Guess would send two guesses for one press.
+  const busy = useRef(false);
+
   const act = useCallback(
     async (type: ActionType, value?: string) => {
-      if (!state) return;
+      if (!state || busy.current) return;
+      busy.current = true;
       const before = state;
       setPending(true);
       setError(null);
@@ -270,6 +275,7 @@ function GameBody() {
           setError(sentenceFor(undefined));
         }
       } finally {
+        busy.current = false;
         setPending(false);
       }
     },
@@ -443,7 +449,9 @@ function GameBody() {
 
           {state.xp ? (
             <p className="text-body-min text-ink-muted">
-              {state.xp.today} of {state.xp.daily_cap} XP today.
+              {state.xp.daily_cap > 0
+                ? `${state.xp.today} of ${state.xp.daily_cap} XP today.`
+                : `${state.xp.today} XP today.`}
             </p>
           ) : null}
         </Card>

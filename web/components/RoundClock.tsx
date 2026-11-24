@@ -27,11 +27,14 @@ export function RoundClock({
   const [now, setNow] = useState(() => Date.now());
   const [timedOutRound, setTimedOutRound] = useState<number | null>(null);
 
-  // A new round starts a new bar.
+  // Every reply carries a fresh ``time_left_ms`` measured on the server, so the
+  // baseline has to move with it. It used to reset only when the round number
+  // changed, which meant each guess subtracted the time already gone twice: the
+  // bar raced to zero, then sat there until the server's real deadline.
   useEffect(() => {
     setReceivedAt(Date.now());
     setNow(Date.now());
-  }, [round.number]);
+  }, [round.number, round.time_left_ms]);
 
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 400);

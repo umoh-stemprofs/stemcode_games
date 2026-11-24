@@ -184,9 +184,10 @@ async def test_a_board_reads_one_row_set_and_never_double_counts(
     assert per_game.entries[0].xp_total == 45
 
 
-async def test_a_learner_below_the_minimum_is_hidden_and_told(
+async def test_one_finished_game_puts_a_learner_on_the_board(
     db_session: AsyncSession,
 ) -> None:
+    """The old minimum of three sessions hid a learner who had just played."""
     world = await build_world(db_session)
     await _award(db_session, school_id=world.school_a.id, learner=world.learner_a, rounds=[15] * 10)
 
@@ -195,9 +196,12 @@ async def test_a_learner_below_the_minimum_is_hidden_and_told(
     board = await leaderboards.board(
         db_session, actor=_actor(world.learner_a, world.school_a), period_type="daily"
     )
-    assert board.entries == []
-    assert board.me is None
-    assert board.me_eligible is False
+    assert len(board.entries) == 1
+    assert board.entries[0].preferred_name == "Amara"
+    assert board.me is not None and board.me.xp_total == 15
+    assert board.me_eligible is True
+    assert board.min_sessions == 1
+    assert board.to_join is None
 
 
 async def test_the_board_is_masked_identity_only(db_session: AsyncSession) -> None:
@@ -244,20 +248,22 @@ async def test_me_xp_reports_today_and_the_cap(client, db_session: AsyncSession)
     assert response.status_code == 200, response.text
     body = response.json()
     assert body["game_xp_today"] == 0
-    assert body["daily_cap"] == 60
+    assert body["daily_cap"] == 0
     assert body["profile_xp_total"] == body["learning_xp_total"] + body["game_xp_total"]
 
 
-async def test_all_time_is_admin_only(client, db_session: AsyncSession) -> None:
+async def test_all_time_is_open_to_the_whole_school(client, db_session: AsyncSession) -> None:
+    """All-time replaced the termly tab, so every role in a school may read it."""
     world = await build_world(db_session)
 
     await login(client, world.learner_a)
     learner = await client.get("/api/leaderboards/all_time")
-    assert learner.status_code == 404
+    assert learner.status_code == 200, learner.text
+    assert learner.json()["period"] == "all_time"
 
     await login(client, world.coach_a)
     coach = await client.get("/api/leaderboards/all_time")
-    assert coach.status_code == 404
+    assert coach.status_code == 200, coach.text
 
     await login(client, world.admin_a)
     admin = await client.get("/api/leaderboards/all_time")

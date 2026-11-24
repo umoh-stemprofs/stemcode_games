@@ -925,7 +925,7 @@
           "games-social"
         ],
         "summary": "Friends",
-        "description": "Classmates you can tap to invite (P7-T06: avatars first).",
+        "description": "Classmates you can tap to invite (P7-T06: avatars first).\n\nA learner whose browser is open is marked ``online`` and listed first: the\nuseful names are the ones that can answer a challenge now.",
         "operationId": "friends_api_games_friends_get",
         "responses": {
           "200": {
@@ -1875,6 +1875,19 @@
                 }
               }
             }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "games-live"
+        ],
+        "summary": "Say Hello",
+        "description": "Say that this learner's browser is open, so the roster can show a dot.\n\nNo body and no state kept on the server: one short-lived cache key per\nlearner, which expires on its own when the tab closes.",
+        "operationId": "say_hello_api_games_presence_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
           }
         }
       }
@@ -4158,6 +4171,16 @@
             "type": "string",
             "title": "Name"
           },
+          "avatar_key": {
+            "type": "string",
+            "title": "Avatar Key",
+            "default": ""
+          },
+          "online": {
+            "type": "boolean",
+            "title": "Online",
+            "default": false
+          },
           "can_invite": {
             "type": "boolean",
             "title": "Can Invite"
@@ -5836,6 +5859,11 @@
               "busy"
             ],
             "title": "Status"
+          },
+          "online": {
+            "type": "boolean",
+            "title": "Online",
+            "default": false
           },
           "sentence": {
             "type": "string",

@@ -49,7 +49,13 @@ function LobbyBody() {
   const presence = useQuery({
     queryKey: ["presence"],
     queryFn: () => apiFetch<PresenceRow[]>("/api/games/presence"),
+    // The dots go stale quickly; a learner waiting for a partner should see it
+    // change while the screen is open.
+    refetchInterval: 30_000,
+    refetchOnWindowFocus: true,
   });
+
+  const onlineCount = (presence.data ?? []).filter((friend) => friend.online).length;
 
   const invitable = useCallback(
     async (friend: PresenceRow) => {
@@ -102,10 +108,18 @@ function LobbyBody() {
         </Card>
 
         <Card className="flex flex-col gap-3 p-5">
-          <h2 className="flex items-center gap-2 font-headline text-large font-extrabold text-ink">
-            <Icon name="users" size={22} className="text-brand" />
-            Who will you play?
-          </h2>
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="flex items-center gap-2 font-headline text-large font-extrabold text-ink">
+              <Icon name="users" size={22} className="text-brand" />
+              Who will you play?
+            </h2>
+            {/* The roster is only useful if it says who is actually there. */}
+            {onlineCount > 0 ? (
+              <Chip tone="green" className="ml-auto">
+                {onlineCount === 1 ? "1 online" : `${onlineCount} online`}
+              </Chip>
+            ) : null}
+          </div>
 
           {presence.isPending ? <Loading /> : null}
 
@@ -131,13 +145,26 @@ function LobbyBody() {
                     aria-label={free ? `Invite ${friend.name}` : friend.sentence}
                     className="flex min-h-target flex-col items-center justify-center gap-1 rounded-2xl border-2 border-line bg-surface px-3 py-2.5 font-headline text-label font-bold text-ink transition-colors hover:border-brand hover:bg-brand-soft disabled:cursor-not-allowed disabled:border-line disabled:bg-surface-muted disabled:text-ink-muted sm:text-body-min"
                   >
-                    <span
-                      aria-hidden="true"
-                      className="grid size-9 place-items-center rounded-full bg-canvas text-[19px] font-extrabold text-brand-deep ring-2 ring-line"
-                    >
-                      {friend.name.charAt(0).toUpperCase()}
+                    <span className="relative">
+                      <span
+                        aria-hidden="true"
+                        className="grid size-9 place-items-center rounded-full bg-canvas text-[19px] font-extrabold text-brand-deep ring-2 ring-line"
+                      >
+                        {friend.name.charAt(0).toUpperCase()}
+                      </span>
+                      {friend.online ? (
+                        <span
+                          aria-hidden="true"
+                          className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full bg-ok ring-2 ring-surface"
+                        />
+                      ) : null}
                     </span>
                     <span className="max-w-full truncate">{friend.name}</span>
+                    {friend.online ? (
+                      <span className="text-micro font-bold uppercase tracking-wide text-ok">
+                        Online
+                      </span>
+                    ) : null}
                   </button>
                   {free ? null : (
                     <span className="text-label leading-tight text-ink-muted">{friend.sentence}</span>
