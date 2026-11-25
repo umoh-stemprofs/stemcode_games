@@ -23,6 +23,7 @@
     "build:web": "npm --prefix web run build",
     "typecheck:web": "npm --prefix web run typecheck",
     "test:parity": "npm --prefix web run test:parity",
+    "test:e2e": "npm --prefix web run e2e",
     "lint": "npm run lint:api",
     "test": "npm run test:api",
     "check": "npm run lint:api && npm run typecheck:api && npm run test:api"

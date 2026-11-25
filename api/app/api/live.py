@@ -143,9 +143,15 @@ async def submit_move(
     body: LiveMoveIn,
     session: SessionDep,
     actor: ActorDep,
+    cache: CacheDep,
 ) -> LiveStateOut:
     """The same call the socket makes, for a tab whose socket is down."""
     user = await _acting_user(session, actor)
+    # P10-T06: the REST fallback gets the same ceiling the socket already has
+    # (10 frames per 10 seconds), or it would be the way around it.
+    await check_user_limit(
+        cache, key="live:move", user_id=user.id, limit=60, window_seconds=60
+    )
     state, _events = await live.submit(
         session,
         user=user,

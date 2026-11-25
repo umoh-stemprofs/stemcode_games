@@ -173,10 +173,29 @@ you never run it locally.
 | `npm run lint:api` | Ruff |
 | `npm run typecheck:api` | Mypy (strict) |
 | `npm run typecheck:web` | `tsc --noEmit` |
+| `npm run test:e2e` | Playwright smoke suite (needs a seeded database and both servers) |
 | `npm run gen:api` | Regenerate the TypeScript client from the running API |
 | `npm run check` | Lint + types + tests |
 
 There is no `make`: it is missing on Windows, so every command is an npm script (P0-T02).
+
+### The end-to-end suite
+
+`npm run test:e2e` drives a real browser through four journeys: signing in, playing a solo
+game to its end, opening a Checkers match from the roster, and a second learner joining it
+from their inbox before one of them resigns. It uses the seeded demo school (`A-1001` Amara,
+`A-1002` Bayo, PIN `2468`), so it needs three things in this order:
+
+```bash
+npm run migrate && npm run seed
+npm run dev:api          # terminal 1
+npm run dev:web          # terminal 2
+npm run test:e2e         # terminal 3
+```
+
+The first run downloads Chromium once (`npx --prefix web playwright install chromium`). CI runs
+the same suite against a throwaway database and uploads the Playwright report when a flow
+breaks.
 
 ---
 

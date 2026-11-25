@@ -14,6 +14,8 @@ Three promises, all cheap to state and easy to lose:
 
 from __future__ import annotations
 
+import uuid
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from tests.factories import PIN, build_world, login
@@ -78,5 +80,52 @@ async def test_the_eleventh_report_in_a_day_is_refused(
         assert sent.status_code == 201, sent.text
 
     refused = await client.post("/api/games/reports", json=body)
+    assert refused.status_code == 429, refused.text
+    assert refused.json()["error"]["code"] == "rate_limited"
+
+
+async def test_starting_games_is_capped_at_thirty_an_hour(
+    client, db_session: AsyncSession
+) -> None:
+    """P10-T06: session create.
+
+    Every attempt counts, including one refused because a game is already open:
+    a script that starts and quits in a loop must run out even though each
+    individual start looks ordinary.
+    """
+    world = await build_world(db_session)
+    await login(client, world.learner_a)
+    body = {"difficulty": 1}
+
+    for _ in range(30):
+        await client.post("/api/games/number_guess/sessions", json=body)
+
+    refused = await client.post("/api/games/number_guess/sessions", json=body)
+    assert refused.status_code == 429, refused.text
+    assert refused.json()["error"]["code"] == "rate_limited"
+
+
+async def test_actions_are_capped_at_sixty_a_minute(client, db_session: AsyncSession) -> None:
+    """P10-T06: action submit, which is the one a guess script would hammer."""
+
+    world = await build_world(db_session)
+    await login(client, world.learner_a)
+    started = await client.post("/api/games/number_guess/sessions", json={"difficulty": 1})
+    assert started.status_code == 201, started.text
+    session_id = started.json()["session_id"]
+
+    for _ in range(60):
+        await client.post(
+            f"/api/games/sessions/{session_id}/actions",
+            json={
+                "client_move_id": uuid.uuid4().hex,
+                "type": "skip",
+            },
+        )
+
+    refused = await client.post(
+        f"/api/games/sessions/{session_id}/actions",
+        json={"client_move_id": uuid.uuid4().hex, "type": "skip"},
+    )
     assert refused.status_code == 429, refused.text
     assert refused.json()["error"]["code"] == "rate_limited"

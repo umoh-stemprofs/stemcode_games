@@ -26,6 +26,10 @@ out/
 *.log
 .pip-install.log
 
+# playwright: reports and traces are build output, not source
+web/playwright-report/
+web/test-results/
+
 # os
 Thumbs.db
 .DS_Store

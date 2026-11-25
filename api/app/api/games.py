@@ -10,10 +10,11 @@ from __future__ import annotations
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import UnauthorizedError
+from app.core.rate_limit import check_user_limit, get_cache
 from app.games import repository as repo
 from app.games.schemas import (
     AccessOut,
@@ -196,7 +197,11 @@ async def active_session(session: SessionDep, actor: ActorDep) -> ActiveSessionO
 # ---------------------------------------------------------------- word scramble
 @router.post("/{game_id}/sessions", status_code=201)
 async def create_session(
-    game_id: str, body: CreateSessionIn, session: SessionDep, actor: ActorDep
+    game_id: str,
+    body: CreateSessionIn,
+    request: Request,
+    session: SessionDep,
+    actor: ActorDep,
 ) -> PlayOut:
     """Open a session and start its clock. Refuses if one is already open.
 
@@ -209,6 +214,15 @@ async def create_session(
     if game_id not in HANDLERS:
         raise NotFoundError("That game was not found.")
     user = await _acting_user(session, actor)
+    # P10-T06: thirty starts an hour. A fresh game every two minutes is already
+    # a lot of intent; the point is to stop a script, not a child who mis-taps.
+    await check_user_limit(
+        get_cache(request),
+        key="session:create",
+        user_id=user.id,
+        limit=30,
+        window_seconds=3600,
+    )
     row = await play.create_solo(session, user=user, game_id=game_id, difficulty=body.difficulty)
     state = await play.get_state(session, user=user, session_id=row.id)
     return await _play_out(session, user, state)
@@ -226,11 +240,23 @@ async def read_session(session_id: uuid.UUID, session: SessionDep, actor: ActorD
 async def submit_action(
     session_id: uuid.UUID,
     body: ActionIn,
+    request: Request,
     session: SessionDep,
     actor: ActorDep,
 ) -> PlayOut:
     """One move. A repeated ``client_move_id`` returns the same state."""
     user = await _acting_user(session, actor)
+    # P10-T06: one action a second, sustained for a minute. A learner reading a
+    # clue and tapping one button cannot reach this; a script answering every
+    # number in a guess round can. The limit is per learner, so a second tab
+    # does not double it.
+    await check_user_limit(
+        get_cache(request),
+        key="action:submit",
+        user_id=user.id,
+        limit=60,
+        window_seconds=60,
+    )
     state = await play.submit_action(
         session,
         user=user,
