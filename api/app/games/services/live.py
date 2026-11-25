@@ -261,20 +261,41 @@ async def accept(
             session, token_hash=invite_rules.hash_secret(token)
         )
 
-    if invitation is None or invitation.status != "pending" or invitation.expires_at <= now:
+    if invitation is None:
         raise NotFoundError(BAD_INVITE, code="invite_not_found")
+    if invitation.status != "pending" or invitation.expires_at <= now:
+        # Not a typo: the code was real and is simply spent. A learner needs to
+        # know that, because "that code is wrong" sends them hunting for a
+        # mistake they did not make.
+        raise AppError(invite_rules.INVITE_CLOSED, code="invite_expired", status_code=409)
     if invitation.inviter_id == user.id:
         raise AppError("That is your own invite.", code="invite_own", status_code=400)
 
     row = await repo.get_session(session, invitation.session_id)
-    if row is None or row.mode != "live" or row.status not in ("created", "ready"):
+    if row is None or row.mode != "live":
         raise NotFoundError(BAD_INVITE, code="invite_not_found")
+    if row.status not in ("created", "ready"):
+        # The match was left, finished, or already taken by somebody else. The
+        # invite dies with it rather than staying in an inbox for the day.
+        await repo.expire_session_invitations(session, session_id=row.id)
+        await session.commit()
+        raise AppError(invite_rules.INVITE_CLOSED, code="invite_expired", status_code=409)
 
     inviter = await session.get(User, invitation.inviter_id)
     if inviter is None or inviter.school_id != user.school_id:
         raise NotFoundError(BAD_INVITE, code="invite_not_found")
     if await repo.block_exists_between(session, a=user.id, b=inviter.id):
         raise NotFoundError(BAD_INVITE, code="invite_not_found")
+
+    # The inviter must still be free. A learner who gives up on a friend and
+    # starts another match leaves this invite behind; redeeming it would drop
+    # the friend onto a board belonging to somebody who has moved on, which is
+    # exactly the reported "I could not join, they are in a game" bug.
+    open_match = await repo.active_session_for_user(session, inviter.id)
+    if open_match is not None and open_match.id != row.id:
+        await repo.expire_session_invitations(session, session_id=row.id)
+        await session.commit()
+        raise AppError(invite_rules.INVITE_CLOSED, code="invite_expired", status_code=409)
 
     # D-27 again, for the second player.
     minimum = await access.live_minimum_seconds(session)
@@ -287,6 +308,10 @@ async def accept(
     )
     if not claimed:
         raise NotFoundError(BAD_INVITE, code="invite_not_found")
+
+    # One seat, one promise. A match can also be reachable by a code, and every
+    # other invite for it is spent now that the seat is taken.
+    await repo.expire_session_invitations(session, session_id=row.id)
 
     cfg = _cfg(row)
     # The inviter's colour was chosen by the server at creation (P8-T09), so the
@@ -915,6 +940,14 @@ async def presence(
     now = now or _now()
     rows = await repo.classmates(session, user_id=user.id, school_id=user.school_id)
     hidden = await repo.blocked_user_ids(session, user_id=user.id)
+    # A friend sitting in a lobby is "in a match", but it is a match with my
+    # seat waiting in it. The roster says that instead of greying them out.
+    invited_by = await repo.pending_invitations_from(
+        session,
+        invitee_id=user.id,
+        inviter_ids=[mate.id for mate in rows if mate.id != user.id],
+        now=now,
+    )
     out: list[dict[str, Any]] = []
     for mate in rows:
         if mate.id == user.id or mate.id in hidden:
@@ -930,6 +963,21 @@ async def presence(
                 status = json.loads(raw).get("status") or "available"
             except ValueError:  # pragma: no cover - we write our own JSON only
                 status = "available"
+
+        invitation_id = invited_by.get(mate.id)
+        if invitation_id is not None:
+            out.append(
+                {
+                    "user_id": mate.id,
+                    "name": name,
+                    "avatar_key": mate.avatar_key,
+                    "status": "available",
+                    "online": online,
+                    "invitation_id": invitation_id,
+                    "sentence": f"{name} wants to play with you.",
+                }
+            )
+            continue
 
         state = await access.access_for(session, user=mate, now=now, ignore_active_session=True)
         if not state.allowed:

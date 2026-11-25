@@ -25,6 +25,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/AppShell";
 import { CheckersBoard } from "@/components/CheckersBoard";
 import { Icon } from "@/components/icons";
+import { useQuitGuard } from "@/components/QuitGuard";
 import {
   Alert,
   Button,
@@ -71,7 +72,9 @@ function MatchBody() {
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmResign, setConfirmResign] = useState(false);
+  const [confirmLeave, setConfirmLeave] = useState(false);
   const [busy, setBusy] = useState(false);
+  const { setActive } = useQuitGuard();
   const [clockBase, setClockBase] = useState(() => Date.now());
   const [now, setNow] = useState(() => Date.now());
   const socketRef = useRef<LiveSocket | null>(null);
@@ -90,6 +93,27 @@ function MatchBody() {
     if (openingClock.current > 0 || !state) return;
     openingClock.current = Math.max(...Object.values(state.clock_ms), 1);
   }, [state]);
+
+  // A live match is a game like any other, so the menu guard has to know about
+  // it: tapping another tab asks first, and while the match is being played the
+  // answer is a resign. Otherwise the other learner is left on a board that has
+  // simply stopped, and this learner keeps a seat they are not using.
+  const status = state?.status;
+  useEffect(() => {
+    if (!status || !["created", "ready", "active"].includes(status)) return;
+    setActive({
+      sessionId,
+      gameName: "Checkers",
+      onQuit: async () => {
+        if (status === "active") {
+          await apiFetch(`/api/games/live/${sessionId}/resign`, { method: "POST" });
+        } else {
+          await apiFetch(`/api/games/sessions/${sessionId}/quit`, { method: "POST" });
+        }
+      },
+    });
+    return () => setActive(null);
+  }, [sessionId, status, setActive]);
 
   const onEvent = useCallback((event: ServerEvent) => {
     if (event.type === "match.state") {
@@ -232,10 +256,37 @@ function MatchBody() {
         method: "POST",
       });
       router.push(`/games/checkers/${created.session_id}`);
-    } catch (caught) {
-      setError(caught instanceof ApiError ? caught.message : sentenceFor(undefined));
+    } catch {
+      // A rematch needs the other player to be free. When they have gone, the
+      // honest answer is the lobby, where somebody else can be picked.
+      router.push("/games/checkers");
     } finally {
       setBusy(false);
+    }
+  }
+
+  /**
+   * Leave on purpose.
+   *
+   * A match nobody has moved in is a lobby: quitting it closes the invitations
+   * that point at it, so a friend cannot tap a card for a board that no longer
+   * waits for them. A match that is being played is a loss, and it is resigned
+   * so the other learner gets a result instead of a board that stops moving.
+   */
+  async function leaveMatch() {
+    setConfirmLeave(false);
+    setBusy(true);
+    try {
+      if (state?.status === "active") {
+        await apiFetch(`/api/games/live/${sessionId}/resign`, { method: "POST" });
+      } else {
+        await apiFetch(`/api/games/sessions/${sessionId}/quit`, { method: "POST" });
+      }
+    } catch {
+      // Leaving is what the learner asked for, so a refusal does not trap them.
+    } finally {
+      setBusy(false);
+      router.push("/games/checkers");
     }
   }
 
@@ -279,10 +330,37 @@ function MatchBody() {
           subtitle={state.seat === "white" ? "You play white." : "You play black."}
         />
         {/* D.1: every target is at least 56x56, text links included. */}
-        <ButtonLink href="/games/checkers" variant="ghost" size="sm" icon="arrow-left">
+        <Button variant="ghost" size="sm" icon="arrow-left" onClick={() => setConfirmLeave(true)}>
           Leave
-        </ButtonLink>
+        </Button>
       </div>
+
+      {/* Leaving asks first, and the question says what leaving costs. */}
+      {confirmLeave ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="leave-title"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6"
+        >
+          <Card className="flex w-full max-w-md flex-col gap-4 p-6">
+            <h2 id="leave-title" className="font-headline text-large font-extrabold text-ink">
+              Leave this match?
+            </h2>
+            <p className="text-body text-ink-muted">
+              {state.status === "active"
+                ? "You will lose this match."
+                : "Your invite will close."}
+            </p>
+            <Button variant="danger" disabled={busy} onClick={() => void leaveMatch()} className="w-full">
+              Yes, leave
+            </Button>
+            <Button variant="ghost" onClick={() => setConfirmLeave(false)} className="w-full">
+              Keep playing
+            </Button>
+          </Card>
+        </div>
+      ) : null}
 
       {error ? <Alert>{error}</Alert> : null}
 

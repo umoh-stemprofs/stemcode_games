@@ -27,7 +27,7 @@ from app.api import realtime
 from app.core.errors import NotFoundError
 from app.games import repository as repo
 from app.games.domain import checkers as rules
-from app.games.services import live
+from app.games.services import live, sessions
 from app.identity.models import Role
 from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -608,6 +608,78 @@ async def test_presence_names_who_cannot_play_and_why(client, db_session: AsyncS
     assert by_name["Bayo"]["sentence"] == "Bayo cannot play right now."
     # Nobody from the other school appears.
     assert "Beta Learner" not in by_name
+
+
+async def test_presence_offers_the_seat_a_friend_already_created(
+    client, db_session: AsyncSession
+) -> None:
+    """A lobby is a match, but it is a match with my seat in it.
+
+    The roster used to grey out the friend who had just invited me ("Bayo is in
+    a match."), which hid the only way in: the invitation itself.
+    """
+    world = await build_world(db_session)
+    await _create(
+        world.learner_a2,
+        db_session,
+        now=dt.datetime.now(dt.UTC),
+        invitee=world.learner_a,
+    )
+
+    await login(client, world.learner_a)
+    rows = (await client.get("/api/games/presence")).json()
+    row = next(candidate for candidate in rows if candidate["name"] == "Bayo")
+
+    assert row["status"] == "available"
+    assert row["sentence"] == "Bayo wants to play with you."
+    assert row["invitation_id"]
+
+
+async def test_leaving_a_lobby_closes_its_invite(client, db_session: AsyncSession) -> None:
+    """An invite must not outlive the match it points at.
+
+    Reported bug: the host walked away from the waiting board, the card stayed
+    in the friend's inbox, and redeeming it answered with an error nobody could
+    act on. Leaving now closes the invite and frees both seats.
+    """
+    world = await build_world(db_session)
+    now = dt.datetime.now(dt.UTC)
+    row, invitation, code, _token = await _create(
+        world.learner_a, db_session, now=now, invitee=world.learner_a2
+    )
+
+    await sessions.quit(db_session, user=world.learner_a, session_id=row.id, now=now)
+
+    closed = await repo.get_invitation(db_session, invitation.id)
+    assert closed is not None and closed.status == "expired"
+    pending = await repo.invitations_for_invitee(
+        db_session, user_id=world.learner_a2.id, now=now
+    )
+    assert pending == []
+    ended = await repo.get_session(db_session, row.id)
+    assert ended is not None and ended.status == "abandoned"
+
+    # The dead code gets one sentence about the invite, not "wrong code".
+    await login(client, world.learner_a2)
+    refused = await client.post("/api/games/live/accept", json={"code": code})
+    assert refused.status_code == 409, refused.text
+    assert refused.json()["error"]["code"] == "invite_expired"
+    assert "closed" in refused.json()["error"]["message"].lower()
+
+
+async def test_leaving_a_ready_match_frees_both_seats(db_session: AsyncSession) -> None:
+    """`ready` is a match nobody has moved in, and it is still quittable."""
+    world = await build_world(db_session)
+    row = await _matched(db_session, world)
+    assert row.status == "ready"
+
+    await sessions.quit(db_session, user=world.learner_a, session_id=row.id, now=NOW)
+
+    ended = await repo.get_session(db_session, row.id)
+    assert ended is not None and ended.status == "abandoned"
+    for player in (world.learner_a, world.learner_a2):
+        participant = await repo.get_participant(db_session, row.id, player.id)
+        assert participant is not None and participant.attempt_status == "expired"
 
 
 async def test_a_blocked_classmate_is_not_offered(client, db_session: AsyncSession) -> None:

@@ -663,4 +663,8 @@ class PresenceRowOut(_Strict):
     # True when that learner's browser is open right now, so the roster can put
     # them first and show a dot. Never a claim that they are free to play.
     online: bool = False
+    # The invite this learner sent me, when there is one. The roster then offers
+    # "join their match" instead of "invite them", which is the difference
+    # between a greyed-out tile and a seat.
+    invitation_id: uuid.UUID | None = None
     sentence: str

@@ -21,7 +21,16 @@ import { useRouter } from "next/navigation";
 
 import { apiFetch } from "@/lib/api/client";
 
-export type ActiveGame = { sessionId: string; gameName: string };
+export type ActiveGame = {
+  sessionId: string;
+  gameName: string;
+  /**
+   * What leaving means for this game. A live match resigns while it is being
+   * played, because the other learner is sitting on the board and needs a
+   * result; a game nobody has started is simply quit. Defaults to quitting.
+   */
+  onQuit?: () => Promise<void>;
+};
 
 type Guard = {
   active: ActiveGame | null;
@@ -57,7 +66,11 @@ export function QuitGuardProvider({ children }: { children: ReactNode }) {
     setPendingHref(null);
     setGame(null);
     try {
-      await apiFetch(`/api/games/sessions/${sessionId}/quit`, { method: "POST" });
+      if (game.onQuit) {
+        await game.onQuit();
+      } else {
+        await apiFetch(`/api/games/sessions/${sessionId}/quit`, { method: "POST" });
+      }
     } catch {
       // The only refusal is "that game is already over", and leaving is still
       // what the learner asked for.

@@ -92,8 +92,14 @@ export function CheckersBoard({
   // its targets and scrolls sideways inside this box instead of widening the
   // page. Without the box the whole screen was pushed past the viewport and the
   // right-hand file was clipped away.
+  //
+  // The width is also capped by the height of the window: a square board sized
+  // from a wide desktop card became taller than the screen, so a learner had to
+  // scroll to see their own back row. 62dvh is the largest square that still
+  // leaves room for the turn line, both clock rows and the buttons above and
+  // below it on a laptop, so scrolling to the board is the last scroll needed.
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="mx-auto w-full max-w-[min(100%,560px,62dvh)] overflow-x-auto">
       <div
         className="grid min-w-[448px] grid-cols-8 overflow-hidden rounded-2xl border-2 border-line-strong shadow-card"
         role="grid"

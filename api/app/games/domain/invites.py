@@ -98,3 +98,8 @@ def result_sentence(game_name: str, outcome: str, their_name: str) -> str:
 
 def invite_sentence(game_name: str, inviter_name: str) -> str:
     return f"{inviter_name} wants to play {game_name} with you."
+
+
+# Said when the match behind an invite is gone, so the tap is not a dead end.
+# One idea, two short sentences: the invite is over, and what to do next.
+INVITE_CLOSED = "That invite is closed. Ask your friend for a new one."

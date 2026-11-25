@@ -186,6 +186,30 @@ async def pause(
     await session.commit()
 
 
+async def _close_live_invites(session: AsyncSession, *, row: GameSession, user: User) -> None:
+    """Close every invite that points at a match this player has left.
+
+    The card disappears from the invitee's inbox because the row stops being
+    `pending`, and the one-line note explains why. A vanish with no reason is
+    the thing a child reports as "it is broken".
+    """
+    # Both seats go free: the friend who accepted is not "in a game" either.
+    await repo.release_session_participants(session, session_id=row.id)
+    invitees = await repo.expire_session_invitations(session, session_id=row.id)
+    if not invitees:
+        return
+    name = user.preferred_name or user.real_name
+    for invitee_id in invitees:
+        await repo.add_notification(
+            session,
+            user_id=invitee_id,
+            kind="invite",
+            invitation_id=None,
+            session_id=row.id,
+            body=f"{name} left. That invite is closed.",
+        )
+
+
 async def quit(
     session: AsyncSession, *, user: User, session_id: uuid.UUID, now: dt.datetime | None = None
 ) -> None:
@@ -198,15 +222,24 @@ async def quit(
 
     Quitting twice is not an error — the second call finds the game already
     over and says nothing, which is what a double tap on a slow phone gets.
+
+    A live match also carries invitations, and leaving closes every one of them
+    in the same write. An invite that outlives its match is a card that looks
+    playable and is not (the reported "friend could not join" bug).
     """
     now = now or dt.datetime.now(dt.UTC)
     row, participant = await _load(session, user=user, session_id=session_id)
-    if row.status not in ("created", "active", "paused"):
+    # `ready` counts: the second player has accepted but nobody has moved yet,
+    # and a learner who walks away from that must still free their seat.
+    if row.status not in ("created", "ready", "active", "paused"):
         return
 
     participant.attempt_status = "expired"  # type: ignore[attr-defined]
     row.status = "abandoned"
     row.ended_at = now
+
+    if row.mode == "live":
+        await _close_live_invites(session, row=row, user=user)
 
     if row.parent_session_id is not None:
         # Local import: the challenge service uses this module for lifecycle, so

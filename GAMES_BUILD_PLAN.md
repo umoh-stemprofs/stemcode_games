@@ -93,6 +93,7 @@ Change a default here first if the product owner disagrees.
 | D-37 | Three roles, and a word goes live one at a time | **The role enum is exactly three values: `learner`, `coach`, `school_admin`.** There is no `platform_admin`, `moderator`, `content_contributor` or `content_reviewer`. Content work belongs to members of staff: a coach writes words, and both staff roles may make a word live or take it down, because content is platform-wide and every school reads the same bank. Creating a school, and the first admin of a school, is a **command on the server** (`python -m app.cli`), not a screen and not a role. Moderation of reports sits with the school admin for their own school. Existing accounts are **mapped, never deleted**: `content_contributor -> coach`, and `content_reviewer | moderator | platform_admin -> school_admin` (migration `0009_three_roles`) | The product owner asked for one ladder a person can hold in their head: learner, coach, head teacher. Splitting "who writes" from "who checks" into separate logins made five accounts per school for work that is one job, and left nobody able to publish from a school with one member of staff |
 | D-38 | A word carries its own status, and its author may publish it | **Status lives on `game_content_items`, not only on the pack:** `draft -> live -> retired`. Typing a word creates a `draft`; **Make it live** is the only door to the games, and it is one word wide. The pack is only the bucket that groups words by age band and version, so `published` on the pack now means "at least one of my words is live". **The author may publish their own word** — the draft step plus the validator is the safety, not a second reader. A word that still has a problem cannot go live by any route, including the bulk button, which skips it. The same answer may not be live twice in one band. Editing a live word **returns it to `draft`**, so nothing changes under a child mid-round. A live word is **taken down, never deleted**; only an unpublished draft may be deleted. `retired` words stay as the record of what children played. The `draft -> in_review -> approved -> published` pack chain and its review UI are **removed** | Product owner decision, 2026-11-14: "drafts matter, and from draft you approve one by one." The old chain forced a whole pack through review to fix one clue, and its "an author cannot approve their own pack" rule had nowhere to go once the content reviewer role was merged away (D-37). Removing it also removes a screen, two statuses and two audit actions |
 | D-39 | The safe-language list has two halves | The **baseline** list ships in code (`app/games/domain/safe_language.py`): reviewed in a commit, identical everywhere, and impossible to empty by accident. The **school's own** words live in the `blocked_words` table and are managed from a screen by a **school admin** only (`/coach/blocked`), effective on the next save with no deploy. Both are checked on every route. Removing a row can never unblock a baseline word, and a learner can never read the list. Matching is per word (not substring) with disguises normalised, and the refusal sentence never repeats the offending word | A fixed list goes stale the moment a school meets a word nobody upstream imagined, and waiting for a release to block it is how a blocklist stops being trusted. Keeping the baseline in code stops a well-meaning admin disabling the whole thing, and keeps every school safe on the same floor |
+| D-40 | Learner chat is a game of **Postcards**, never a text box | A message is built from **vetted phrase tiles** plus an optional game and score, so the client never sends free text and every message passes the same validator as a clue. Postcards are **same-school only** (D-15), reach another class only when that class' coach has opened it, are limited to **3 a day**, cost one **Stamp** each, and earn a daily quest and a collection card. There is still **no free-text chat** (D-18); a free-text phase needs a coach pilot, a review queue and a parent-visible transcript, and it is not scheduled | A text box between 8-year-olds in different classes is a moderation problem with a child at the end of it, and a school has no moderator on duty at 8pm. Phrase tiles give the same social reward — "I beat your score" still travels — while making the worst message impossible to type. Turning the exchange into postcards with stamps and a collection gives the loop a reason to repeat that a chat box does not have |
 
 ---
 
@@ -676,8 +677,80 @@ All blocking issues closed; pilot success criteria met (suggested: invite succes
 5. Curriculum-linked content packs (tie words/clues to lessons).
 6. Local play against the device for Checkers/Chess (offline).
 7. Verified offline leaderboard eligibility via replay validation.
-8. Reaction phrases (fixed set) in live matches.
+8. Reaction phrases (fixed set) in live matches — Phase 13 generalises this into Postcards, so build it there.
 9. Tournaments and class ladders.
+
+---
+
+## PHASE 13: Postcards — learner chat as a game (after launch, D-40)
+
+**Goal:** learners talk to each other, including to a class that is not their own, without a text
+box. A message is a **postcard**: a picture, one sentence made of phrase tiles, and optionally the
+score the sender just got. Nothing here is a new code path for strangers — it reuses the invitation
+inbox, the block list, the report flow and the content validator.
+
+**The game, in the order a learner meets it**
+
+1. **A Stamp.** Every finished game may earn one Stamp (max 3 a day), and a Stamp is spent sending
+   a postcard. Postcards are a reward you unlock by playing, not a tab you can sit in.
+2. **A card.** Pick a picture from the game's own art, pick one phrase — `Good game!`,
+   `You are fast!`, `Beat this!`, `Rematch?` — and attach the round you just played ("4 guesses").
+   The server composes the sentence; the client sends three ids and a score.
+3. **A reply.** The recipient opens the card from the same corner popup the invitations use, and has
+   exactly two moves: `Nice!` or `Beat this!` (which opens the same game with the same friendly
+   setup). Replying returns half a Stamp, so the pair can keep a rally going all week.
+4. **A collection.** Every card received is kept in a **Postcard album** with the sender's name and
+   avatar. Five cards from five classmates fills a page; a full page is a badge, which is the
+   addictive part — the album is a thing to complete, and the only way to complete it is to play
+   with more people.
+5. **A daily quest.** `Send one card.` / `Reply to one card.` The quest pays a badge, not XP, so
+   posting can never out-earn playing.
+
+**Rules the server enforces**
+
+- **Phrase tiles are content.** They live in the content tables (`kind = 'phrase'`), pass the same
+  safe-language validator as a clue (D-39), are grouped by age band, and a coach can retire one
+  without a deploy. The client may only send a tile id that exists, is live, and is in the sender's
+  band.
+- **Same school only** (D-15). Another class is reachable only when **that class' coach has opened
+  postcards** for it; a closed class is not listed. Cross-school is a 404, never a 403.
+- **Three a day**, one per recipient per hour, and never to somebody who blocked or muted you
+  (silently dropped, like invites).
+- **Structured, therefore auditable.** The stored row is `(sender, recipient, template, game, score,
+  picture)`. A coach can read their class' outbox and inbox from `/coach/postcards`; there is no
+  private channel, and nothing is ever deleted — a reported card is flagged, not removed.
+- **The report flow is the same one.** Any card carries `Report`, which opens the existing reasons
+  screen. Blocking a learner stops their cards instantly.
+
+**Tasks**
+
+- **P13-T01 Schema:** `game_postcards` (append-only), `game_postcard_replies` (or a self-reference),
+  `game_phrase_items`, plus `stamps` in the engagement ledger. Hand-written migration, reversible.
+- **P13-T02 Compose and send:** `POST /games/postcards` with `recipient_id`, `phrase_id`,
+  `picture_key`, optional `session_id`. Server recomposes the sentence and validates scope, band,
+  block, rate and Stamp balance. Idempotent by `client_move_id` like every other action.
+- **P13-T03 Delivery:** reuse `game_notifications` (`kind = 'postcard'`) and the existing inbox
+  payload, so the corner popup, the toast and the floating button need no new behaviour.
+- **P13-T04 The album:** `/postcards` — received cards as a grid, one page per five, page art
+  revealed as it fills. Reachable from the avatar sheet, **not** the top bar.
+- **P13-T05 Cross-class picker:** the class directory of the school, with a class listed only when
+  its coach has opened postcards. One tap on a class, one tap on a learner.
+- **P13-T06 Coach view:** `/coach/postcards` — the last 50 cards in and out of each class, reported
+  cards first. Read-only except `mute this learner's cards`.
+- **P13-T07 Quests and badges:** `send_one_card`, `reply_to_one_card`, `five_senders`; Stamps in the
+  engagement service beside streaks (same ledger shape).
+- **P13-T08 Tests:** a card to another class arrives and a card to a closed class is refused; a
+  retired phrase cannot be sent; a blocked sender's card is dropped without telling them; the
+  fourth card in a day is refused with one sentence; a reply is idempotent; the album shows the
+  sender's preferred name only; the coach list shows what a learner sent.
+
+**Explicitly not in this phase:** free text, images from the device, voice notes, group chats, and
+chat between schools. A later free-text phase would need a coach pilot, a review queue and a
+parent-visible transcript — see D-40 — and is not on the roadmap.
+
+**DoD:** a learner plays, earns a Stamp, sends a card to a friend in another class, that friend
+replies from the corner popup, both see the card in the album, a coach reads the exchange, and the
+whole loop passes Appendix D in under 25 words per screen.
 
 ---
 

@@ -31,6 +31,7 @@ import {
 } from "@/components/ui";
 import { ApiError, apiFetch } from "@/lib/api/client";
 import { sentenceFor } from "@/lib/auth/messages";
+import { acceptInvite } from "@/lib/games/inviteAccept";
 import type { LiveCreated, PresenceRow } from "@/lib/games/live";
 
 export default function CheckersLobbyPage() {
@@ -62,6 +63,12 @@ function LobbyBody() {
       setPending(friend.user_id);
       setError(null);
       try {
+        if (friend.invitation_id) {
+          // They already made the match and the seat has my name on it. Taking
+          // it is the same call the inbox makes, so the two paths cannot drift.
+          router.push(await acceptInvite(friend.invitation_id));
+          return;
+        }
         const created = await apiFetch<LiveCreated>("/api/games/live", {
           method: "POST",
           body: JSON.stringify({ invitee_id: friend.user_id }),
@@ -136,13 +143,20 @@ function LobbyBody() {
           <ul className="grid grid-cols-2 gap-2.5">
             {presence.data?.map((friend) => {
               const free = friend.status === "available";
+              const invited = Boolean(friend.invitation_id);
               return (
                 <li key={friend.user_id} className="flex flex-col gap-1">
                   <button
                     type="button"
                     disabled={!free || pending !== null}
                     onClick={() => void invitable(friend)}
-                    aria-label={free ? `Invite ${friend.name}` : friend.sentence}
+                    aria-label={
+                      invited
+                        ? `Play with ${friend.name}`
+                        : free
+                          ? `Invite ${friend.name}`
+                          : friend.sentence
+                    }
                     className="flex min-h-target flex-col items-center justify-center gap-1 rounded-2xl border-2 border-line bg-surface px-3 py-2.5 font-headline text-label font-bold text-ink transition-colors hover:border-brand hover:bg-brand-soft disabled:cursor-not-allowed disabled:border-line disabled:bg-surface-muted disabled:text-ink-muted sm:text-body-min"
                   >
                     <span className="relative">
@@ -160,7 +174,11 @@ function LobbyBody() {
                       ) : null}
                     </span>
                     <span className="max-w-full truncate">{friend.name}</span>
-                    {friend.online ? (
+                    {invited ? (
+                      <span className="text-micro font-bold uppercase tracking-wide text-brand">
+                        Invited you
+                      </span>
+                    ) : friend.online ? (
                       <span className="text-micro font-bold uppercase tracking-wide text-ok">
                         Online
                       </span>

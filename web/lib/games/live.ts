@@ -58,6 +58,8 @@ export type PresenceRow = {
   status: "available" | "in_match" | "busy";
   /** Their browser is open right now. Not a promise that they are free. */
   online: boolean;
+  /** The invite they sent me, when there is one: the tile joins that match. */
+  invitation_id?: string | null;
   sentence: string;
 };
 

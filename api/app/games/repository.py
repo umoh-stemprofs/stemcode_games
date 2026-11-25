@@ -1230,6 +1230,33 @@ async def invitations_for_invitee(
     return list((await session.execute(stmt)).scalars().all())
 
 
+async def pending_invitations_from(
+    session: AsyncSession, *, invitee_id: uuid.UUID, inviter_ids: list[uuid.UUID], now: dt.datetime
+) -> dict[uuid.UUID, uuid.UUID]:
+    """The live invites addressed to me, keyed by who sent them.
+
+    The roster needs this before it says "in a match" about somebody: a friend
+    sitting in a lobby is in a match, but it is a match with a free seat and my
+    name on it. Without it the tile was greyed out and the way in disappeared.
+    """
+    if not inviter_ids:
+        return {}
+    stmt = (
+        select(GameInvitation.inviter_id, GameInvitation.id)
+        .where(
+            GameInvitation.invitee_id == invitee_id,
+            GameInvitation.inviter_id.in_(inviter_ids),
+            GameInvitation.status == "pending",
+            GameInvitation.expires_at > now,
+        )
+        .order_by(GameInvitation.created_at.desc())
+    )
+    found: dict[uuid.UUID, uuid.UUID] = {}
+    for inviter_id, invitation_id in (await session.execute(stmt)).all():
+        found.setdefault(inviter_id, invitation_id)
+    return found
+
+
 async def invitations_for_session(
     session: AsyncSession, *, session_id: uuid.UUID
 ) -> list[GameInvitation]:
@@ -1269,6 +1296,47 @@ async def set_invitation_status(
     await session.execute(
         update(GameInvitation).where(GameInvitation.id == invitation_id).values(status=status)
     )
+
+
+async def release_session_participants(session: AsyncSession, *, session_id: uuid.UUID) -> int:
+    """Free every seat in a session that is over (D-26).
+
+    The one-open-play index reads `attempt_status = 'in_progress'`, so an
+    abandoned lobby used to leave the friend who had accepted it "in a game"
+    with nothing to play. Ending the match has to end every seat in it.
+    """
+    result = await session.execute(
+        update(GameParticipant)
+        .where(GameParticipant.session_id == session_id)
+        .values(attempt_status="expired")
+    )
+    return int(result.rowcount or 0)  # type: ignore[attr-defined]
+
+
+async def expire_session_invitations(
+    session: AsyncSession, *, session_id: uuid.UUID
+) -> list[uuid.UUID]:
+    """Close every pending invite that points at this match.
+
+    An invitation is a promise that a seat is waiting. Once the match is over or
+    the inviter has walked away, that promise is false, so the row is expired in
+    the same transaction that ends the match. Without this the card sat in the
+    invitee's inbox for the rest of the day, and tapping it answered with an
+    error nobody could act on (the reported "amara could not join" bug).
+
+    Returns the invitees who were told, so the caller can say why in words.
+    """
+    stmt = (
+        update(GameInvitation)
+        .where(
+            GameInvitation.session_id == session_id,
+            GameInvitation.status == "pending",
+        )
+        .values(status="expired")
+        .returning(GameInvitation.invitee_id)
+    )
+    rows = (await session.execute(stmt)).all()
+    return [row[0] for row in rows if row[0] is not None]
 
 
 async def expire_overdue_invitations(session: AsyncSession, *, now: dt.datetime) -> int:

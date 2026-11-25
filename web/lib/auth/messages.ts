@@ -17,6 +17,9 @@ const BY_CODE: Record<string, string> = {
   rate_limited: "Too many tries. Wait a moment.",
   validation_error: "Please check what you typed.",
   conflict: "That did not work. Try again.",
+  // A real invite whose match is gone. Not a typo, so it must not say "wrong".
+  invite_expired: "That invite is closed. Ask for a new one.",
+  invite_not_found: "That invite is not here.",
   unavailable: "The server is resting. Try later.",
   internal_error: "Something went wrong. Please try again.",
   bad_request: "Please check what you typed.",
