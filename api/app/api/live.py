@@ -24,7 +24,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import CacheClient
 from app.core.errors import AppError, NotFoundError, UnauthorizedError
-from app.core.rate_limit import get_cache
+from app.core.rate_limit import check_user_limit, get_cache
 from app.games import repository as repo
 from app.games.domain import invites as invite_rules
 from app.games.schemas import (
@@ -60,9 +60,18 @@ def _clock(at: dt.datetime, timezone: str) -> str:
 
 
 @router.post("", status_code=201)
-async def create_match(body: LiveCreateIn, session: SessionDep, actor: ActorDep) -> LiveCreatedOut:
+async def create_match(
+    body: LiveCreateIn,
+    session: SessionDep,
+    actor: ActorDep,
+    cache: CacheDep,
+) -> LiveCreatedOut:
     """Open a match and invite somebody (P8-T09)."""
     user = await _acting_user(session, actor)
+    # P10-T06: the same ten-an-hour allowance the challenge invite shares.
+    await check_user_limit(
+        cache, key="invite:user", user_id=user.id, limit=10, window_seconds=3600
+    )
     invitee = None
     if body.invitee_id is not None:
         if body.invitee_id == user.id:
@@ -173,9 +182,18 @@ async def decline_draw(session_id: uuid.UUID, session: SessionDep, actor: ActorD
 
 
 @router.post("/{session_id}/rematch", status_code=201)
-async def rematch(session_id: uuid.UUID, session: SessionDep, actor: ActorDep) -> LiveCreatedOut:
+async def rematch(
+    session_id: uuid.UUID,
+    session: SessionDep,
+    actor: ActorDep,
+    cache: CacheDep,
+) -> LiveCreatedOut:
     """A new match with the same pair, colours swapped (P8-T13)."""
     user = await _acting_user(session, actor)
+    # A rematch sends an invite too, so it draws on the same hourly allowance.
+    await check_user_limit(
+        cache, key="invite:user", user_id=user.id, limit=10, window_seconds=3600
+    )
     row, invitation, code, link_token = await live.rematch(
         session, user=user, session_id=session_id
     )

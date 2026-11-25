@@ -26,7 +26,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.cache import CacheClient
 from app.core.config import get_settings
 from app.core.errors import AppError, NotFoundError, RateLimitedError, UnauthorizedError
-from app.core.rate_limit import client_ip, get_cache
+from app.core.rate_limit import check_user_limit, client_ip, get_cache
 from app.games import repository as repo
 from app.games.domain import invites as invite_rules
 from app.games.models import GameInvitation
@@ -155,9 +155,19 @@ async def friends(
 
 # ------------------------------------------------------------------ challenges
 @router.post("/challenges", status_code=201)
-async def create_challenge(body: ChallengeIn, session: SessionDep, actor: ActorDep) -> ChallengeOut:
+async def create_challenge(
+    body: ChallengeIn,
+    request: Request,
+    session: SessionDep,
+    actor: ActorDep,
+) -> ChallengeOut:
     """Open a challenge and invite somebody: a roster tap, a code, a link."""
     user = await _acting_user(session, actor)
+    # P10-T06: ten invitations an hour. A learner who wants a game sends one;
+    # ten is already more than a lesson has room for.
+    await check_user_limit(
+        get_cache(request), key="invite:user", user_id=user.id, limit=10, window_seconds=3600
+    )
     invitee: User | None = None
     if body.invitee_id is not None:
         invitee = await session.get(User, body.invitee_id)
@@ -401,9 +411,19 @@ async def remove_block(user_id: uuid.UUID, session: SessionDep, actor: ActorDep)
 
 # --------------------------------------------------------------------- reports
 @router.post("/reports", status_code=201)
-async def report(body: ReportIn, session: SessionDep, actor: ActorDep) -> ReportOut:
+async def report(
+    body: ReportIn,
+    request: Request,
+    session: SessionDep,
+    actor: ActorDep,
+) -> ReportOut:
     """The minimum report: a reason, an optional note, and the admin's list."""
     user = await _acting_user(session, actor)
+    # P10-T06: ten reports a day. Enough for a bad afternoon, not enough to bury
+    # a school admin's queue.
+    await check_user_limit(
+        get_cache(request), key="report:user", user_id=user.id, limit=10, window_seconds=86_400
+    )
     if body.reported_id == user.id:
         raise AppError("You cannot report yourself.", code="report_self", status_code=400)
     other = await session.get(User, body.reported_id)

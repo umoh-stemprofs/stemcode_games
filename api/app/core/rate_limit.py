@@ -49,6 +49,28 @@ async def check_rate_limit(
     return count
 
 
+async def check_user_limit(
+    cache: CacheClient,
+    *,
+    key: str,
+    user_id: object,
+    limit: int,
+    window_seconds: int,
+) -> int:
+    """A counter per learner, for actions a person takes rather than a browser.
+
+    ``rate_limit`` keys on the request, which is right for sign-in. Inviting and
+    reporting belong to an account: a learner with two devices must not get two
+    allowances, and a shared tablet must not spend one child's on another.
+
+    Honours ``RATE_LIMIT_ENABLED`` like the dependency does, so a test or a
+    local run can turn limits off in one place.
+    """
+    if not get_settings().rate_limit_enabled:
+        return 0
+    return await check_rate_limit(cache, f"{key}:{user_id}", limit, window_seconds)
+
+
 def rate_limit(
     key_fn: Callable[[Request], str],
     limit: int,

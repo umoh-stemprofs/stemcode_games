@@ -2,7 +2,9 @@ name: ci
 
 on:
   push:
-    branches: [main]
+    # `master` is this repository's branch. With only `main` listed, no push
+    # ran the suite at all, so every green build was local (found 2026-11-25).
+    branches: [main, master]
   pull_request:
 
 concurrency:

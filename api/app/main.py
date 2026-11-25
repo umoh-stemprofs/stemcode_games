@@ -32,8 +32,9 @@ from app.api.testing import router as testing_router
 from app.core.cache import build_cache
 from app.core.config import get_settings
 from app.core.db import dispose_engines
-from app.core.errors import AppError, app_error_handler, unhandled_error_handler
+from app.core.errors import AppError, app_error_handler, error_body, unhandled_error_handler
 from app.core.logging import configure_logging, get_logger, request_id_var
+from app.core.origin import origin_refused
 from app.core.queue import build_queue
 
 log = get_logger(__name__)
@@ -101,6 +102,27 @@ def create_app() -> FastAPI:
         request_id = request.headers.get("x-request-id") or uuid.uuid4().hex
         token = request_id_var.set(request_id)
         started = time.perf_counter()
+
+        # P11-T01: a cookie is attached to a cross-site POST by the browser, so
+        # the write itself must prove it came from this app. Checked here, in
+        # front of every route, because a new router should not have to remember.
+        if origin_refused(
+            request.method, request.headers.get("origin"), settings=get_settings()
+        ):
+            log.info(
+                "http.refused_origin",
+                extra={"method": request.method, "route": request.url.path, "status": 403},
+            )
+            request_id_var.reset(token)
+            return JSONResponse(
+                status_code=403,
+                content=error_body(
+                    "bad_origin",
+                    "That request came from another page.",
+                ),
+                headers={"X-Request-ID": request_id, "Referrer-Policy": "no-referrer"},
+            )
+
         try:
             response: Response = await call_next(request)
         finally:
