@@ -639,6 +639,7 @@ Two deliberate deviations, both stated rather than hidden. The P8-T08 fuzzer run
 - **P10-T04 Reporter and reported UX:** confirmation to the reporter that it was received (no outcome details); reported learners are not told who reported.
 - **P10-T05 Appeals path:** learner can request review of an exclusion; the school admin resolves; result via superseding rows.
 - **P10-T06 Rate-limit audit:** verify limits on session create, action submit, invite create (e.g. 10/hour), invite redeem (P7-T04), WS messages, report submission (10/day).
+  - **Shipped so far (2026-11-25):** invite create is **10 an hour per learner** (challenge, live match and rematch share one key, so a rematch cannot be used to get around it) and a report is **10 a day per learner**. Both count on the account, never the browser: two tabs must not buy two allowances, and a shared tablet must not spend one child's on another. Sign-in (10/min by IP), code redemption and WS frames were already limited. Still to audit: session create and action submit.
 - **P10-T07 Tests:** collusion signal fires on synthetic farming data; false-positive guard on normal play; flagged session excluded from the board **after the next reconcile** while its ledger rows remain intact; **zero-XP below-minimum sessions are not flagged as farming (D-29)**; admin audit log completeness; the replay viewer never returns the seed.
 
 ### DoD
@@ -650,6 +651,13 @@ Synthetic farming scenario is detected and neutralized without any deletion of h
 
 **Objective:** safe to run for real schools.
 **Prerequisites:** Phases 0-10.
+
+> **Found on 2026-11-25, both fixed:** CI triggered on `push: branches: [main]` while the repo's
+> branch is `master`, so **no push ever ran the suite** — every green build was local. And cookie
+> writes had no `Origin` check at all (only the WebSocket gateway had one), leaving `SameSite=Lax`
+> as the only thing between a learner's account and a cross-site form post. The guard now sits in
+> front of every route (`app/core/origin.py`), allows a missing `Origin` so scripts and tests still
+> work, and refuses anything else with one sentence.
 
 ### Tasks
 - **P11-T01 Security review:** OWASP checklist; cookie flags; CSRF protection for cookie-authenticated mutating requests (double-submit token or SameSite+Origin check); CORS locked to the app origin; WS origin check; dependency scanning; secrets audit; SQL injection and mass-assignment review; authorization test matrix (role x endpoint x school).
@@ -683,6 +691,12 @@ All blocking issues closed; pilot success criteria met (suggested: invite succes
 ---
 
 ## PHASE 13: Postcards — learner chat as a game (after launch, D-40)
+
+> **Open choice, not decided (2026-11-25):** the product owner may prefer a **class wall** — one
+> board per class, every post visible to that class' coach, no private messages — because it gives
+> real conversation at a fraction of the moderation risk. If that is chosen, this phase keeps the
+> Stamps, the album and the daily quest, and swaps phrase tiles for moderated short posts. Ask
+> before building either shape.
 
 **Goal:** learners talk to each other, including to a class that is not their own, without a text
 box. A message is a **postcard**: a picture, one sentence made of phrase tiles, and optionally the
