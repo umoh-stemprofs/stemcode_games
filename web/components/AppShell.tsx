@@ -13,8 +13,9 @@
  *    staff see theirs. The API still decides what the pages may *contain* —
  *    hiding a link is a courtesy, never the authorization.
  * 3. **A header that fits a phone.** The old bar wrapped its own controls off
- *    the screen at 390px. The menu now drops to its own scrollable row below
- *    the brand row, so nothing ever clips.
+ *    the screen at 390px. The menu now drops to its own row below the brand
+ *    row, and its tabs share that row evenly, so no tab is pushed past the
+ *    edge where it could only be found by swiping sideways.
  */
 
 import Link from "next/link";
@@ -172,11 +173,13 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
 
           {/* Phone: the menu gets its own row instead of fighting the brand for
-              space. It scrolls sideways rather than wrapping the header taller. */}
+              space. Its tabs split the row evenly (the tap area is a third of
+              the row, whatever the label length) so even a learner's third tab
+              stays on screen at 320px without a swipe to find it. */}
           <div className="border-t border-line px-3 py-2 md:hidden">
-            <nav aria-label="Main" className="-mx-1 flex items-center gap-1 overflow-x-auto px-1 pb-0.5">
+            <nav aria-label="Main" className="flex items-center gap-1">
               {items.map((item) => (
-                <NavTab key={item.href} item={item} pathname={pathname} />
+                <NavTab key={item.href} item={item} pathname={pathname} fill />
               ))}
             </nav>
           </div>
@@ -202,7 +205,16 @@ export function AppShell({ children }: { children: ReactNode }) {
  * One menu tab. The only special case: a tab tapped mid-game asks first,
  * because leaving ends the attempt (see `QuitGuard`).
  */
-function NavTab({ item, pathname }: { item: NavItem; pathname: string }) {
+function NavTab({
+  item,
+  pathname,
+  fill = false,
+}: {
+  item: NavItem;
+  pathname: string;
+  /** Share the row with its siblings instead of hugging its own label. */
+  fill?: boolean;
+}) {
   const guard = useQuitGuard();
   const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
 
@@ -215,7 +227,9 @@ function NavTab({ item, pathname }: { item: NavItem; pathname: string }) {
         event.preventDefault();
         guard.leave(item.href);
       }}
-      className={`flex min-h-[44px] shrink-0 items-center whitespace-nowrap rounded-xl px-3.5 font-headline text-[15px] font-semibold transition-colors ${
+      className={`flex min-h-[44px] shrink-0 items-center whitespace-nowrap rounded-xl font-headline text-[15px] font-semibold transition-colors ${
+        fill ? "flex-1 justify-center px-1" : "px-3.5"
+      } ${
         active
           ? "bg-brand-soft text-brand-deep"
           : "text-ink-muted hover:bg-surface-muted hover:text-ink"

@@ -32,6 +32,17 @@ depends_on = None
 
 
 def upgrade() -> None:
+    # 0004 shipped empty placeholders for all four of these tables (Phase 2
+    # guessed at their shape); this migration is the real thing. On a database that has
+    # migrated straight through, the placeholders are still there and
+    # ``create_table`` would stop at "already exists" — which is why a brand-new
+    # install could never reach head. Drop the shells, keep nothing from them:
+    # no row has ever been written to them before this revision.
+    op.execute("DROP TABLE IF EXISTS game_notifications CASCADE")
+    op.execute("DROP TABLE IF EXISTS game_invitations CASCADE")
+    op.execute("DROP TABLE IF EXISTS game_blocks CASCADE")
+    op.execute("DROP TABLE IF EXISTS game_reports CASCADE")
+
     op.create_table(
         "game_invitations",
         sa.Column("id", UUID, primary_key=True),
