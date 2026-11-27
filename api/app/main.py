@@ -82,16 +82,40 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         log.info("app.stopped", extra={"route": "shutdown"})
 
 
+def security_headers(settings: Any) -> dict[str, str]:
+    """Response headers every answer carries (P11-T01).
+
+    The API serves JSON, so a strict ``default-src 'none'`` costs nothing and
+    stops a stray HTML response from loading anything. The framing headers are
+    the belt to the cookie's braces: nothing may put the app in a frame.
+    HSTS is only meaningful over TLS, so it is sent only where the deployment
+    terminates TLS (staging and prod).
+    """
+
+    headers = {
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'; base-uri 'none'",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+        "Referrer-Policy": "no-referrer",
+    }
+    if settings.is_production:
+        headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return headers
+
+
 def create_app() -> FastAPI:
     settings = get_settings()
+    # Docs describe every endpoint and every field; that is a map for an
+    # attacker and no help to a learner. Open in dev/test, gone everywhere the
+    # app is deployed, instead of hoping the proxy remembers to hide them.
     app = FastAPI(
         title="STEM Code V2 Games API",
         version=VERSION,
         lifespan=lifespan,
-        # Docs are useful in dev; the proxy is expected to hide them in prod.
-        docs_url="/api/docs",
+        docs_url=None if settings.is_production else "/api/docs",
         redoc_url=None,
-        openapi_url="/api/openapi.json",
+        openapi_url=None if settings.is_production else "/api/openapi.json",
     )
 
     app.add_exception_handler(AppError, app_error_handler)
@@ -120,7 +144,7 @@ def create_app() -> FastAPI:
                     "bad_origin",
                     "That request came from another page.",
                 ),
-                headers={"X-Request-ID": request_id, "Referrer-Policy": "no-referrer"},
+                headers={**security_headers(settings), "X-Request-ID": request_id},
             )
 
         try:
@@ -137,7 +161,8 @@ def create_app() -> FastAPI:
             )
             request_id_var.reset(token)
         response.headers["X-Request-ID"] = request_id
-        response.headers["Referrer-Policy"] = "no-referrer"
+        for key, value in security_headers(settings).items():
+            response.headers[key] = value
         return response
 
     # Everything public lives under /api so the browser only ever sees one
@@ -171,7 +196,8 @@ def create_app() -> FastAPI:
                 "service": "stem-games-api",
                 "version": VERSION,
                 "env": settings.app_env,
-                "docs": "/api/docs",
+                # No pointer to a route that is closed in this environment.
+                **({} if settings.is_production else {"docs": "/api/docs"}),
             }
         )
 

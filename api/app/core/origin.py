@@ -26,13 +26,17 @@ from app.core.config import Settings
 
 UNSAFE_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
 
-# The two origins the dev server and its rewrite use. In production the app's
-# own origin is added from settings, which staging and prod must set.
+# The two origins the dev server and its rewrite use. Only accepted where the
+# app itself runs on loopback: in staging and prod the deployed origin is the
+# only one that may write, and APP_BASE_URL is required there so this list is
+# never empty.
 LOOPBACK_ORIGINS = ("http://localhost:3000", "http://127.0.0.1:3000")
 
 
 def allowed_origins(settings: Settings) -> set[str]:
-    allowed = set(LOOPBACK_ORIGINS)
+    allowed: set[str] = set()
+    if not settings.is_production:
+        allowed.update(LOOPBACK_ORIGINS)
     base = (settings.app_base_url or "").rstrip("/")
     if base:
         allowed.add(base)

@@ -9,6 +9,9 @@
   "scripts": {
     "dev:api": "node scripts/py.mjs api/dev_reload.py",
     "dev:web": "npm --prefix web run dev",
+    "db:start": "node scripts/db.mjs start",
+    "db:stop": "node scripts/db.mjs stop",
+    "db:status": "node scripts/db.mjs status",
     "migrate": "node scripts/py.mjs -m app.cli migrate",
     "migrate:down": "node scripts/py.mjs -m app.cli migrate --revision base",
     "seed": "node scripts/py.mjs -m app.cli seed",
@@ -18,6 +21,8 @@
     "lint:api": "node scripts/py.mjs -m ruff check api",
     "format:api": "node scripts/py.mjs -m ruff format api",
     "typecheck:api": "node scripts/py.mjs -m mypy api/app",
+    "audit:api": "node scripts/py.mjs -m pip_audit -r api/requirements.lock.txt --progress-spinner off",
+    "lock:api": "node scripts/lock-api.mjs",
     "gen:api": "node scripts/gen-api.mjs",
     "install:web": "npm --prefix web install",
     "build:web": "npm --prefix web run build",

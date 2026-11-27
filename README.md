@@ -35,9 +35,15 @@ intended, and startup refuses to use them outside `dev`/`test`.
 
 ```bash
 python -m venv .venv
-.venv/Scripts/python -m pip install -r api/requirements-dev.txt   # Windows
-# .venv/bin/python -m pip install -r api/requirements-dev.txt     # macOS / Linux
+.venv/Scripts/python -m pip install -r api/requirements.lock.txt   # Windows
+# .venv/bin/python -m pip install -r api/requirements.lock.txt     # macOS / Linux
 ```
+
+`requirements.txt` holds the human-readable pins and `requirements-dev.txt` adds the test and
+quality tools. `requirements.lock.txt` is the resolved tree — every transitive package, pinned —
+and it is the file CI installs and audits. Change a pin in `requirements*.txt`, run
+`npm run lock:api`, then run the suite. `npm run audit:api` checks the lock for advisories; the
+web dependencies are pinned in `web/package.json` and locked by `web/package-lock.json`.
 
 All Python commands go through `scripts/py.mjs`, so you never activate the venv by hand:
 
@@ -53,11 +59,17 @@ experiments out of your system Postgres):
 
 ```bash
 initdb -D .pgdata -U postgres --auth=trust -E UTF8
-pg_ctl -D .pgdata -o "-p 5433 -c listen_addresses=127.0.0.1" -l .pgdata/pg.log start
-createdb -h 127.0.0.1 -p 5433 -U postgres stem_games
+createdb -h 127.0.0.1 -p 5433 -U postgres stem_games    # start it first, see below
 ```
 
-Stop it later with `pg_ctl -D .pgdata stop`.
+Start and stop it with `npm run db:start` and `npm run db:stop` (equivalently
+`pg_ctl -D .pgdata -o "-p 5433 -c listen_addresses=127.0.0.1" -l .pgdata/server.log start`).
+
+Use the npm scripts rather than a `pg_ctl start` you might interrupt or time out: a start that is
+killed during crash recovery leaves the cluster half-started, and every later connection then
+dies with `0xC0000142` / "could not reserve shared memory region". The cluster is undamaged —
+stop it cleanly with `npm run db:stop` and start it again. `npm run db:status` says whether it is
+up, and if a start fails the script prints the end of the server log.
 
 ### 4. Configuration
 
@@ -72,6 +84,11 @@ DATABASE_URL=postgresql+asyncpg://postgres@127.0.0.1:5433/stem_games
 ```
 
 `.env` is git-ignored. No secret or connection string has a default in code.
+
+`APP_BASE_URL` can stay at `http://localhost:3000` in dev — loopback is trusted there anyway. In
+`staging` and `prod` it is **required**: it is the only origin the CSRF check and the WebSocket
+handshake accept, and the base of every invite link. The app refuses to boot in those environments
+without it rather than run with a loopback default and refuse every real write.
 
 ### 5. Run it
 
@@ -164,6 +181,7 @@ you never run it locally.
 |---|---|
 | `npm run dev:api` | FastAPI with reload on `:8000` |
 | `npm run dev:web` | Next.js dev server on `:3000` |
+| `npm run db:start` / `db:stop` / `db:status` | The project-local Postgres cluster on `:5433` |
 | `npm run migrate` | Apply migrations (`head`) |
 | `npm run migrate:down` | Roll migrations back to `base` |
 | `npm run seed` | Demo schools, staff, classes and 35 learners (dev only) |
@@ -172,6 +190,8 @@ you never run it locally.
 | `npm run test:api` | Python tests |
 | `npm run lint:api` | Ruff |
 | `npm run typecheck:api` | Mypy (strict) |
+| `npm run audit:api` | Dependency scan of the Python lock |
+| `npm run lock:api` | Re-resolve `api/requirements.lock.txt` after changing a pin |
 | `npm run typecheck:web` | `tsc --noEmit` |
 | `npm run test:e2e` | Playwright smoke suite (needs a seeded database and both servers) |
 | `npm run gen:api` | Regenerate the TypeScript client from the running API |

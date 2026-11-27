@@ -35,13 +35,28 @@ const nextConfig = {
   },
 
   async headers() {
-    return [
-      {
-        // Invite links carry a token in their first request (D-31).
-        source: "/:path*",
-        headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
-      },
+    const baseline = [
+      // Invite links carry a token in their first request (D-31).
+      { key: "Referrer-Policy", value: "no-referrer" },
+      // Answers are HTML/JS, and a browser that guesses a type from bytes can
+      // be talked into running something that is not script (P11-T01).
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "X-Frame-Options", value: "DENY" },
+      { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+      // Only the framing directive: scripts and styles are left as Next emits
+      // them, so a strict CSP cannot silently break a game screen.
+      { key: "Content-Security-Policy", value: "frame-ancestors 'none'; object-src 'none'; base-uri 'self'" },
     ];
+
+    // HSTS is a promise about TLS. Only make it where the proxy terminates TLS.
+    if (process.env.NODE_ENV === "production") {
+      baseline.push({
+        key: "Strict-Transport-Security",
+        value: "max-age=31536000; includeSubDomains",
+      });
+    }
+
+    return [{ source: "/:path*", headers: baseline }];
   },
 };
 

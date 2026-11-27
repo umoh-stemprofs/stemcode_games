@@ -129,3 +129,112 @@ async def test_actions_are_capped_at_sixty_a_minute(client, db_session: AsyncSes
     )
     assert refused.status_code == 429, refused.text
     assert refused.json()["error"]["code"] == "rate_limited"
+
+
+async def test_every_answer_carries_the_security_headers(client) -> None:
+    """P11-T01: a response with no headers is a browser deciding for itself."""
+
+    response = await client.get("/api/health")
+
+    assert response.headers["x-content-type-options"] == "nosniff"
+    assert response.headers["x-frame-options"] == "DENY"
+    assert "frame-ancestors 'none'" in response.headers["content-security-policy"]
+    assert response.headers["permissions-policy"].startswith("camera=()")
+    assert response.headers["referrer-policy"] == "no-referrer"
+    # Dev is plain HTTP; HSTS there would be a promise the app cannot keep.
+    assert "strict-transport-security" not in response.headers
+
+
+async def test_a_refused_origin_still_gets_the_headers(client) -> None:
+    """The early 403 leaves through its own path, so it is checked separately."""
+
+    refused = await client.post("/api/games/invites", json={}, headers=CROSS_SITE)
+
+    assert refused.status_code == 403
+    assert refused.headers["x-content-type-options"] == "nosniff"
+    assert refused.headers["x-frame-options"] == "DENY"
+
+
+async def test_api_docs_are_closed_and_hsts_is_on_in_production(monkeypatch) -> None:
+    """The endpoint map is for developers; a deployed app does not publish it."""
+
+    import app.main as main_module
+    import httpx
+    from app.core.config import Settings
+
+    prod = Settings(
+        app_env="prod",
+        database_url="postgresql+asyncpg://postgres@127.0.0.1:5433/stem_games",
+        redis_url="redis://127.0.0.1:6379/0",
+        secret_key="test-only-secret-key-0123456789abcdefghij",
+        app_base_url="https://games.example.org",
+    )
+    monkeypatch.setattr(main_module, "get_settings", lambda: prod)
+
+    production_app = main_module.create_app()
+    transport = httpx.ASGITransport(app=production_app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as http:
+        assert (await http.get("/api/docs")).status_code == 404
+        assert (await http.get("/api/openapi.json")).status_code == 404
+
+    assert main_module.security_headers(prod)["Strict-Transport-Security"].startswith(
+        "max-age=31536000"
+    )
+
+
+DEPLOYED = {
+    "database_url": "postgresql+asyncpg://postgres@127.0.0.1:5433/stem_games",
+    "redis_url": "redis://127.0.0.1:6379/0",
+    "secret_key": "test-only-secret-key-0123456789abcdefghij",
+    "app_base_url": "https://games.example.org",
+}
+LOCAL = {
+    "database_url": "postgresql+asyncpg://postgres@127.0.0.1:5433/stem_games",
+    "secret_key": "test-only-secret-key-0123456789abcdefghij",
+}
+
+
+def test_a_deployed_app_refuses_to_boot_without_a_public_base_url() -> None:
+    """P11-T08: a loopback default in production is a broken app, not a safe one."""
+
+    import pytest
+    from app.core.config import Settings
+    from pydantic import ValidationError
+
+    # With it set, both deployed environments boot.
+    for env in ("staging", "prod"):
+        assert Settings(app_env=env, **DEPLOYED).app_base_url == "https://games.example.org"
+
+    for env in ("staging", "prod"):
+        with pytest.raises(ValidationError, match="APP_BASE_URL"):
+            Settings(app_env=env, **{**DEPLOYED, "app_base_url": None})
+
+
+def test_a_relative_base_url_is_refused() -> None:
+    """It is compared with an ``Origin`` header, so it must be absolute."""
+
+    import pytest
+    from app.core.config import Settings
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError, match="absolute"):
+        Settings(app_env="dev", **{**LOCAL, "app_base_url": "/games"})
+
+    # A trailing slash is normalised away instead of creating a second entry.
+    slashed = Settings(app_env="dev", **{**LOCAL, "app_base_url": "http://localhost:3000/"})
+    assert slashed.app_base_url == "http://localhost:3000"
+
+
+def test_loopback_origins_are_refused_once_deployed() -> None:
+    """The dev server's own origins stop being trustworthy off the developer's box."""
+
+    from app.core.config import Settings
+    from app.core.origin import allowed_origins, origin_refused
+
+    dev = Settings(app_env="dev", **LOCAL)
+    assert not origin_refused("POST", "http://localhost:3000", settings=dev)
+
+    prod = Settings(app_env="prod", **DEPLOYED)
+    assert allowed_origins(prod) == {"https://games.example.org"}
+    assert origin_refused("POST", "http://localhost:3000", settings=prod)
+    assert not origin_refused("POST", "https://games.example.org", settings=prod)

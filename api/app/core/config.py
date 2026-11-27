@@ -5,6 +5,9 @@ Rules (P0-T04, P0-T11):
 - No secret or connection string has a default in code.
 - The in-memory cache/queue may only run in ``dev`` and ``test`` (D-34): startup
   refuses to boot in ``staging``/``prod`` without ``REDIS_URL``.
+- ``APP_BASE_URL`` is required in ``staging``/``prod`` (P11-T08): it is the only
+  non-loopback origin the CSRF check and the WebSocket handshake accept, and the
+  base of every invite link.
 """
 
 from __future__ import annotations
@@ -35,7 +38,11 @@ class Settings(BaseSettings):
     # Optional in dev/test, mandatory in staging/prod (D-34).
     redis_url: str | None = None
 
-    app_base_url: str = "http://localhost:3000"
+    # The public origin of the web app. Optional in dev/test (the dev server and
+    # its rewrite are loopback); mandatory in staging/prod, where a loopback
+    # default would silently refuse every real write instead of failing loudly
+    # at boot.
+    app_base_url: str | None = None
     log_level: str = "INFO"
     rate_limit_enabled: bool = True
 
@@ -77,12 +84,33 @@ class Settings(BaseSettings):
         """True when the in-memory cache/queue implementations are in use."""
         return not self.redis_url
 
+    @field_validator("app_base_url", mode="after")
+    @classmethod
+    def _base_url_is_absolute(cls, value: str | None) -> str | None:
+        """A relative base URL cannot be compared with an ``Origin`` header."""
+        if value is None or not value.strip():
+            return None
+        base = value.strip().rstrip("/")
+        if not base.startswith(("http://", "https://")):
+            raise ValueError(
+                "APP_BASE_URL must be an absolute http(s) URL, "
+                "for example https://games.example.org."
+            )
+        return base
+
     @model_validator(mode="after")
-    def _refuse_memory_cache_outside_dev(self) -> Settings:
+    def _refuse_dev_only_settings(self) -> Settings:
         if self.is_production and not self.redis_url:
             raise ValueError(
                 "REDIS_URL is required when APP_ENV is 'staging' or 'prod'. "
                 "The in-memory cache/queue is dev/test only (D-34)."
+            )
+        if self.is_production and not self.app_base_url:
+            raise ValueError(
+                "APP_BASE_URL is required when APP_ENV is 'staging' or 'prod'. "
+                "Without it the accepted origins are loopback only, so every "
+                "write from the real site is refused and invite links point at "
+                "localhost."
             )
         return self
 

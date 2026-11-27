@@ -57,10 +57,18 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: api/requirements-dev.txt
+          cache-dependency-path: api/requirements.lock.txt
 
+      # The lock, not requirements-dev.txt: this installs exactly the tree that
+      # was audited and tested, instead of whatever `>=` resolves to today
+      # (P11-T02).
       - name: Install
-        run: pip install -r api/requirements-dev.txt
+        run: pip install -r api/requirements.lock.txt
+
+      # A vulnerable transitive package is how the starlette advisory got in
+      # unnoticed. This fails the build when one is found.
+      - name: Dependency scan
+        run: pip-audit -r api/requirements.lock.txt --progress-spinner off
 
       - name: Lint
         run: ruff check api
@@ -92,8 +100,13 @@ jobs:
         with:
           node-version: "22"
 
+      # `ci`, not `install`: it honours package-lock.json exactly and fails
+      # when the lock and package.json disagree (P11-T02).
       - name: Install web dependencies
-        run: npm --prefix web install --no-audit --no-fund
+        run: npm --prefix web ci --no-audit --no-fund
+
+      - name: Dependency scan
+        run: npm --prefix web audit --omit=dev --audit-level=high
 
       - name: Typecheck
         run: npm --prefix web run typecheck
@@ -137,17 +150,17 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: api/requirements-dev.txt
+          cache-dependency-path: api/requirements.lock.txt
 
       - name: Install API
-        run: pip install -r api/requirements-dev.txt
+        run: pip install -r api/requirements.lock.txt
 
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
 
       - name: Install web
-        run: npm --prefix web install --no-audit --no-fund
+        run: npm --prefix web ci --no-audit --no-fund
 
       - name: Install Chromium
         working-directory: web
@@ -218,8 +231,8 @@ jobs:
         with:
           node-version: "22"
 
-      - run: pip install -r api/requirements-dev.txt
-      - run: npm --prefix web install --no-audit --no-fund
+      - run: pip install -r api/requirements.lock.txt
+      - run: npm --prefix web ci --no-audit --no-fund
       - run: python -m app.cli migrate
 
       - name: Start the API

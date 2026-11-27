@@ -26,6 +26,13 @@ out/
 *.log
 .pip-install.log
 
+# curl cookie jar and other scratch files from manual testing: a cookie jar
+# holds a live session token and must never be a source file (P11-T01).
+.cookies.txt
+cookies.txt
+.z.sid
+.pg-start.out
+
 # playwright: reports and traces are build output, not source
 web/playwright-report/
 web/test-results/

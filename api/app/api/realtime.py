@@ -31,6 +31,7 @@ from app.core.cache import CacheClient
 from app.core.db import get_sessionmaker
 from app.core.errors import AppError, NotFoundError, UnauthorizedError
 from app.core.logging import get_logger
+from app.core.origin import allowed_origins
 from app.core.rate_limit import get_cache
 from app.games import repository as repo
 from app.games.schemas import TicketIn, TicketOut
@@ -382,8 +383,8 @@ def origin_refused(websocket: WebSocket) -> bool:
     origin = websocket.headers.get("origin")
     if not origin:
         return True
-    allowed = {"http://localhost:3000", "http://127.0.0.1:3000"}
     settings = getattr(websocket.app.state, "settings", None)
-    if settings is not None:
-        allowed.add(str(settings.app_base_url).rstrip("/"))
-    return origin.rstrip("/") not in allowed
+    if settings is None:
+        return True
+    # The same list the REST check uses, so the two can never drift apart.
+    return origin.rstrip("/") not in allowed_origins(settings)

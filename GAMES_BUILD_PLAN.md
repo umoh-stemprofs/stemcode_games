@@ -672,6 +672,26 @@ Synthetic farming scenario is detected and neutralized without any deletion of h
 - **P11-T09 Launch checklist sign-off** (product owner, school admin representative, security).
 - **P11-T10 Comprehension study with real learners:** run Appendix D.5 on the pilot build with **5 first-time learners from the target band** (at least two who cannot read the clue text), no coaching. Any intervention is a blocking bug. This is the last gate before pilot, and it is the one that decides whether the game is playable by the audience it was built for.
 
+> **Audit run on 2026-11-26** (full record in [P11_AUDIT.md](P11_AUDIT.md)): the API suite is
+> green (369 tests, 0 failures, only the redis-marked tests skip locally), ruff/mypy/typecheck are
+> clean, parity is 18/18 and the production build passes. Security basics are in place — origin
+> check on unsafe methods and on the WS gateway, httpOnly/SameSite/Secure cookies, no CORS, no
+> interpolated SQL, rate limits on the write paths. **Closed the same day:** the committed cookie
+> jar is untracked and gitignored, every answer now carries the framing/nosniff/Permissions-Policy
+> headers (HSTS in staging and prod) in the app, the Next config and nginx, and `/api/docs` plus
+> `/api/openapi.json` are closed outside dev. **Also closed:** every dependency is pinned, the
+> Python tree is locked in `api/requirements.lock.txt`, and CI installs with `pip install -r` that
+> lock plus `npm ci`, then runs `pip-audit` and `npm audit` (the starlette, PyJWT, redis/arq and
+> bundled-postcss problems are fixed). **Then closed 2026-11-27:** `APP_BASE_URL` is mandatory in
+> `staging`/`prod` (startup refuses a loopback default) and loopback origins are trusted only in
+> dev, for both the REST write check and the WS handshake. The last finding — no token revocation —
+> turned out to be wrong: `logout` already revokes the session row and every request checks it;
+> the missing piece was a test that sends a copied access token by hand, which now exists.
+> **Still open:** there is no retention/export/delete flow, and
+> nothing watches for metrics, errors or alerts. Not started at all: metrics and alerting (T06),
+> load testing (T03), the manual device matrix (T05), backups and runbooks (T07), the pilot
+> (T08/T09) and the D.5 learner study (T10).
+
 ### DoD
 All blocking issues closed; pilot success criteria met (suggested: invite success > 90%, match completion > 85%, zero ledger drift, zero P1 incidents in last 7 days, **Appendix D.5 pass rate ≥ 4 of 5 with zero adult interventions**).
 

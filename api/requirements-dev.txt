@@ -1,7 +1,11 @@
-# Test and quality tooling. CI installs this file.
+# Test and quality tooling. CI installs `requirements.lock.txt`, which includes
+# everything here; this file stays the human-readable list (P11-T02).
 -r requirements.txt
-pytest>=8
-pytest-asyncio>=0.24
-httpx>=0.27
-ruff>=0.6
-mypy>=1.11
+pytest==9.2.0
+pytest-asyncio==1.5.0
+httpx==0.28.1
+ruff==0.17.5
+mypy==2.4.1
+# The dependency scan. In CI, not optional: findings 4 of the P11 audit was a
+# vulnerable transitive package that nothing was watching.
+pip-audit==2.10.1

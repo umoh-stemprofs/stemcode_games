@@ -132,6 +132,39 @@ async def test_logout_revokes_session_immediately(client, db_session: AsyncSessi
     assert row is not None and row.revoked_reason == "logout"
 
 
+async def test_a_copied_access_token_stops_working_at_logout(
+    client, db_session: AsyncSession
+) -> None:
+    """P11-T08: logout must kill the token, not only the cookie holding it.
+
+    Clearing a cookie ends the browser's copy. A token copied out of it — a
+    shared laptop, a proxy log, a screenshot of devtools — must die too, well
+    before its 15 minutes are up. That works because every request checks the
+    session row, so this test sends the copy by hand after logout.
+    """
+
+    world = await build_world(db_session)
+    await login(client, world.learner_a)
+    copied = client.cookies.get(ACCESS_COOKIE)
+    assert copied
+
+    # The same hand-sent cookie works before logout, so the 401 below is the
+    # revocation and not the header being ignored.
+    before = await client.get("/api/auth/me", headers={"cookie": f"{ACCESS_COOKIE}={copied}"})
+    assert before.status_code == 200
+
+    logout = await client.post("/api/auth/logout")
+    assert logout.status_code == 204
+
+    replay = await client.get(
+        "/api/auth/me",
+        headers={"cookie": f"{ACCESS_COOKIE}={copied}"},
+    )
+
+    assert replay.status_code == 401
+    assert replay.json()["error"]["code"] == "unauthenticated"
+
+
 async def test_only_the_hash_of_a_refresh_token_is_stored(client, db_session: AsyncSession) -> None:
     world = await build_world(db_session)
     await login(client, world.learner_a)
