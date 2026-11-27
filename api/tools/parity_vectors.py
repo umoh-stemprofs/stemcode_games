@@ -309,7 +309,49 @@ def number_guess_vectors() -> dict[str, object]:
 
     feedback = [
         {"code": code, "sentence": guessing.feedback_sentence(code)}
-        for code in ("higher", "lower", "correct", "repeat", "out_of_range", "unknown")
+        for code in (
+            "higher",
+            "lower",
+            "correct",
+            "repeat",
+            "out_of_range",
+            "hot",
+            "warm",
+            "cold",
+            "freezing",
+            "unknown",
+        )
+    ]
+
+    # Heat is a rule the browser also owns (offline play), so every band edge is
+    # checked on both sides: one unit inside and one unit outside each cut.
+    heat = [
+        {
+            "difficulty": difficulty,
+            "secret": secret,
+            "guess": guess,
+            "heat": guessing.heat_for(secret, guess, guessing.level_for(difficulty)),
+        }
+        for difficulty, secret, guess in (
+            (3, 30, 30),
+            (3, 30, 31),
+            (3, 30, 29),
+            (3, 30, 40),
+            (3, 30, 50),
+            (3, 500, 579),
+            (3, 500, 580),
+            (3, 500, 581),
+            (3, 500, 749),
+            (3, 500, 750),
+            (3, 500, 751),
+            (3, 500, 999),
+            (3, 500, 1000),
+            (1, 30, 33),
+            (1, 30, 34),
+            (1, 30, 40),
+            (1, 30, 50),
+            (2, 100, 105),
+        )
     ]
 
     started = dt.datetime(2026, 11, 17, 10, 0, tzinfo=dt.UTC)
@@ -331,6 +373,8 @@ def number_guess_vectors() -> dict[str, object]:
         "in_range": in_range,
         "narrow": narrow,
         "feedback": feedback,
+        "heat": heat,
+        "heat_difficulty": guessing.HEAT_DIFFICULTY,
         "deadline": [
             {
                 "name": "start",

@@ -306,6 +306,18 @@ async def submit_action(
                 cfg["solved"] = int(cfg.get("solved", 0)) + 1
                 outcome = "correct"
                 _close_number(cfg, entry)
+            elif game.uses_heat(int(cfg.get("difficulty", 1))):
+                # The hard band says how close, never which way: the answer is
+                # the temperature, and the window must not narrow either, or a
+                # shorter bar would hand back the "too high / too low" the band
+                # took away.
+                feedback = game.heat_for(_secret(row, index), parsed, level)
+                message = game.feedback_sentence(feedback)
+                outcome = "wrong"
+                if attempts >= tries:
+                    scored = 0
+                    message = f"No more tries. It was {_secret(row, index)}."
+                    _close_number(cfg, entry)
             else:
                 low, high = game.narrow(
                     int(cfg.get("window_low", level.low)),

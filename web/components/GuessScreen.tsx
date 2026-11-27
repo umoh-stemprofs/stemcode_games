@@ -10,6 +10,11 @@
  * - **An arrow and words.** "Too low. Go up." is the server's sentence, so the
  *   wording lives in one place and this screen never invents its own.
  * - **Tries are pips and a sentence.** Filled dots, and "3 tries left."
+ * - **Hard says hot or cold, not "go up".** The hard band is 1-1000 and has
+ *   ten tries, so its difficulty is the search itself: a temperature word in
+ *   place of a direction, and a box that stops shrinking, because a shorter bar
+ *   is the same hint in another shape. A four-word strip above the answer says
+ *   what the words mean, so the rule is visible before it is needed.
  * - **A big 12-key pad, and a stepper.** On the two bands a child starts on,
  *   every digit is a 56px key, so a guess needs no keyboard and no reading: the
  *   pad's own ✓ submits. The −/+ stepper stays underneath both bands for a
@@ -32,6 +37,24 @@ import type { PlayState } from "@/lib/games/types";
 
 /** The bands whose numbers are short enough for a tap-only entry. */
 const PAD_BANDS = new Set([1, 2]);
+
+/** The band that answers with heat instead of "go up / go down" (P6-T03). */
+const HEAT_BAND = 3;
+
+/** Closest first, so the strip reads the way a thermometer does. */
+const HEAT_ORDER = ["hot", "warm", "cold", "freezing"] as const;
+type Heat = (typeof HEAT_ORDER)[number];
+
+const HEAT_TONE: Record<Heat, { on: string; label: string }> = {
+  hot: { on: "border-danger bg-danger-soft text-danger", label: "Hot" },
+  warm: { on: "border-sun bg-sun-soft text-sun-ink", label: "Warm" },
+  cold: { on: "border-brand bg-brand-soft text-brand-deep", label: "Cold" },
+  freezing: { on: "border-violet bg-violet-soft text-violet", label: "Freezing" },
+};
+
+function isHeat(value: string | null | undefined): value is Heat {
+  return value === "hot" || value === "warm" || value === "cold" || value === "freezing";
+}
 
 export function GuessScreen({
   state,
@@ -89,6 +112,13 @@ export function GuessScreen({
   const history = (round.guesses ?? []).slice(-6);
 
   const showPad = round.difficulty != null && PAD_BANDS.has(round.difficulty);
+  const usesHeat = round.difficulty === HEAT_BAND;
+  const heat: Heat | null = usesHeat && isHeat(round.feedback) ? round.feedback : null;
+  // The sentence is the answer: the strip is hidden from a screen reader (it
+  // repeats four words), so this line has to be present, spoken, and durable.
+  // The page's transient `feedback` goes first because it also carries the
+  // sentences this screen does not own ("No more tries. It was 37.").
+  const heatLine = usesHeat ? (feedback ?? round.message) : null;
   const typed = Number(draft);
   const ready = draft !== "" && Number.isFinite(typed);
 
@@ -146,7 +176,9 @@ export function GuessScreen({
           only the points just gained, and the old counter row spent six of the
           twenty-five words on numbers nobody had to read. */}
       <div className="flex flex-col gap-2">
-        <h1 className="font-headline text-large font-extrabold text-ink">Tap a number.</h1>
+        <h1 className="font-headline text-large font-extrabold text-ink">
+          {usesHeat ? "Type a number." : "Tap a number."}
+        </h1>
 
         {/* Rounds are dots and time is a bar, so the two never look alike: a
             learner watching a bar drain should not wonder which one runs out. */}
@@ -193,6 +225,40 @@ export function GuessScreen({
         </div>
       </Card>
 
+      {/* Hard answers with heat, so the strip is both the answer and the rule:
+          the lit word says where the guess landed, and the four words say what
+          those words mean. Colours alone would tell a colour-blind learner
+          nothing, so the word is always the loudest thing in the tile. */}
+      {usesHeat ? (
+        <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-4 gap-1.5">
+            {HEAT_ORDER.map((code) => {
+              const lit = heat === code;
+              return (
+                <span
+                  key={code}
+                  aria-hidden="true"
+                  className={cx(
+                    "flex min-h-[52px] items-center justify-center rounded-xl border-2 text-label font-bold transition-colors",
+                    lit
+                      ? HEAT_TONE[code].on
+                      : "border-line bg-surface text-ink-muted opacity-70",
+                  )}
+                >
+                  {HEAT_TONE[code].label}
+                </span>
+              );
+            })}
+          </div>
+          <p
+            role="status"
+            className="font-headline text-large font-bold leading-snug text-ink"
+          >
+            {heatLine ?? "Hot is close. Cold is far."}
+          </p>
+        </div>
+      ) : null}
+
       {arrow ? (
         <p
           role="status"
@@ -203,7 +269,7 @@ export function GuessScreen({
           </span>
           <span>{round.message}</span>
         </p>
-      ) : feedback ? (
+      ) : feedback && !usesHeat ? (
         <p
           role="status"
           className="rounded-2xl bg-brand-soft px-4 py-3 font-headline text-large font-bold text-brand-deep"

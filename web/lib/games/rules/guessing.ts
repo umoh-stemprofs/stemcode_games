@@ -23,6 +23,18 @@ export const DEADLINE_GRACE_SECONDS = 2;
 export const MIN_SOLVED = 2;
 export const MAX_POINTS_PER_NUMBER = 100;
 
+/** The hard band answers with heat instead of a direction. */
+export const HEAT_DIFFICULTY = 3;
+
+/** Bands as a share of the level's span: 8% hot, 25% warm, 50% cold. */
+export const HEAT_BANDS: ReadonlyArray<readonly [string, number]> = [
+  ["hot", 8],
+  ["warm", 25],
+  ["cold", 50],
+];
+export const HEAT_CODES = ["hot", "warm", "cold", "freezing"] as const;
+export type Heat = (typeof HEAT_CODES)[number];
+
 export interface Level {
   low: number;
   high: number;
@@ -88,6 +100,26 @@ export function narrow(low: number, high: number, guess: number, feedback: Verdi
   return [low, high];
 }
 
+/** Does this band hide the direction and answer with heat? */
+export function usesHeat(difficulty: number): boolean {
+  return difficulty === HEAT_DIFFICULTY;
+}
+
+/**
+ * How close a wrong guess landed: hot, warm, cold, or freezing.
+ *
+ * Integer arithmetic, like the Python original, so both sides agree on a
+ * boundary instead of drifting apart by one unit of a float percentage.
+ */
+export function heatFor(secret: number, guess: number, level: Level): Heat {
+  const span = Math.max(1, level.high - level.low);
+  const gap = Math.abs(secret - guess);
+  for (const [code, share] of HEAT_BANDS) {
+    if (gap * 100 <= span * (share as number)) return code as Heat;
+  }
+  return "freezing";
+}
+
 /**
  * Points for a correct guess: 100 on the first try, less on later ones.
  *
@@ -122,6 +154,10 @@ export function feedbackSentence(feedback: string): string {
     correct: "You found it!",
     repeat: "You tried that number.",
     out_of_range: "That number is outside the box.",
+    hot: "Hot! Almost there.",
+    warm: "Warm. Some way off.",
+    cold: "Cold. Far away.",
+    freezing: "Freezing. Very far.",
   };
   return sentences[feedback] ?? "Try another number.";
 }

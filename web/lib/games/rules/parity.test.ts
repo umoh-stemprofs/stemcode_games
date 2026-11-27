@@ -77,6 +77,8 @@ interface Vectors {
       expected_high: number;
     }>;
     feedback: Array<{ code: string; sentence: string }>;
+    heat: Array<{ difficulty: number; secret: number; guess: number; heat: string }>;
+    heat_difficulty: number;
     deadline: Array<{
       name?: string;
       started_at: string;
@@ -288,6 +290,15 @@ describe("number guess", () => {
   it("speaks the same sentences", () => {
     for (const testCase of vectorsForGame.feedback) {
       expect(guessing.feedbackSentence(testCase.code)).toBe(testCase.sentence);
+    }
+  });
+
+  it("calls a guess the same temperature", () => {
+    expect(guessing.HEAT_DIFFICULTY).toBe(vectorsForGame.heat_difficulty);
+    for (const testCase of vectorsForGame.heat) {
+      expect(
+        guessing.heatFor(testCase.secret, testCase.guess, guessing.levelFor(testCase.difficulty)),
+      ).toBe(testCase.heat);
     }
   });
 

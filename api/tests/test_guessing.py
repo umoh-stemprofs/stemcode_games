@@ -134,6 +134,32 @@ def test_narrowing_moves_only_the_side_the_secret_is_on() -> None:
     assert game.narrow(1, 50, 20, "correct") == (1, 50)
 
 
+@pytest.mark.parametrize(
+    ("secret", "guess", "expected"),
+    (
+        (500, 579, "hot"),
+        (500, 580, "warm"),
+        (500, 749, "warm"),
+        (500, 750, "cold"),
+        (500, 999, "cold"),
+        (500, 1000, "freezing"),
+        (1000, 1, "freezing"),
+    ),
+)
+def test_heat_is_a_share_of_the_box_not_a_fixed_gap(
+    secret: int, guess: int, expected: str
+) -> None:
+    """Hard's four words must mean the same in a wide box and a narrow one."""
+    assert game.heat_for(secret, guess, game.level_for(3)) == expected
+
+
+def test_heat_belongs_to_the_hard_band_only() -> None:
+    """Easy and Medium still owe a learner the direction."""
+    assert game.uses_heat(3)
+    assert not game.uses_heat(1)
+    assert not game.uses_heat(2)
+
+
 def test_every_feedback_code_has_one_plain_sentence() -> None:
     for code in ("higher", "lower", "correct", "repeat", "out_of_range"):
         sentence = game.feedback_sentence(code)
@@ -190,6 +216,32 @@ async def test_higher_or_lower_spends_one_try(client, db_session: AsyncSession) 
         assert body["round"]["low"] == wrong + 1
     else:
         assert body["round"]["high"] == wrong - 1
+
+
+async def test_the_hard_band_answers_with_heat_and_hides_the_direction(
+    client, db_session: AsyncSession
+) -> None:
+    """Hard trades "too low / too high" for a temperature (P6-T03)."""
+    world = await build_world(db_session)
+    await login(client, world.learner_a)
+    created = await _start(client, difficulty=3)
+    session_id = str(created["session_id"])
+
+    await _act(client, session_id, type_="round_seen")
+    secret = await _secret_for(db_session, session_id, 0, difficulty=3)
+    near = secret + 1 if secret < 1000 else secret - 1
+
+    body = (await _act(client, session_id, type_="guess", value=str(near))).json()
+
+    assert body["round"]["feedback"] == "hot"
+    assert body["message"] == game.feedback_sentence("hot")
+    assert body["round"]["tries_left"] == 9
+    # No direction anywhere in the reply, and no shrinking bar to read one off:
+    # the box stays whole for the rest of the number.
+    assert body["round"]["low"] == 1
+    assert body["round"]["high"] == 1000
+    assert "higher" not in str(body)
+    assert "lower" not in str(body)
 
 
 async def test_a_slip_costs_no_try(client, db_session: AsyncSession) -> None:

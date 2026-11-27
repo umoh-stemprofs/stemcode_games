@@ -3266,10 +3266,137 @@
         "sentence": "That number is outside the box."
       },
       {
+        "code": "hot",
+        "sentence": "Hot! Almost there."
+      },
+      {
+        "code": "warm",
+        "sentence": "Warm. Some way off."
+      },
+      {
+        "code": "cold",
+        "sentence": "Cold. Far away."
+      },
+      {
+        "code": "freezing",
+        "sentence": "Freezing. Very far."
+      },
+      {
         "code": "unknown",
         "sentence": "Try another number."
       }
     ],
+    "heat": [
+      {
+        "difficulty": 3,
+        "secret": 30,
+        "guess": 30,
+        "heat": "hot"
+      },
+      {
+        "difficulty": 3,
+        "secret": 30,
+        "guess": 31,
+        "heat": "hot"
+      },
+      {
+        "difficulty": 3,
+        "secret": 30,
+        "guess": 29,
+        "heat": "hot"
+      },
+      {
+        "difficulty": 3,
+        "secret": 30,
+        "guess": 40,
+        "heat": "hot"
+      },
+      {
+        "difficulty": 3,
+        "secret": 30,
+        "guess": 50,
+        "heat": "hot"
+      },
+      {
+        "difficulty": 3,
+        "secret": 500,
+        "guess": 579,
+        "heat": "hot"
+      },
+      {
+        "difficulty": 3,
+        "secret": 500,
+        "guess": 580,
+        "heat": "warm"
+      },
+      {
+        "difficulty": 3,
+        "secret": 500,
+        "guess": 581,
+        "heat": "warm"
+      },
+      {
+        "difficulty": 3,
+        "secret": 500,
+        "guess": 749,
+        "heat": "warm"
+      },
+      {
+        "difficulty": 3,
+        "secret": 500,
+        "guess": 750,
+        "heat": "cold"
+      },
+      {
+        "difficulty": 3,
+        "secret": 500,
+        "guess": 751,
+        "heat": "cold"
+      },
+      {
+        "difficulty": 3,
+        "secret": 500,
+        "guess": 999,
+        "heat": "cold"
+      },
+      {
+        "difficulty": 3,
+        "secret": 500,
+        "guess": 1000,
+        "heat": "freezing"
+      },
+      {
+        "difficulty": 1,
+        "secret": 30,
+        "guess": 33,
+        "heat": "hot"
+      },
+      {
+        "difficulty": 1,
+        "secret": 30,
+        "guess": 34,
+        "heat": "warm"
+      },
+      {
+        "difficulty": 1,
+        "secret": 30,
+        "guess": 40,
+        "heat": "warm"
+      },
+      {
+        "difficulty": 1,
+        "secret": 30,
+        "guess": 50,
+        "heat": "cold"
+      },
+      {
+        "difficulty": 2,
+        "secret": 100,
+        "guess": 105,
+        "heat": "hot"
+      }
+    ],
+    "heat_difficulty": 3,
     "deadline": [
       {
         "name": "start",

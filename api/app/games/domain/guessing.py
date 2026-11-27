@@ -36,6 +36,17 @@ MIN_SOLVED = 2
 
 MAX_POINTS_PER_NUMBER = 100
 
+# The hard band answers a wrong guess with heat instead of a direction. It is
+# the only band that does, because a learner on Easy or Medium is still learning
+# to read a range; taking "go up" away there would teach nothing.
+HEAT_DIFFICULTY = 3
+
+# Bands are a share of the level's span, so "hot" means the same thing in a
+# 50-wide box and a 1000-wide one: within 8% is hot, within 25% warm, within 50%
+# cold, and anything further is freezing.
+HEAT_BANDS: tuple[tuple[str, int], ...] = (("hot", 8), ("warm", 25), ("cold", 50))
+HEAT_CODES = ("hot", "warm", "cold", "freezing")
+
 
 @dataclass(frozen=True, slots=True)
 class Level:
@@ -96,6 +107,26 @@ def compare(secret: int, guess: int) -> str:
     return "higher" if secret > guess else "lower"
 
 
+def uses_heat(difficulty: int) -> bool:
+    """Does this band hide the direction and answer with heat?"""
+    return difficulty == HEAT_DIFFICULTY
+
+
+def heat_for(secret: int, guess: int, level: Level) -> str:
+    """How close a wrong guess landed: hot, warm, cold, or freezing.
+
+    Integer arithmetic on purpose. The browser port (P9-T03) computes the same
+    thing, and a float percentage would put the two sides on opposite sides of a
+    boundary that the parity vectors would then disagree about.
+    """
+    span = max(1, level.high - level.low)
+    gap = abs(secret - guess)
+    for code, share in HEAT_BANDS:
+        if gap * 100 <= span * share:
+            return code
+    return "freezing"
+
+
 def narrow(low: int, high: int, guess: int, feedback: str) -> tuple[int, int]:
     """The range after a wrong guess, so the bar visibly shrinks (P6-T03).
 
@@ -144,4 +175,8 @@ def feedback_sentence(feedback: str) -> str:
         "correct": "You found it!",
         "repeat": "You tried that number.",
         "out_of_range": "That number is outside the box.",
+        "hot": "Hot! Almost there.",
+        "warm": "Warm. Some way off.",
+        "cold": "Cold. Far away.",
+        "freezing": "Freezing. Very far.",
     }.get(feedback, "Try another number.")

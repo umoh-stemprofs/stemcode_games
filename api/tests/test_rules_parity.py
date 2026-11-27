@@ -166,6 +166,14 @@ def test_number_guess_rules_match_the_vectors() -> None:
     for case in vectors["feedback"]:
         assert guessing.feedback_sentence(str(case["code"])) == case["sentence"]
 
+    for case in vectors["heat"]:
+        level = guessing.level_for(int(case["difficulty"]))
+        assert (
+            guessing.heat_for(int(case["secret"]), int(case["guess"]), level) == case["heat"]
+        ), case
+
+    assert guessing.HEAT_DIFFICULTY == vectors["heat_difficulty"]
+
     start_case = vectors["deadline"][0]
     started = dt.datetime.fromisoformat(start_case["started_at"])
     assert int(guessing.deadline(started).timestamp() * 1000) == start_case["deadline_ms"]

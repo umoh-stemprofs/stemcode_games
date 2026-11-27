@@ -102,7 +102,19 @@ export type RoundState = {
   // screen shows the 12-key pad.
   difficulty?: number | null;
   tries_total?: number | null;
-  feedback?: "higher" | "lower" | "correct" | "repeat" | "out_of_range" | null;
+  // The hard band answers with a temperature ("hot".."freezing") instead of a
+  // direction, so this union carries both vocabularies.
+  feedback?:
+    | "higher"
+    | "lower"
+    | "correct"
+    | "repeat"
+    | "out_of_range"
+    | "hot"
+    | "warm"
+    | "cold"
+    | "freezing"
+    | null;
   message?: string | null;
   guesses?: number[];
 };
